@@ -1,0 +1,799 @@
+/*
+
+Last Updated: 20 April 2010
+Version     : 1.4
+
+Author      : Yogesh Khatri
+              42 LLC
+              Yogesh@42LLC.net
+
+For         : Sgt. Glenn Lang
+              Maine State Police
+              207-877-8081
+              glang@mcctf.org
+
+*/
+
+include "Lib_TabDelimited"
+
+/* SearchTermClass
+   This class is used to hold a list or tree of Keywords
+   and their associated options (Extension, offset, etc..)
+
+   It also holds a SearchClass object used only when searching
+   cluster edges.
+*/
+class SearchTermClass : NodeClass {
+  property String Expression;
+  property String Extension;
+  property long   OffsetIntoFile;
+
+  property uint   NumBytesToCarve;
+  SearchClass     ClusterSearch; // used in cluster edge search
+
+  SearchTermClass(SearchTermClass parent = null, const String& exp = "", const String& ext = "", uint off = 0, uint carveLen = 0):
+    NodeClass(parent),
+    Expression = exp,
+    Extension  = ext,
+    OffsetIntoFile = off,
+    NumBytesToCarve = carveLen
+  {
+    Extension.Trim(".", String::TRIMSTART);
+  }
+
+  // Returns object that matches extension
+  SearchTermClass SearchListByExtension(const String &ext) {
+    foreach (SearchTermClass s in this)
+      if (s.Extension.Compare(ext) == 0)
+        return s;
+    return null;
+  }
+
+  // Returns object that matches offset
+  SearchTermClass SearchListByOffset(long off) {
+    foreach (SearchTermClass s in this)
+      if (s.OffsetIntoFile == off)
+        return s;
+    return null;
+  }
+
+  // Returns object that matches extension and offset
+  SearchTermClass SearchListByExtensionAndOffset(const String &ext, long off) {
+    foreach (SearchTermClass s in this)
+      if ((s.Extension.Compare(ext) == 0) && (s.OffsetIntoFile == off))
+        return s;
+    return null;
+  }
+}
+
+/* GuiOptionsClass
+   This class holds all options that are set in the GUI.
+*/
+class GuiOptionsClass {
+  String           InputFilePath,
+                   ExportFolderPath,
+                   OutputPrefix,
+                   AlertFilePath;
+  bool             SelectedOnly,
+                   DoBookmarks,
+                   ClusterEdgeOnly,
+                   DoAlert;
+
+  BookmarkFolderClass BMFolder;
+
+  GuiOptionsClass()
+  {
+    Load();
+    ClusterEdgeOnly = true; // always set!
+  }
+
+  void EditStorage(StorageClass s) {
+    s.Value("InputFilePath", InputFilePath);
+    s.Value("OutputPrefix", OutputPrefix);
+    s.Value("SelectedOnly", SelectedOnly);
+    s.Value("DoBookmarks", DoBookmarks);
+    //s.Value("ClusterEdgeOnly", ClusterEdgeOnly);
+    s.Value("DoAlert", DoAlert);
+    s.Value("AlertFilePath", AlertFilePath);
+  }
+
+  void Load() {
+    StorageClass s(MainClass::ScriptName());
+    EditStorage(s);
+  }
+
+  void Save() {
+    StorageClass s(MainClass::ScriptName(), StorageClass::WRITE);
+    EditStorage(s);
+  }
+}
+
+class OutputClass {
+
+  GuiOptionsClass Options;
+  LocalFileClass  ReportFile;
+  uint   TotalForExport,
+         TotalExported;
+  bool   ErrorOccurred;
+
+  OutputClass(GuiOptionsClass op):
+    Options = op
+  {
+  }
+
+  ~OutputClass() {
+    EndReport();
+  }
+
+  void Carve(EntryClass entry, EntryFileClass file, SearchTermClass term, ulong startsector, uint sectorSize, long CurrentExtentStartOffset) {
+
+    String sectorInfo;
+    bool unallocated;
+    long filepos = file.GetPos();
+
+    TotalForExport++;
+    if (entry.IsUnallocated() || entry.Description().Contains("Unallocated Clusters")) {
+      unallocated = true;
+      if (filepos < sectorSize)
+        sectorInfo = "-PhysicalSector " + startsector + " Offset " + filepos;
+      else {
+        long sector = (filepos / sectorSize) + startsector;
+        long pos    =  filepos % sectorSize;
+        sectorInfo  = "-PhysicalSector " + sector + " Offset " + pos;
+      }
+    }
+    //else
+      //sectorInfo = "-LogicalOffset " + file.GetPos();
+    String relpath = term.Extension + "\\" +
+                     (Options.OutputPrefix ? Clean(Options.OutputPrefix) + "-" : "") +
+                     Clean(entry.Name() +
+                     sectorInfo +
+                     "-Keyword=" + term.Expression
+                     );
+    if (relpath.GetFileExt().Compare(term.Extension) != 0)
+      relpath += "." + term.Extension;
+
+    String path = Options.ExportFolderPath + "\\" + relpath;
+    long logicalOffset = (unallocated ? CurrentExtentStartOffset + filepos : filepos);
+
+    if (Options.DoBookmarks) {
+      ///Encase does not like bookmarking of virtual files (for unallocated), so we give it a real entry
+      if (unallocated)
+        Options.BMFolder.AddBookmark(entry, logicalOffset, term.NumBytesToCarve, term.Extension, BookmarkClass::SHOWREPORT | BookmarkClass::PICTURE, BookmarkClass::ViewTypes::NONE);
+      else
+        Options.BMFolder.AddBookmark(file, term.NumBytesToCarve, term.Extension, BookmarkClass::SHOWREPORT | BookmarkClass::PICTURE, BookmarkClass::ViewTypes::NONE);
+    }
+
+    LocalFileClass lf();
+    CreateFolder(path.GetFilePath());
+    if (lf.Open(GetUncPath(path), FileClass::WRITE)) {
+      long bytesWritten = lf.WriteBuffer(file, term.NumBytesToCarve);
+      lf.Close();
+      String md5 = ComputeMD5(file, filepos, term.NumBytesToCarve);
+      Report(entry, relpath, bytesWritten, term, unallocated, logicalOffset, md5);
+      TotalExported++;
+      SystemClass::StatusMessage("Exported " + TotalExported + " files");
+      Alert();
+    }
+    else {
+      String error = "Failed to create output file : " + path;
+      Console.WriteLine(error);
+      ErrorOccurred = true;
+      //ReportError(path, error);
+    }
+  }
+
+  String ComputeMD5(FileClass file, long pos, long len) {
+    file.Seek(pos);
+    SearchClass s();
+    return s.ComputeHash(file, len);
+  }
+
+  void Alert() {
+    if (Options.DoAlert)
+      SystemClass::OpenFile(Options.AlertFilePath);
+  }
+
+  String GetUncPath(const String &path) { // fix for > 262 path length
+    if (path[0] == '\\' && path[1] == '\\')
+      return path; // already using unc path
+    return "\\\\?\\" + path;
+  }
+
+  void Report(EntryClass entry, const String &path, long bytesWritten, SearchTermClass term, bool unallocated, ulong logicalOffset, const String& md5)
+  {
+    ReportFile.Write( term.Expression + "\t" +
+                      term.Extension + "\t" +
+                      entry.Name() + "\t" +
+                      entry.FullPath() + "\t" +
+                      path.GetFilename() + "\t" +
+                      "=HYPERLINK(\"" + path + "\",\"" + path + "\")" + "\t" +
+                      bytesWritten + "\t" +
+                      md5 + "\t" +
+                      entry.FileID() + "\t" +
+                      (unallocated ? "Yes" : "No") + "\t" +
+                      logicalOffset + "\t" +
+                      term.OffsetIntoFile  + "\t" +
+                      entry.Created().GetString() + "\t" +
+                      entry.Written().GetString() + "\t" +
+                      entry.Accessed().GetString() + "\t" +
+                      entry.Modified().GetString() +
+                      "\r\n");
+  }
+
+  bool StartReport() {
+    ReportFile = new LocalFileClass();
+    String path = Options.ExportFolderPath + "\\" + MainClass::ScriptName() + ".xls";
+    if (ReportFile.Open(path, FileClass::WRITE | FileClass::TEXT)) {
+      ReportFile.SetCodePage(CodePageClass::UNICODE);
+      ReportFile.Write( "Search Term" + "\t" +
+                        "Extension" + "\t" +
+                        "Entry Name" + "\t" +
+                        "Entry Path" + "\t" +
+                        "Output File Name" + "\t" +
+                        "Output File Path" + "\t" +
+                        "Bytes Written(Output Size)" + "\t" +
+                        "Hash-MD5" + "\t" +
+                        "File ID" + "\t" +
+                        "Is Unallocated" + "\t" +
+                        "Logical Offset" + "\t" +
+                        "Keyword Offset In File" + "\t" +
+                        "Created Time" + "\t" +
+                        "Written Time" + "\t" +
+                        "Accessed Time" + "\t" +
+                        "Modified Time" + "\t" +
+                        "\r\n");
+      return true;
+    }
+    else
+      SystemClass::Message(SystemClass::ICONSTOP, "Error", "Failed to create Report file at : " + path);
+    return false;
+  }
+
+  void EndReport() {
+    if (ReportFile)
+      ReportFile.Close();
+    ReportFile = null;
+  }
+
+  bool CreateFolder(const String &folder) {
+    if (!LocalMachine.PathExists(folder)) {
+      if (LocalMachine.CreateFolder(folder, ConnectionClass::CREATEFOLDERALL))
+        return true;
+      else {    // FIX for K: without trailing \
+        uint length = folder.GetLength();
+        if (length > 0) {
+          char last   = folder[length - 1];
+          if ( ((length == 2) && (last == ':')) ||
+               ((folder.Find("\\\\?\\") == 0) && (last == ':') && (length == 6)) )
+            return LocalMachine.PathExists(folder + "\\");
+        }
+        return false;
+      }
+    }
+    return true;
+  }
+  // Removes illegal characters from filenames, Windows does not allow "\/?<>:*| in filenames.
+  static String Clean(const String& str) {
+    String s = str;
+    s.Replace("\\x", "_");
+    s.Replace("\\", "_");
+    s.Replace("/", "_");
+    s.Replace(":", "_");
+    s.Replace("*", "_");
+    s.Replace("?", "_");
+    s.Replace("\"","_");
+    s.Replace(">", "_");
+    s.Replace("<", "_");
+    s.Replace("|", "_");
+    return s;
+  }
+}
+
+/* FileSearchClass
+   This is the base processing class.
+
+   This class perfroms the following functions: sorting keywords, creating
+   search objects, searching files & unallocated space.
+*/
+class FileSearchClass {
+
+  SearchTermClass  SearchTerms;
+  SearchClass      Searcher;
+  GuiOptionsClass  Options;
+  uint             ClusterSize,        // Used for unallocated searching
+                   SectorSize ;        // Used for unallocated searching
+
+  EntryClass       CurrentEntry;       // Entry that is being searched
+  ulong            CurrentStartSector; // Used for unnallocated only!
+  long             CurrentExtentStartOffset; // Used for unnallocated only for calculating Logical Offset and bookmarking
+  OutputClass      Carver;
+
+  FileSearchClass(GuiOptionsClass options):
+    SearchTerms(),
+    Options = options,
+    Carver(options)
+  {
+  }
+
+  virtual bool LoadInputFile() {
+    SearchTerms = new SearchTermClass();
+    LocalFileClass file();
+    TabDelimitedClass td();
+    if (td.OpenFile(Options.InputFilePath, false)) {
+      while (td.ReadLine()) {
+        String exp = td.GetProperty(0);
+        String ext = td.GetProperty(1);
+        uint off   = uint::Convert(td.GetProperty(2));
+        uint len   = uint::Convert(td.GetProperty(3));
+        if (!exp) {
+          SystemClass::Message(SystemClass::ICONSTOP, "Error", "Expression is empty @ line " + td.LineNumber + " in the input file.");
+          return false;
+        }
+        if (!ext || len == 0) {
+          SystemClass::Message(SystemClass::ICONSTOP, "Error", "Extension or Length is empty @ line " + td.LineNumber + " in the input file.");
+          return false;
+        }
+        if (!CheckKeyword(exp)) {
+          SystemClass::Message(SystemClass::ICONSTOP, "Error", "Keyword seems invalid @ line " + td.LineNumber + " in the input file. Script will ignore the keyword " + exp);
+          Console.WriteLine("Ignored keyword " + exp);
+          continue;
+        }
+
+        new SearchTermClass(SearchTerms, exp, ext, off, len);
+      }
+      return SearchTerms.FirstChild() ? true : false;
+    }
+    else
+      SystemClass::Message(SystemClass::ICONEXCLAMATION, "Error", "Could not open or read file " + Options.InputFilePath);
+    return false;
+  }
+
+  bool CheckKeyword(const String &expression) {
+    String exp = expression;
+    exp.Replace("\\x", "");
+    int length = exp.GetLength();
+    int num;
+    int prev = int::Convert(exp.SubString(0, 2), int::HEX);
+
+    for (int i = 2; i < length / 2; i += 2) {
+      num = int::Convert(exp.SubString(i, 2), int::HEX);
+      if (num != prev) {
+        return true;
+      }
+      prev = num;
+    }
+    return false;
+  }
+
+  virtual bool InitializeSearch() {
+    Searcher = new SearchClass();
+    foreach (SearchTermClass term in SearchTerms)
+      Searcher.AddKeyword(term.Expression, KeywordClass::ANSI | KeywordClass::GREP);
+    return Searcher.Create();
+  }
+
+  virtual void ResolveHits(EntryFileClass file) {
+    foreach (SearchClass::HitClass hit in Searcher.GetHits()) {
+      SearchTermClass term = SearchTerms.GetChild(hit.KeywordIndex());
+      ResolveHit(hit, term, file);
+    }
+  }
+
+  void ResolveHit(SearchClass::HitClass hit, SearchTermClass term, EntryFileClass file) {
+    if (hit.Offset() >= term.OffsetIntoFile) { // valid hit
+      file.Seek(hit.Offset() - term.OffsetIntoFile);
+      Carver.Carve(CurrentEntry, file, term, CurrentStartSector, SectorSize, CurrentExtentStartOffset);
+    }
+  }
+
+  // Search single file
+  virtual bool SearchFile(EntryFileClass file) {
+    bool ret = Searcher.Find(file, -1, -1, SearchClass::STATUSUPDATE) > 0;
+    if (ret) {
+      ResolveHits(file);
+    }
+    return ret;
+  }
+
+  bool IsUnallocated(EntryClass entry) {
+    return entry.IsUnallocated() || entry.Description().Contains("Unallocated Clusters");
+  }
+
+  // Convert Entry into a file and search it.
+  bool SearchEntry(EntryClass entry) {
+    bool ret;
+    CurrentEntry = entry;
+    if (IsUnallocated(entry))
+      ret = SearchUnallocated(entry);
+    else {
+      EntryFileClass file();
+      if (file.Open(entry)) {
+        ret = SearchFile(file);
+        file.Close();
+      }
+    }
+    return ret;
+  }
+
+  void CalculateClusterSize(EntryClass e) {
+    VolumeClass vol = e.GetVolume();
+    if (vol)
+      ClusterSize = vol.BytesPerCluster();
+    else {
+      Console.WriteLine("Could not find BytesPerCluster for entry " + e.FullPath() + ", using default=4096");
+      ClusterSize = 4096;
+    }
+    if (ClusterSize == 0) {
+      Console.WriteLine("Could not find BytesPerCluster for entry " + e.FullPath() + ", using default=4096");
+      ClusterSize = 4096;
+    }
+  }
+
+  void CalculateSectorSize(EntryClass e) {
+    DeviceClass dev = e.GetDevice();
+    if (dev)
+      SectorSize = dev.BytesPerSector();
+    else {
+      Console.WriteLine("Could not find BytesPerSector for entry " + e.FullPath() + ", using default=512");
+      SectorSize = 512;
+    }
+    if (ClusterSize == 0) {
+      Console.WriteLine("Could not find BytesPerSector for entry " + e.FullPath() + ", using default=512");
+      SectorSize = 512;
+    }
+  }
+
+  /* Unallocated searches are treated differently.
+     Unallocated space is not one contiguous block as Encase
+     shows it. For efficent searching, we
+     break unallocated space into several chunks, each chunk
+     comprising of a set of contiguous clusters. These
+     chunks are searched as seperate files.
+  */
+  bool SearchUnallocated(EntryClass unallocated) {
+    bool ret;
+    DeviceClass dev = unallocated.GetDevice();  // Get Device handle
+    FileExtentClass extents = unallocated.FileExtentRoot(); // Get listing of unallocated sector extents. Each extent describes a contiguous chunk.
+    CurrentExtentStartOffset = 0;
+    foreach (FileExtentClass ex in extents) {
+      CurrentStartSector = ex.StartSector();
+      EntryFileClass file();
+      if (file.Open(dev, ex.StartSector(), ex.Sectors())) { // Open a virtual file comprising data from a sector of contiguous unallocated sectors
+        ret |= SearchFile(file);
+        file.Close();
+      }
+      CurrentExtentStartOffset += SectorSize * ex.Sectors();
+    }
+    return ret;
+  }
+
+  long CalculateTotalSearchSize(EntryClass root) {
+    long ret;
+    forall (EntryClass e in root) {
+      if (!Options.SelectedOnly || e.IsSelected()) {
+        ret += e.LogicalSize();
+      }
+    }
+    return ret;
+  }
+
+  virtual void SetStatusBarRange(EntryClass root) {
+    long totalBytesToSearch = CalculateTotalSearchSize(root);
+    SystemClass::StatusRange(MainClass::ScriptName(), totalBytesToSearch); // set StatusBar to total bytes to search, searchclass will increment it automatically
+  }
+
+  void StartProcessing(EntryClass root) {
+    DateClass start; start.Now();
+    Options.ExportFolderPath = root.GetCase().ExportFolder();
+    Options.ExportFolderPath.Trim("\\/", String::TRIMEND);
+    if (Carver.StartReport()) {
+      SetStatusBarRange(root);
+      foreach (EntryClass entry in root) {
+        if (entry.IsVolume())
+          ProcessVolume(entry);
+        else if (entry.IsDisk()) {
+          foreach (EntryClass e in entry) {
+            if (e.IsVolume())
+              ProcessVolume(e);
+            else
+              ProcessUnusedDiskSpace(e);
+          }
+        }
+      }
+      Carver.EndReport();
+      Console.WriteLine("\nScript took " + GetElapsedTimeAsString(start));
+      String status = Carver.TotalExported + " of " + Carver.TotalForExport + " files exported.";
+      if (Carver.ErrorOccurred)
+        SystemClass::Message(SystemClass::ICONEXCLAMATION, "Done with error(s)", "Processing finished. \nSome errors were encountered, check Console for details.\n\n" + status);
+      else
+        SystemClass::Message(SystemClass::ICONINFORMATION, "Done", "Processing finished.\n\n" + status);
+    }
+  }
+
+  /// TIME FUNCTIONS
+  String GetElapsedTimeAsString(DateClass start) {
+    String ret;
+    uint seconds = GetElapsedTimeInSeconds(start),
+         hours   = seconds / 3600,
+         minutes = (seconds % 3600) / 60;
+    seconds = (seconds % 3600) % 60;
+    ret = hours + " hour(s) " + minutes + " minute(s) " + seconds + " second(s)";
+    return ret;
+  }
+
+  uint GetElapsedTimeInSeconds(DateClass start) {
+    DateClass now();
+    now.Now();
+    return now.GetUnix() - start.GetUnix();
+  }
+  /// END TIME FUNCTIONS
+
+  void ProcessUnusedDiskSpace(EntryClass e) {
+    CalculateClusterSize(e);
+    CalculateSectorSize(e);
+    if (!e.IsFolder() && (!Options.SelectedOnly || e.IsSelected())) {
+      SearchEntry(e);
+    }
+  }
+
+  void ProcessVolume(EntryClass root) {
+    CalculateClusterSize(root);
+    CalculateSectorSize(root);
+    forall (EntryClass e in root) {
+      if (!e.IsFolder() && !e.IsInternal() && (!Options.SelectedOnly || e.IsSelected())) {
+        SearchEntry(e);
+      }
+    }
+  }
+}
+
+/* This class is derived from FileSearchClass.
+   It is used for cluster edge searching. This process is quite different
+   from regular searching. We make the assumption that the data we are
+   searching for is from an individual file on disk and individual files
+   always begin at the first offset of a cluster, and not anywhere else
+   within it.
+
+   Because our search term responds to an offset X number of bytes from the
+   start of the file, we have to skip X bytes forward from a cluster
+   offset and then search.
+*/
+class SearchClusterEdgeClass : FileSearchClass {
+
+  SearchClusterEdgeClass(GuiOptionsClass options):
+    FileSearchClass(options)
+  {
+  }
+
+  /* virtual LoadInputFile()
+     This differs from the BaseClass function in the way it creates SearchTerm objects.
+     Terms are grouped by "Offset in File", and the resulting tree looks
+     like this:
+                    Root
+                      |
+                      |
+        +-------------+--------------+
+        |             |              |
+        |             |              |
+     Offset1       Offset2        Offset3
+        |             |              |
+      +---+         +---+      +-----+------+
+      |   |         |   |      |     |      |
+      |   |         |   |      |     |      |
+   Term1 Term2   Term3 Term4  Term5 Term6 Term7
+
+  */
+  virtual bool LoadInputFile() {
+    SearchTerms = new SearchTermClass();
+    LocalFileClass file();
+    TabDelimitedClass td();
+    if (td.OpenFile(Options.InputFilePath, false)) {
+      while (td.ReadLine()) {
+        String exp = td.GetProperty(0);
+        String ext = td.GetProperty(1);
+        uint off   = uint::Convert(td.GetProperty(2));
+        uint len   = uint::Convert(td.GetProperty(3));
+        if (!exp) {
+          SystemClass::Message(SystemClass::ICONSTOP, "Error", "Expression is empty @ line " + td.LineNumber + " in the input file.");
+          return false;
+        }
+        if (!ext || len == 0) {
+          SystemClass::Message(SystemClass::ICONSTOP, "Error", "Extension or Length is empty @ line " + td.LineNumber + " in the input file.");
+          return false;
+        }
+        if (!CheckKeyword(exp)) {
+          SystemClass::Message(SystemClass::ICONSTOP, "Error", "Keyword seems invalid @ line " + td.LineNumber + " in the input file. Script will ignore the keyword " + exp);
+          Console.WriteLine("Ignored keyword " + exp);
+          continue;
+        }
+        SearchTermClass group = SearchTerms.SearchListByOffset(off)/*SearchListByExtensionAndOffset(ext, off)*/;
+        if (!group)
+          group = new SearchTermClass(SearchTerms, "", "", off, len);
+        new SearchTermClass(group, exp, ext, off, len);
+      }
+      return SearchTerms.FirstChild() ? true : false;
+    }
+    else
+      SystemClass::Message(SystemClass::ICONEXCLAMATION, "Error", "Could not open or read file " + Options.InputFilePath);
+    return false;
+  }
+
+  virtual bool InitializeSearch() {
+    foreach (SearchTermClass group in SearchTerms) {
+      group.ClusterSearch = new SearchClass();
+      foreach (SearchTermClass term in group)
+        group.ClusterSearch.AddKeyword(term.Expression, KeywordClass::ANSI | KeywordClass::GREP);
+      if (!group.ClusterSearch.Create())
+        return false;
+    }
+    return true;
+  }
+
+  void ResolveClusterEdgeHits(EntryFileClass file, SearchTermClass group) {
+    SearchClass searcher = group.ClusterSearch; // Select the search engine that was used
+    foreach (SearchClass::HitClass hit in searcher.GetHits()) {
+      SearchTermClass term = group.GetChild(hit.KeywordIndex());
+      if (term)
+        ResolveHit(hit, term, file);
+      else
+        Console.WriteLine("Error occurred! SearchTermClass invalid, index " + hit.KeywordIndex() + " not found");
+    }
+  }
+
+  virtual void SetStatusBarRange(EntryClass root) {
+    long totalBytesToSearch = CalculateTotalSearchSize(root);
+    SystemClass::StatusRange("", SearchTerms.Count() * totalBytesToSearch); // because we search many times over same data for different offset lengths
+  }
+
+  /* virtual SearchFile()
+     This functions searches an opened file for hits
+     using the cluster edge search method.
+  */
+  virtual bool SearchFile(EntryFileClass file) {
+    bool ret;
+    //Console.WriteLine("Searching " + file.Name());
+    foreach (SearchTermClass group in SearchTerms) {
+      long fileSize = file.GetSize();
+      file.Seek(0);
+      long filePos,
+           lastfilePos; // This variable is for status update only
+      while ((fileSize - filePos) > group.OffsetIntoFile) {
+        file.Seek(filePos + group.OffsetIntoFile); // Skip X bytes into file where hit is expected
+        //Console.WriteLine("Seek to " + (filePos + group.OffsetIntoFile));
+        ////STATUS UPDATE CODE
+        SystemClass::StatusInc(file.GetPos() - lastfilePos);
+        lastfilePos = file.GetPos();
+        ////
+        if (group.ClusterSearch.Find(file, 10) > 0) {
+          //Console.WriteLine("FOUND HIT " + (filePos + group.OffsetIntoFile) + " AT " + group.ClusterSearch.GetHits()[0].Offset());
+
+          ResolveClusterEdgeHits(file, group);
+          ret = true;
+        }
+        filePos += ClusterSize; // Skip to next cluster
+        if (filePos > fileSize) // Check for End Of File
+          break;
+        if (!IsUnallocated(CurrentEntry)) // If allocated file,
+          break;                          // no need to search all clusters.
+      }
+      if (lastfilePos < fileSize)
+        SystemClass::StatusInc(fileSize - lastfilePos); // increment difference to statusbar
+    }
+    return ret;
+  }
+}
+
+class GuiClass : DialogClass {
+
+  String          AboutInfo,
+                  UsageInfo;
+  GuiOptionsClass Options;
+  GroupBoxClass   InputGroup;
+  PathEditClass   InputPathEdit;
+  CheckBoxClass   SelectedCheckBox,
+                  ClusterSearchOnly;
+  GroupBoxClass   OutputGroup;
+  //PathEditClass   OutputPathEdit;
+  StringEditClass Prefix;
+  CheckBoxClass   BookmarkHits,
+                  AlertCheckBox;
+  PathEditClass   AudioFilePath;
+  ButtonClass     Usage,
+                  About;
+
+  GuiClass(DialogClass parent, GuiOptionsClass options, const String& aboutinfo, const String& usageinfo):
+    DialogClass(parent, MainClass::ScriptName() + " - v " + MainClass::Version()),
+    AboutInfo = aboutinfo,
+    UsageInfo = usageinfo,
+    Options  = options,
+    InputGroup(this, "Input Options", START, START, 300, 80, 0),
+    InputPathEdit(this, "Keywords file", 15, 20, 280, 10, 0, options.InputFilePath, REQUIRED | FILEOPEN, "Ini Files\t*.ini\tAll Files\t*.*"),
+    SelectedCheckBox(this, "Process Selected Files Only", SAME, NEXT, 200, 10, 0, options.SelectedOnly),
+    ClusterSearchOnly(this, "Search Only Cluster Edge (Faster), Do not uncheck!", SAME, NEXT, 200, 10, 0, options.ClusterEdgeOnly),
+    OutputGroup(this, "Output Options", START, 90, 300, 105, 0),
+    Prefix(this, "Output File Prefix (Eg: Case 123 Item 4-32)", 15, 105, 280, 10, 0, options.OutputPrefix, 128, 0),
+    BookmarkHits(this, "Create Bookmarks", SAME, NEXT, 200, 10, 0, options.DoBookmarks),
+    AlertCheckBox(this, "Audible Alert", SAME, NEXT, 100, 10, 0, options.DoAlert),
+    AudioFilePath(this, "Select wav or mp3 file", SAME, NEXT, 280, 10, 0, options.AlertFilePath, REQUIRED | FILEOPEN, "MP3 Files\t*.mp3\tWAV Files\t*.wav\tAll Files\t*.*"),
+    Usage(this, "Help", SAME, 200, 135, 15, 0),
+    About(this, "About", NEXT, SAME, 135, 15, 0)
+  {
+  }
+
+  virtual void CheckControls() {
+    DialogClass::CheckControls();
+    AudioFilePath.Enable(AlertCheckBox.GetValue());
+  }
+
+  virtual void ChildEvent(const EventClass& evt) {
+    DialogClass::ChildEvent(evt);
+    if      (Usage.Matches(evt)) SystemClass::Message(SystemClass::ICONINFORMATION, "Help", UsageInfo);
+    else if (About.Matches(evt)) SystemClass::Message(SystemClass::ICONINFORMATION, "About", AboutInfo);
+  }
+}
+
+class MainClass {
+
+  static String ScriptName() {
+    return "Maine State Police File Search and Carve";
+  }
+
+  static String Version() {
+    return "1.4";
+  }
+
+  void Main(CaseClass c) {
+    if (!c || !c.EntryRoot() || !c.EntryRoot().FirstChild() || !c.EntryRoot().FirstChild().FirstChild())
+      SystemClass::Message(SystemClass::ICONEXCLAMATION, "Nothing loaded", "No evidence present in this case!\nPlease load some evidence first.");
+    else {
+      SystemClass::ClearConsole();
+      GuiOptionsClass Options();
+      String about = ScriptName() + " Script\n\n"
+                     "This script is specifically designed to locate KNOWN child pornography images/videos on a suspect drive by detecting specific keyword occurrances at certain specific offsets.\n\n"
+                     "Original design by Sgt. Glenn Lang, BitSec Global Forensics and Lance Mueller."
+                     " Updates by BitSec Global Forensics and 42 LLC.  Visit www.bitsecglobalforensics.com for more information."
+                     " For questions regarding the use of this EnScript, please contact Sergeant Glenn Lang, Maine State Police, at 207-877-8081 or glang(at)mcctf(dot)org."
+                     "\n\nLast Updated by Yogesh Khatri (42 LLC)\n"
+                     "20 April 2010 \n"
+                     "Version " + Version();
+      String usage = "The options used by the script are described below:\n\n"
+                     "The 'Keywords file' is a tab-delimited file having the following 3 pieces of information.\n\n"
+                     "Keyword     Extension      KeywordOffset       CarveLength\n"
+                     "\n"
+                     "An example of such a file would be:\n\n"
+                     "\\x13\\x43\\x90\\x34         MPG    60034  20000000\n"
+                     "\\x4a\\x03\\x40\\x97         JPG      534      5120000\n"
+                     "\\xdb\\x53\\x10\\x07\\x02 AVI      2000     3218432102\n\n"
+                     "'Output File Prefix' : This options allows for a prefix to be added to the name of the exported files.\n\n"
+                     "'Process Selected Files' : This option will force the script to only search selected (blue-checked) files. If unchecked, it will search all files except folders and internal files (metadata files like $Extend, $MFT, etc..) which are always ignored.\n\n"
+                     "'Search Only Cluster Edges' : This option will only search the data regions offset from the start of every cluster for every keyword entered. This should speed up searches, as it does not search every byte of every sector now. For allocated files, only the specified offset is searched in the entire file.\n\n"
+                     "'Create Bookmarks' : This option will add a bookmark in encase for every file exported.\n\n"
+                     "The output of the script is in the default case Export folder. You can place a small .WAV file named 'alarm.wav' in the Encase installation folder and it will be played each time a hit is exported.";
+
+
+      GuiClass gui(null, Options, about, usage);
+      if (gui.Execute() == SystemClass::OK) {
+        Options.Save();
+        FileSearchClass fs;
+
+        if (Options.ClusterEdgeOnly)  fs = new SearchClusterEdgeClass(Options);
+        else                          fs = new FileSearchClass(Options);
+
+        if (Options.DoBookmarks) {
+          DateClass d;
+          d.Now();
+          Options.BMFolder = new BookmarkFolderClass(c.BookmarkRoot(), MainClass::ScriptName() + " Output - " + d.GetString());
+        }
+        if (fs.LoadInputFile()) {
+          if (fs.InitializeSearch())
+            fs.StartProcessing(c.EntryRoot());
+          else
+            SystemClass::Message(SystemClass::ICONSTOP, "Error", "Could not create SearchClass. Check your keywords file for possible invalid input");
+        }
+        else
+          SystemClass::Message(SystemClass::ICONSTOP, "Error", "Check your keywords file. Invalid input");
+      }
+    }
+  }
+}

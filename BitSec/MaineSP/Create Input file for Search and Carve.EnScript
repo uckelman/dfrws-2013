@@ -1,0 +1,163 @@
+/*
+
+Last Updated: 20 April 2010
+Version     : 1.4
+
+Author      : Yogesh Khatri
+              42 LLC
+              Yogesh@42LLC.net
+
+For         : Sgt. Glenn Lang
+              Maine State Police
+              207-877-8081
+              glang@mcctf.org
+
+*/
+
+
+/* CarveSizeDialogClass
+   This class represents a dialog that dynamically
+   changes the number of controls it displays
+   depending on the number of unique extensions
+   in the input file provided.
+*/
+class CarveSizeDialogClass : DialogClass {
+  typedef String[]          StringArray;
+  typedef StringEditClass[] StringEditArray;
+  typedef int[]             IntArray;
+  typedef IntEditClass[]    IntEditArray;
+
+  NameValueClass  Items;
+  StringArray     Strings;
+  IntArray        Ints;
+  StringEditArray StringEdits;
+  IntEditArray    IntEdits;
+  StaticTextClass Text1,
+                  Text2;
+
+  CarveSizeDialogClass(NameValueClass items):
+    DialogClass(null, "Define Keyword offset for extensions"),
+    Items = items,
+    Strings(0, items.Count()),
+    Ints(0, items.Count()),
+    StringEdits(0, items.Count()),
+    IntEdits(0, items.Count()),
+    Text1(this, "Extension", 20, 10, 40, 12, 0),
+    Text2(this, "Keyword Offset(Bytes)", NEXT, SAME, 100, 12, 0)
+  {
+    CreateEditBoxes();
+  }
+
+  void CreateEditBoxes() {
+
+    int x = 20, y = 25;
+
+    uint numItems = Items.Count();
+    for (int i = 0; i < numItems; ++i) {
+      Strings.Add(Items.GetChild(i).Name());
+      Ints.Add(int::Convert(Items.GetChild(i).Value()));
+      StringEdits.Add(new StringEditClass(this, "", x, y, 40, 10, READONLY, Strings[i], 128, 0));
+      IntEdits.Add(new IntEditClass(this, "", x + 55, y, 80, 10, 0, Ints[i], 0, 1073741824, REQUIRED));
+
+      y += 15;
+    }
+  }
+
+  virtual bool CanClose() {
+    if (DialogClass::CanClose()) {
+      Output();
+      uint numItems = Items.Count();
+      for (int i = 0; i < numItems; ++i) {
+        Items.GetChild(i).SetValue(Ints[i]);
+      }
+      return true;
+    }
+    return false;
+  }
+}
+
+class MainClass {
+  /* This function displays a dialog to the user where extension offsets
+     are to be populated. The retrieved information is then passed onto
+     the required data structures (SearchTerms).
+  */
+
+  String GetKeyword(EntryClass e, uint offset) {
+    String keyword;
+    EntryFileClass file();
+    if (file.Open(e)) {
+      file.Seek(offset);
+      for (int i = 0; i < 10; ++i) {
+        int onebyte = file.ReadBinaryInt(1);
+        keyword += "\\x" + String::FormatInt(onebyte, int::HEX, 0, 2);
+      }
+      file.Close();
+    }
+    else
+      Console.WriteLine("Error , could not open file " + e.FullPath());
+    return keyword;
+  }
+
+  uint GetExtensionInfo(EntryClass root, FileClass outputFile) {
+    uint total;
+    NameValueClass nv();
+    forall (EntryClass e in root) {
+      if (e.IsSelected() && !e.IsFolder() && !e.IsInternal() && !e.IsUnallocated())
+        if (!nv.Find(e.Extension()))
+          new NameValueClass(nv, e.Extension(), 0, "10"); // Converts search term extension to NameValue object for dialog
+    }
+    CarveSizeDialogClass d(nv);
+    SystemClass::StatusMessage("Waiting for dialog input. Check taskbar for dialog!");
+    if (d.Execute() == SystemClass::OK) { // display dialog
+      forall (EntryClass e in root) {
+        if (e.IsSelected() && !e.IsFolder() && !e.IsInternal() && !e.IsUnallocated()) {
+          NameValueClass n = nv.Find(e.Extension());
+
+          if (n) {
+            uint offset = uint::Convert(n.Value()); // populate searchterm object from NameValue object
+            if (offset == 0 ) Console.WriteLine("Warning : Offset was zero for entry = " + e.FullPath());
+
+            String keyword = GetKeyword(e, offset);
+            if (!keyword)
+              Console.WriteLine("Error, keyword could not be extracted");
+            else {
+              outputFile.Write(keyword + "\t" +
+                               e.Extension() + "\t" +
+                               offset + "\t" +
+                               e.LogicalSize() + "\r\n"
+                               );
+              total++;
+            }
+          }
+          else
+            Console.WriteLine("Error, could not find value for entry " + e.FullPath());
+        }
+      }
+    }
+    return total;
+  }
+
+  void Main(CaseClass c) {
+    if (!c || !c.EntryRoot() || !c.EntryRoot().FirstChild() || !c.EntryRoot().FirstChild().FirstChild())
+      SystemClass::Message(SystemClass::ICONEXCLAMATION, "Nothing loaded", "No evidence present in this case!\nPlease load some evidence first.");
+    else {
+      if (SystemClass::Message(SystemClass::ICONINFORMATION | SystemClass::MBOKCANCEL, "Create Input file for Search & Carve Script", "Select all entries in encase from which you wish to extract keywords, then press OK to continue") != SystemClass::CANCEL) {
+        String filepath;
+        if (SystemClass::PathDialog(filepath, "Enter path to save output file to ", "*.ini", "Tab-delimitted file\0*.ini\0", SystemClass::CREATE) == SystemClass::OK) {
+          SystemClass::ClearConsole();
+          LocalFileClass outputfile();
+          if (outputfile.Open(filepath, FileClass::WRITE | FileClass::TEXT)) {
+            uint totalWritten = GetExtensionInfo(c.EntryRoot(), outputfile);
+            outputfile.Close();
+            if (totalWritten > 0)
+              SystemClass::Message(SystemClass::ICONINFORMATION, "File Created Sucessfully", "File saved at '" + filepath + "'");
+            else
+              SystemClass::Message(SystemClass::ICONEXCLAMATION, "No keywords found!", "File saved at '" + filepath + "'");
+          }
+          else
+            Console.WriteLine("Could not open file '" + filepath + "' for writing");
+        }
+      }
+    }
+  }
+}
