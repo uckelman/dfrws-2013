@@ -83,8 +83,8 @@ class GuiOptionsClass {
                    ClusterEdgeOnly,
                    DoAlert;
 
-  BookmarkFolderClass BMFolder;
 #ifdef VERSION_7
+  BookmarkClass BMFolder;
   ItemIteratorClass Iter;
 
   GuiOptionsClass():
@@ -94,6 +94,8 @@ class GuiOptionsClass {
     ClusterEdgeOnly = true; // always set!
   }
 #else
+  BookmarkFolderClass BMFolder;
+
   GuiOptionsClass()
   {
     Load();
@@ -171,10 +173,14 @@ class OutputClass {
     long logicalOffset = (unallocated ? CurrentExtentStartOffset + filepos : filepos);
 
     if (Options.DoBookmarks) {
-      ///Encase does not like bookmarking of virtual files (for unallocated), so we give it a real entry
 #ifdef VERSION_7
-//TODO
+      BookmarkImageClass b(Options.BMFolder, entry.Name(), 0);
+      b.CopyItemData(entry);
+      b.SetComment(term.Extension);
+      b.SetDataOffset(logicalOffset);
+      b.SetDataSize(term.NumBytesToCarve);
 #else
+      ///Encase does not like bookmarking of virtual files (for unallocated), so we give it a real entry
       if (unallocated) {
         Options.BMFolder.AddBookmark(entry, logicalOffset, term.NumBytesToCarve, term.Extension, BookmarkClass::SHOWREPORT | BookmarkClass::PICTURE, BookmarkClass::ViewTypes::NONE);
       }
@@ -860,7 +866,11 @@ class MainClass {
         if (Options.DoBookmarks) {
           DateClass d;
           d.Now();
+#ifdef VERSION_7
+          Options.BMFolder = new BookmarkClass(c.BookmarkRoot(), MainClass::ScriptName() + " Output - " + d.GetString(), NodeClass::FOLDER);
+#else
           Options.BMFolder = new BookmarkFolderClass(c.BookmarkRoot(), MainClass::ScriptName() + " Output - " + d.GetString());
+#endif
         }
         if (fs.LoadInputFile()) {
           if (fs.InitializeSearch()) {
