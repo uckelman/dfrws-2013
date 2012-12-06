@@ -231,7 +231,11 @@ class OutputClass {
     ReportFile.Write( term.Expression + "\t" +
                       term.Extension + "\t" +
                       entry.Name() + "\t" +
+#ifdef VERSION_7
                       entry.TruePath() + "\t" +
+#else
+                      entry.FullPath() + "\t" +
+#endif
                       path.GetFilename() + "\t" +
                       "=HYPERLINK(\"" + path + "\",\"" + path + "\")" + "\t" +
                       bytesWritten + "\t" +
@@ -751,6 +755,9 @@ class GuiClass : DialogClass {
   PathEditClass   AudioFilePath;
   ButtonClass     Usage,
                   About;
+#ifdef VERSION_7
+  StaticTextClass v7Info;
+#endif
 
   GuiClass(DialogClass parent, GuiOptionsClass options, const String& aboutinfo, const String& usageinfo):
     DialogClass(parent, MainClass::ScriptName() + " - v " + MainClass::Version()),
@@ -772,12 +779,19 @@ class GuiClass : DialogClass {
     AudioFilePath(this, "Select wav or mp3 file", SAME, NEXT, 280, 10, 0, options.AlertFilePath, REQUIRED | FILEOPEN, "MP3 Files\t*.mp3\tWAV Files\t*.wav\tAll Files\t*.*"),
     Usage(this, "Help", SAME, 200, 135, 15, 0),
     About(this, "About", NEXT, SAME, 135, 15, 0)
+#ifdef VERSION_7
+    ,
+    v7Info(this, "After clicking OK, you will be prompted to select the tag name(s).\n\nIf you have not tagged any entries, please hit Cancel and do so before starting.", START, 225, 280, 25, 0)
+#endif
   {
   }
 
   virtual void CheckControls() {
     DialogClass::CheckControls();
     AudioFilePath.Enable(AlertCheckBox.GetValue());
+#ifdef VERSION_7
+    v7Info.SetVisible(SelectedCheckBox.GetValue());
+#endif
   }
 
   virtual void ChildEvent(const EventClass& evt) {
