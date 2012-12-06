@@ -1,7 +1,7 @@
 /*
 
 Last Updated: 06 December 2012
-Version     : 1.4
+Version     : 1.5
 
 Updated By  : Lightbox Technologies, Inc.
               http://www.lightboxtechnologies.com
@@ -84,7 +84,9 @@ class GuiOptionsClass {
                    DoAlert;
 
   BookmarkFolderClass BMFolder;
-
+#ifdef VERSION_7
+  ItemIteratorClass Iter;
+#endif
   GuiOptionsClass()
   {
     Load();
@@ -162,10 +164,12 @@ class OutputClass {
 
     if (Options.DoBookmarks) {
       ///Encase does not like bookmarking of virtual files (for unallocated), so we give it a real entry
-      if (unallocated)
-        Options.BMFolder.AddBookmark(entry, logicalOffset, term.NumBytesToCarve, term.Extension, BookmarkClass::SHOWREPORT | BookmarkClass::PICTURE, BookmarkClass::ViewTypes::NONE);
-      else
-        Options.BMFolder.AddBookmark(file, term.NumBytesToCarve, term.Extension, BookmarkClass::SHOWREPORT | BookmarkClass::PICTURE, BookmarkClass::ViewTypes::NONE);
+      if (unallocated) {
+//TODO        Options.BMFolder.AddBookmark(entry, logicalOffset, term.NumBytesToCarve, term.Extension, BookmarkClass::SHOWREPORT | BookmarkClass::PICTURE, BookmarkClass::ViewTypes::NONE);
+      }
+      else {
+//TODO        Options.BMFolder.AddBookmark(file, term.NumBytesToCarve, term.Extension, BookmarkClass::SHOWREPORT | BookmarkClass::PICTURE, BookmarkClass::ViewTypes::NONE);
+      }
     }
 
     LocalFileClass lf();
@@ -472,28 +476,39 @@ class FileSearchClass {
     return ret;
   }
 
-  long CalculateTotalSearchSize(EntryClass root) {
+  long CalculateTotalSearchSize(CaseClass c) {
     long ret;
-    forall (EntryClass e in root) {
+#ifdef VERSION_7
+    Options.Iter.Open(c, 0, ItemIteratorClass::TAGGED, Options.Iter.Name()); //reset with same tag selections
+    SystemClass::StatusMessage("Calculating search size");
+    while (EntryClass e = Options.Iter.GetNextEntry()) {
+      ret += e.LogicalSize();
+    }
+#else
+    forall (EntryClass e in c.EntryRoot()) {
       if (!Options.SelectedOnly || e.IsSelected()) {
         ret += e.LogicalSize();
       }
     }
+#endif
     return ret;
   }
 
-  virtual void SetStatusBarRange(EntryClass root) {
-    long totalBytesToSearch = CalculateTotalSearchSize(root);
+  virtual void SetStatusBarRange(CaseClass c) {
+    long totalBytesToSearch = CalculateTotalSearchSize(c);
     SystemClass::StatusRange(MainClass::ScriptName(), totalBytesToSearch); // set StatusBar to total bytes to search, searchclass will increment it automatically
   }
 
-  void StartProcessing(EntryClass root) {
+  void StartProcessing(CaseClass c) {
     DateClass start; start.Now();
-    Options.ExportFolderPath = root.GetCase().ExportFolder();
+    Options.ExportFolderPath = c.ExportFolder();
     Options.ExportFolderPath.Trim("\\/", String::TRIMEND);
     if (Carver.StartReport()) {
-      SetStatusBarRange(root);
-      foreach (EntryClass entry in root) {
+      SetStatusBarRange(c);
+#ifdef VERSION_7
+//TODO
+#else
+      foreach (EntryClass entry in c.EntryRoot()) {
         if (entry.IsVolume())
           ProcessVolume(entry);
         else if (entry.IsDisk()) {
@@ -505,6 +520,7 @@ class FileSearchClass {
           }
         }
       }
+#endif
       Carver.EndReport();
       Console.WriteLine("\nScript took " + GetElapsedTimeAsString(start));
       String status = Carver.TotalExported + " of " + Carver.TotalForExport + " files exported.";
@@ -645,8 +661,8 @@ class SearchClusterEdgeClass : FileSearchClass {
     }
   }
 
-  virtual void SetStatusBarRange(EntryClass root) {
-    long totalBytesToSearch = CalculateTotalSearchSize(root);
+  virtual void SetStatusBarRange(CaseClass c) {
+    long totalBytesToSearch = CalculateTotalSearchSize(c);
     SystemClass::StatusRange("", SearchTerms.Count() * totalBytesToSearch); // because we search many times over same data for different offset lengths
   }
 
@@ -744,19 +760,33 @@ class MainClass {
   }
 
   static String Version() {
-    return "1.4";
+    return "1.5";
   }
 
   void Main(CaseClass c) {
-    if (!c || !c.EntryRoot() || !c.EntryRoot().FirstChild() || !c.EntryRoot().FirstChild().FirstChild())
+    bool good = true;
+    if (!c) {
+      SystemClass::Message(SystemClass::ICONEXCLAMATION, "No Case", "There is no case active, please open a case.");
+      good = false;
+    }
+#ifdef VERSION_7
+    if (c.HasEvidenceList()==0) {
+      SystemClass::Message(SystemClass::ICONEXCLAMATION, "No Evidence", "You do not appear to have evidence in your case.\n\nPlease load some evidence first.");
+      good = false;
+    }
+#else
+    if (!c.EntryRoot() || !c.EntryRoot().FirstChild() || !c.EntryRoot().FirstChild().FirstChild()) {
       SystemClass::Message(SystemClass::ICONEXCLAMATION, "Nothing loaded", "No evidence present in this case!\nPlease load some evidence first.");
-    else {
+      good = false;
+    }
+#endif
+    if (good) {
       SystemClass::ClearConsole();
       GuiOptionsClass Options();
       String about = ScriptName() + " Script\n\n"
                      "This script is specifically designed to locate KNOWN child pornography images/videos on a suspect drive by detecting specific keyword occurrances at certain specific offsets.\n\n"
                      "Original design by Sgt. Glenn Lang, BitSec Global Forensics and Lance Mueller."
-                     " Updates by BitSec Global Forensics and 42 LLC.  Visit www.bitsecglobalforensics.com for more information."
+                     " Updates by BitSec Global Forensics, 42 LLC, and Lightbox Technologies, Inc..  Visit www.bitsecglobalforensics.com for more information."
                      " For questions regarding the use of this EnScript, please contact Sergeant Glenn Lang, Maine State Police, at 207-877-8081 or glang(at)mcctf(dot)org."
                      "\n\nLast Updated by Lightbox Technologies, Inc.\n"
                      "06 December 2012 \n"
@@ -774,15 +804,26 @@ class MainClass {
                      "'Search Only Cluster Edges' : This option will only search the data regions offset from the start of every cluster for every keyword entered. This should speed up searches, as it does not search every byte of every sector now. For allocated files, only the specified offset is searched in the entire file.\n\n"
                      "'Create Bookmarks' : This option will add a bookmark in encase for every file exported.\n\n"
                      "The output of the script is in the default case Export folder. You can place a small .WAV file named 'alarm.wav' in the Encase installation folder and it will be played each time a hit is exported.";
-
-
+#ifdef VERSION_7
+      String v7Msg = "In v7, this script operates on tagged entries.\n\nYou must have previously tagged the relevant entries AND know the tag name. "
+                     "You will be prompted to select the tag name(s).\n\nIf you have not tagged any entries, please hit Cancel and do so now.";
+      uint result = SystemClass::Message(SystemClass::ICONINFORMATION | SystemClass::MBOKCANCEL, "Create Input file for Search & Carve Script", v7Msg);
+      if (result == SystemClass::CANCEL) {
+        SystemClass::Exit();
+      }
+      Options.Iter.Open(c, ItemIteratorClass::PROMPT, ItemIteratorClass::TAGGED);
+#endif
       GuiClass gui(null, Options, about, usage);
       if (gui.Execute() == SystemClass::OK) {
         Options.Save();
         FileSearchClass fs;
 
-        if (Options.ClusterEdgeOnly)  fs = new SearchClusterEdgeClass(Options);
-        else                          fs = new FileSearchClass(Options);
+        if (Options.ClusterEdgeOnly) {
+          fs = new SearchClusterEdgeClass(Options);
+        }
+        else {
+          fs = new FileSearchClass(Options);
+        }
 
         if (Options.DoBookmarks) {
           DateClass d;
@@ -790,13 +831,16 @@ class MainClass {
           Options.BMFolder = new BookmarkFolderClass(c.BookmarkRoot(), MainClass::ScriptName() + " Output - " + d.GetString());
         }
         if (fs.LoadInputFile()) {
-          if (fs.InitializeSearch())
-            fs.StartProcessing(c.EntryRoot());
-          else
+          if (fs.InitializeSearch()) {
+            fs.StartProcessing(c);
+          }
+          else {
             SystemClass::Message(SystemClass::ICONSTOP, "Error", "Could not create SearchClass. Check your keywords file for possible invalid input");
+          }
         }
-        else
+        else {
           SystemClass::Message(SystemClass::ICONSTOP, "Error", "Check your keywords file. Invalid input");
+        }
       }
     }
   }
