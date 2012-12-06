@@ -164,12 +164,16 @@ class OutputClass {
 
     if (Options.DoBookmarks) {
       ///Encase does not like bookmarking of virtual files (for unallocated), so we give it a real entry
+#ifdef VERSION_7
+//TODO
+#else
       if (unallocated) {
-//TODO        Options.BMFolder.AddBookmark(entry, logicalOffset, term.NumBytesToCarve, term.Extension, BookmarkClass::SHOWREPORT | BookmarkClass::PICTURE, BookmarkClass::ViewTypes::NONE);
+        Options.BMFolder.AddBookmark(entry, logicalOffset, term.NumBytesToCarve, term.Extension, BookmarkClass::SHOWREPORT | BookmarkClass::PICTURE, BookmarkClass::ViewTypes::NONE);
       }
       else {
-//TODO        Options.BMFolder.AddBookmark(file, term.NumBytesToCarve, term.Extension, BookmarkClass::SHOWREPORT | BookmarkClass::PICTURE, BookmarkClass::ViewTypes::NONE);
+        Options.BMFolder.AddBookmark(file, term.NumBytesToCarve, term.Extension, BookmarkClass::SHOWREPORT | BookmarkClass::PICTURE, BookmarkClass::ViewTypes::NONE);
       }
+#endif
     }
 
     LocalFileClass lf();
