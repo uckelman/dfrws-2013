@@ -198,7 +198,7 @@ class MainClass {
     if (good) {
       uint result;
 #ifdef VERSION_7
-      String v7Msg = "In v7, this script operates on tagged entries.\n\nYou must have previously tagged the relevant entries AND know the tag name. " +
+      String v7Msg = "In v7, this script operates on tagged entries, not selected (blue checked).\n\nYou must have previously tagged the relevant entries AND know the tag name. " +
                      "You will be prompted to select the tag name(s).\n\nIf you have not tagged any entries, please hit Cancel and do so now.";
       result = SystemClass::Message(SystemClass::ICONINFORMATION | SystemClass::MBOKCANCEL, "Create Input file for Search & Carve Script", v7Msg);
 #else
