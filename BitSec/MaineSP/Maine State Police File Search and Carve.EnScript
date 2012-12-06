@@ -86,12 +86,20 @@ class GuiOptionsClass {
   BookmarkFolderClass BMFolder;
 #ifdef VERSION_7
   ItemIteratorClass Iter;
-#endif
+
+  GuiOptionsClass():
+    Iter()
+  {
+    Load();
+    ClusterEdgeOnly = true; // always set!
+  }
+#else
   GuiOptionsClass()
   {
     Load();
     ClusterEdgeOnly = true; // always set!
   }
+#endif
 
   void EditStorage(StorageClass s) {
     s.Value("InputFilePath", InputFilePath);
@@ -733,7 +741,11 @@ class GuiClass : DialogClass {
     Options  = options,
     InputGroup(this, "Input Options", START, START, 300, 80, 0),
     InputPathEdit(this, "Keywords file", 15, 20, 280, 10, 0, options.InputFilePath, REQUIRED | FILEOPEN, "Ini Files\t*.ini\tAll Files\t*.*"),
+#ifdef VERSION_7
+    SelectedCheckBox(this, "Process Tagged Entries Only", SAME, NEXT, 200, 10, 0, options.SelectedOnly),
+#else
     SelectedCheckBox(this, "Process Selected Files Only", SAME, NEXT, 200, 10, 0, options.SelectedOnly),
+#endif
     ClusterSearchOnly(this, "Search Only Cluster Edge (Faster), Do not uncheck!", SAME, NEXT, 200, 10, 0, options.ClusterEdgeOnly),
     OutputGroup(this, "Output Options", START, 90, 300, 105, 0),
     Prefix(this, "Output File Prefix (Eg: Case 123 Item 4-32)", 15, 105, 280, 10, 0, options.OutputPrefix, 128, 0),
@@ -790,7 +802,7 @@ class MainClass {
       String about = ScriptName() + " Script\n\n"
                      "This script is specifically designed to locate KNOWN child pornography images/videos on a suspect drive by detecting specific keyword occurrances at certain specific offsets.\n\n"
                      "Original design by Sgt. Glenn Lang, BitSec Global Forensics and Lance Mueller."
-                     " Updates by BitSec Global Forensics, 42 LLC, and Lightbox Technologies, Inc..  Visit www.bitsecglobalforensics.com for more information."
+                     " Updates by BitSec Global Forensics, 42 LLC, and Lightbox Technologies, Inc.  Visit www.bitsecglobalforensics.com for more information."
                      " For questions regarding the use of this EnScript, please contact Sergeant Glenn Lang, Maine State Police, at 207-877-8081 or glang(at)mcctf(dot)org."
                      "\n\nLast Updated by Lightbox Technologies, Inc.\n"
                      "06 December 2012 \n"
@@ -809,17 +821,21 @@ class MainClass {
                      "'Create Bookmarks' : This option will add a bookmark in encase for every file exported.\n\n"
                      "The output of the script is in the default case Export folder. You can place a small .WAV file named 'alarm.wav' in the Encase installation folder and it will be played each time a hit is exported.";
 #ifdef VERSION_7
-      String v7Msg = "In v7, this script operates on tagged entries.\n\nYou must have previously tagged the relevant entries AND know the tag name. "
+      String v7Msg = "In v7, this script operates on tagged entries, not selected (blue checked).\n\nYou must have previously tagged the relevant entries AND know the tag name. "
                      "You will be prompted to select the tag name(s).\n\nIf you have not tagged any entries, please hit Cancel and do so now.";
-      uint result = SystemClass::Message(SystemClass::ICONINFORMATION | SystemClass::MBOKCANCEL, "Create Input file for Search & Carve Script", v7Msg);
+      uint result = SystemClass::Message(SystemClass::ICONINFORMATION | SystemClass::MBOKCANCEL, "Maine State Police File Search and Carve Script - " + Version(), v7Msg);
       if (result == SystemClass::CANCEL) {
         SystemClass::Exit();
       }
-      Options.Iter.Open(c, ItemIteratorClass::PROMPT, ItemIteratorClass::TAGGED);
 #endif
       GuiClass gui(null, Options, about, usage);
+      SystemClass::StatusMessage("Waiting for dialog input. Check taskbar for dialog!");
       if (gui.Execute() == SystemClass::OK) {
+#ifdef VERSION_7
+        Options.Iter.Open(c, ItemIteratorClass::PROMPT, ItemIteratorClass::TAGGED);
+#endif
         Options.Save();
+        SystemClass::StatusMessage("Processing...");
         FileSearchClass fs;
 
         if (Options.ClusterEdgeOnly) {
