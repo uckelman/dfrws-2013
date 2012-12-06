@@ -225,7 +225,7 @@ class OutputClass {
     ReportFile.Write( term.Expression + "\t" +
                       term.Extension + "\t" +
                       entry.Name() + "\t" +
-                      entry.FullPath() + "\t" +
+                      entry.TruePath() + "\t" +
                       path.GetFilename() + "\t" +
                       "=HYPERLINK(\"" + path + "\",\"" + path + "\")" + "\t" +
                       bytesWritten + "\t" +
@@ -469,7 +469,7 @@ class FileSearchClass {
      shows it. For efficent searching, we
      break unallocated space into several chunks, each chunk
      comprising of a set of contiguous clusters. These
-     chunks are searched as seperate files.
+     chunks are searched as separate files.
   */
   bool SearchUnallocated(EntryClass unallocated) {
     bool ret;
@@ -518,7 +518,19 @@ class FileSearchClass {
     if (Carver.StartReport()) {
       SetStatusBarRange(c);
 #ifdef VERSION_7
-//TODO
+      if (Options.SelectedOnly) {
+        Options.Iter.Open(c, ItemIteratorClass::NOPROXY, ItemIteratorClass::TAGGED, Options.Iter.Name()); //reset with same tag selections
+      }
+      else {
+        Options.Iter.Open(c, ItemIteratorClass::NOPROXY, ItemIteratorClass::ALL); //reset with all entries
+      }
+      while (EntryClass e = Options.Iter.GetNextEntry()) {
+        if (!e.IsFolder()) {
+          CalculateClusterSize(e);
+          CalculateSectorSize(e);
+          SearchEntry(e);
+        }
+      }
 #else
       foreach (EntryClass entry in c.EntryRoot()) {
         if (entry.IsVolume())
