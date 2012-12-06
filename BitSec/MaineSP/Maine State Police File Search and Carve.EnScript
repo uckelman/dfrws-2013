@@ -1,7 +1,11 @@
 /*
 
-Last Updated: 20 April 2010
+Last Updated: 06 December 2012
 Version     : 1.4
+
+Updated By  : Lightbox Technologies, Inc.
+              http://www.lightboxtechnologies.com
+              info@lightboxtechnologies.com
 
 Author      : Yogesh Khatri
               42 LLC
@@ -754,8 +758,8 @@ class MainClass {
                      "Original design by Sgt. Glenn Lang, BitSec Global Forensics and Lance Mueller."
                      " Updates by BitSec Global Forensics and 42 LLC.  Visit www.bitsecglobalforensics.com for more information."
                      " For questions regarding the use of this EnScript, please contact Sergeant Glenn Lang, Maine State Police, at 207-877-8081 or glang(at)mcctf(dot)org."
-                     "\n\nLast Updated by Yogesh Khatri (42 LLC)\n"
-                     "20 April 2010 \n"
+                     "\n\nLast Updated by Lightbox Technologies, Inc.\n"
+                     "06 December 2012 \n"
                      "Version " + Version();
       String usage = "The options used by the script are described below:\n\n"
                      "The 'Keywords file' is a tab-delimited file having the following 3 pieces of information.\n\n"

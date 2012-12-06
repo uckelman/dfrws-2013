@@ -1,3 +1,19 @@
+/*
+
+Last Updated: 06 December 2012
+
+Recreated By: Lightbox Technologies, Inc.
+              http://www.lightboxtechnologies.com
+              info@lightboxtechnologies.com
+
+For         : Sgt. Glenn Lang
+              Maine State Police
+              207-877-8081
+              glang@mcctf.org
+
+*/
+
+
 class TabDelimitedClass {
 
   LocalFileClass file;
