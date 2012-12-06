@@ -1,0 +1,45 @@
+class TabDelimitedClass {
+
+  LocalFileClass file;
+  NameListClass list;
+  ulong LineNumber;
+
+  TabDelimitedClass():
+    file(),
+    list()
+  {
+  }
+
+  bool OpenFile(const String& inputFilePath, const bool& write) {
+    if (file.Open(inputFilePath, write ? FileClass::WRITE | FileClass::TEXT : FileClass::TEXT)) {
+      return true;
+    }
+    return false;
+  }
+
+  bool ReadLine() {
+    //Output code: outputFile.Write(keyword + "\t" + e.Extension() + "\t" + offset + "\t" + e.LogicalSize() + "\r\n");
+    list.Close();
+    String line;
+    file.ReadString(line, -1, "\r\n");
+    ++LineNumber;
+    if (line) {
+      list.Parse(line, "\t");
+      if (list.Count() == 4) {
+        return true;
+      }
+      else {
+        Console.WriteLine("ReadLine() failed to obtain 4 properties from line: " + line);
+      }
+    }
+    return false;
+  }
+
+  String GetProperty(uint num) {
+    NameListClass n = list.GetChild(num);
+    if (n) {
+      return n.Name();
+    }
+    return "";
+  }
+}
