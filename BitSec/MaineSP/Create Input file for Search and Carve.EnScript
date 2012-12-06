@@ -162,7 +162,7 @@ class MainClass {
         }
       }
 #else
-      forall (EntryClass e in root) {
+      forall (EntryClass e in c.EntryRoot()) {
         if (e.IsSelected() && !e.IsFolder() && !e.IsInternal() && !e.IsUnallocated()) {
           ++count;
           SystemClass::StatusMessage("Writing file (" + count + " lines)");
