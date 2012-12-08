@@ -808,7 +808,7 @@ class MainClass {
   }
 
   static String Version() {
-    return "1.5";
+    return "3.1";
   }
 
   void Main(CaseClass c) {
@@ -831,27 +831,37 @@ class MainClass {
     if (good) {
       SystemClass::ClearConsole();
       GuiOptionsClass Options();
-      String about = ScriptName() + " Script\n\n"
-                     "This script is specifically designed to locate KNOWN child pornography images/videos on a suspect drive by detecting specific keyword occurrances at certain specific offsets.\n\n"
-                     "Original design by Sgt. Glenn Lang, BitSec Global Forensics and Lance Mueller."
-                     " Updates by BitSec Global Forensics, 42 LLC, and Lightbox Technologies, Inc.  Visit www.bitsecglobalforensics.com for more information."
-                     " For questions regarding the use of this EnScript, please contact Sergeant Glenn Lang, Maine State Police, at 207-877-8081 or glang(at)mcctf(dot)org."
-                     "\n\nLast Updated by Lightbox Technologies, Inc.\n"
-                     "06 December 2012 \n"
-                     "Version " + Version();
-      String usage = "The options used by the script are described below:\n\n"
-                     "The 'Keywords file' is a tab-delimited file having the following 3 pieces of information.\n\n"
-                     "Keyword     Extension      KeywordOffset       CarveLength\n"
-                     "\n"
-                     "An example of such a file would be:\n\n"
-                     "\\x13\\x43\\x90\\x34         MPG    60034  20000000\n"
+      String about = "Description:  The Maine State Police File Search and Carve EnScripts were designed to look for known files by detecting specific keywords "
+                     "at certain file offsets.  Though originally designed to search for known images and / or videos of child exploitation, it has proven equally "
+                     "effective at identifying any number of known file types where keywords can be commonly located at specific offsets.   Surveillance videos are but one example."
+                     "\n\n"
+                     "Design:  Concept by Lt. Glenn Lang of the Maine State Police.  Design by BitSec Global Forensics(TM).   Visit www.bitsecforensics.com for more information."
+                     "\n\n"
+                     "Support:  For questions regarding use of this EnScript, please contact Lt. Glenn Lang, Maine State Police, at 207-877-8081 or glang@mcctf.org."
+                     "\n\n"
+                     "Version: " + Version() + " 06 December 2012";
+      String usage = "PLEASE NOTE: In EnCase v7, this EnScript operates on tagged entries not selected (blue checked) files. You must have previously tagged the relevant "
+                     "entries AND know the tag name. You will be prompted to select the tag name(s)."
+                     "\n\n"
+                     "This EnScript requires the user to have first created a \"keywords file\" using the \"Create Input File for Search & Carve Script\" the results of "
+                     "which are a tab-delimitated CSV file with 4 pieces of information: (1) Keyword, (2) File Extension, (3) Keyword Offset and (4) Carve Length.  For example:"
+                     "\n\n"
+                     "\\x13\\x43\\x90\\x34         MPG      60034    20000000\n"
                      "\\x4a\\x03\\x40\\x97         JPG      534      5120000\n"
-                     "\\xdb\\x53\\x10\\x07\\x02 AVI      2000     3218432102\n\n"
-                     "'Output File Prefix' : This options allows for a prefix to be added to the name of the exported files.\n\n"
-                     "'Process Selected Files' : This option will force the script to only search selected (blue-checked) files. If unchecked, it will search all files except folders and internal files (metadata files like $Extend, $MFT, etc..) which are always ignored.\n\n"
-                     "'Search Only Cluster Edges' : This option will only search the data regions offset from the start of every cluster for every keyword entered. This should speed up searches, as it does not search every byte of every sector now. For allocated files, only the specified offset is searched in the entire file.\n\n"
-                     "'Create Bookmarks' : This option will add a bookmark in encase for every file exported.\n\n"
-                     "The output of the script is in the default case Export folder. You can place a small .WAV file named 'alarm.wav' in the Encase installation folder and it will be played each time a hit is exported.";
+                     "\\xdb\\x53\\x10\\x07\\x02    AVI      2000     3218432102"
+                     "\n\n"
+                     "\"Process Tagged Entries Only\" This option will force the EnScript to only search tagged files. If unchecked, it will search all files except folders "
+                     "and internal files (metadata files like $Extend, $MFT, etc.) which are always ignored."
+                     "\n\n"
+                     "\"Search Only Cluster Edges\" This option will only search the data regions offset from the start of every cluster for every keyword entered. This should "
+                     "speed up searches, as it does not search every byte of every sector now. For allocated files, only the specified offset is searched in the entire file."
+                     "\n\n"
+                     "\"Create Bookmarks\" This option will add a bookmark in encase for every file exported."
+                     "\n\n"
+                     "\"Audible Alert\" The output of the script is in the default case Export folder. You can place a small .WAV file named 'alarm.wav' in the Encase "
+                     "installation folder and it will be played each time a hit is exported."
+                     "\n\n"
+                     "For questions regarding use of this EnScript, please contact Lt. Glenn Lang, Maine State Police, at 207-877-8081 or glang@mcctf.org.";
 #ifdef VERSION_7
       String v7Msg = "In v7, this script operates on tagged entries, not selected (blue checked).\n\nYou must have previously tagged the relevant entries AND know the tag name. "
                      "You will be prompted to select the tag name(s).\n\nIf you have not tagged any entries, please hit Cancel and do so now.";
