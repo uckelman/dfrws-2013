@@ -81,7 +81,8 @@ class GuiOptionsClass {
   bool             SelectedOnly,
                    DoBookmarks,
                    ClusterEdgeOnly,
-                   DoAlert;
+                   DoAlert,
+                   DontShow;
 
 #ifdef VERSION_7
   BookmarkClass BMFolder;
@@ -111,6 +112,7 @@ class GuiOptionsClass {
     //s.Value("ClusterEdgeOnly", ClusterEdgeOnly);
     s.Value("DoAlert", DoAlert);
     s.Value("AlertFilePath", AlertFilePath);
+    s.Value("DontShow", DontShow);
   }
 
   void Load() {
@@ -801,6 +803,22 @@ class GuiClass : DialogClass {
   }
 }
 
+class WarningDialogClass : DialogClass {
+
+  StaticTextClass Message;
+  CheckBoxClass   DontShow;
+
+  WarningDialogClass(GuiOptionsClass options):
+    DialogClass(null, MainClass::ScriptName() + " - v " + MainClass::Version()),
+    Message(this, "In v7, this script runs on either all entries or tagged entries, rather than blue checked entries.\n\n"
+            "If you wish to run on a selected subset of entries,  you must have previously tagged the relevant entries AND know the tag name. "
+            "You will be prompted to select the tag name(s).\n\nIf you need to tag entries, please hit Cancel and do so now.",
+            START, START, 260, 65, 0),
+    DontShow(this, "Don't show this again", SAME, NEXT, 200, 10, 0, options.DontShow)
+  {
+  }
+}
+
 class MainClass {
 
   static String ScriptName() {
@@ -863,11 +881,11 @@ class MainClass {
                      "\n\n"
                      "For questions regarding use of this EnScript, please contact Lt. Glenn Lang, Maine State Police, at 207-877-8081 or glang@mcctf.org.";
 #ifdef VERSION_7
-      String v7Msg = "In v7, this script operates on tagged entries, not selected (blue checked).\n\nYou must have previously tagged the relevant entries AND know the tag name. "
-                     "You will be prompted to select the tag name(s).\n\nIf you have not tagged any entries, please hit Cancel and do so now.";
-      uint result = SystemClass::Message(SystemClass::ICONINFORMATION | SystemClass::MBOKCANCEL, "Maine State Police File Search and Carve Script - " + Version(), v7Msg);
-      if (result == SystemClass::CANCEL) {
-        SystemClass::Exit();
+      if (!Options.DontShow) {
+        WarningDialogClass warning(Options);
+        if (warning.Execute() == SystemClass::CANCEL) {
+          SystemClass::Exit();
+        }
       }
 #endif
       GuiClass gui(null, Options, about, usage);
