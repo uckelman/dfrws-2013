@@ -81,28 +81,29 @@ class CarveSizeDialogClass : DialogClass {
   }
 }
 
-class WarningDialogClass : DialogClass {
+class MainDialogClass : DialogClass {
 
-  StaticTextClass Message;
-  CheckBoxClass   DontShow;
+  PathEditClass   OutputFilePath;
+  StaticTextClass Info;
 
-  WarningDialogClass(MainClass main):
+  MainDialogClass(MainClass main):
     DialogClass(null, MainClass::ScriptName() + " - v " + MainClass::Version()),
-    Message(this, "In v7, this script runs on either all entries or tagged entries, rather than blue checked entries.\n\n"
-            "If you wish to run on a selected subset of entries,  you must have previously tagged the relevant entries AND know the tag name. "
-            "You will be prompted to select the tag name(s).\n\nIf you need to tag entries, please hit Cancel and do so now.",
-            START, START, 260, 65, 0),
-    DontShow(this, "Don't show this again", SAME, NEXT, 200, 10, 0, main.DontShow)
+    OutputFilePath(this, "Output file path", START, START, 280, DEFAULT, 0, main.OutputFilePath, REQUIRED | FILECREATE, "Ini Files\t*.ini\tAll Files\t*.*"),
+#ifdef VERSION_7
+    Info(this, "After clicking OK, you will be prompted to select the tag name(s).\n\nIf you have not tagged any entries, please hit Cancel and do so before starting.", START, NEXT, 280, 25, 0)
+#else
+    Info(this, "Select all entries in encase from which you wish to extract keywords, then press OK to continue", START, NEXT, 280, 25, 0)
+#endif
   {
   }
 }
 
 class MainClass {
 
-  bool DontShow;
+  String OutputFilePath;
 
   static String ScriptName() {
-    return "Create Input file for Search and Carve";
+    return "Create Input file for Search & Carve Script";
   }
 
   static String Version() {
@@ -110,7 +111,7 @@ class MainClass {
   }
 
   void EditStorage(StorageClass s) {
-    s.Value("DontShow", DontShow);
+    s.Value("OutputFilePath", OutputFilePath);
   }
 
   void Load() {
@@ -174,11 +175,14 @@ class MainClass {
   }
 
   uint GetExtensionInfo(CaseClass c, FileClass outputFile) {
-    SystemClass::StatusMessage("Waiting for dialog input. Check taskbar for dialog!");
     uint total;
     NameValueClass nv();
 #ifdef VERSION_7
     ItemIteratorClass iter(c, ItemIteratorClass::PROMPT | ItemIteratorClass::NOPROXY, ItemIteratorClass::TAGGED);
+    if (!iter.Name()) {
+      Console.WriteLine("No tags were selected, nothing to do");
+      return 0;
+    }
     SystemClass::StatusMessage("Getting extensions");
     while (EntryClass e = iter.GetNextEntry()) {
       if (!e.IsFolder() && !e.IsInternal() && !e.IsUnallocated()) {
@@ -239,39 +243,30 @@ class MainClass {
     }
 #endif
     if (good) {
-      uint result;
-#ifdef VERSION_7
-      if (!DontShow) {
-        WarningDialogClass warning(this);
-        if (warning.Execute() == SystemClass::CANCEL) {
-          SystemClass::Exit();
-        }
-      }
-#else
-      String v6Msg = "Select all entries in encase from which you wish to extract keywords, then press OK to continue";
-      result = SystemClass::Message(SystemClass::ICONINFORMATION | SystemClass::MBOKCANCEL, "Create Input file for Search & Carve Script", v6Msg);
-#endif
-      if (result != SystemClass::CANCEL) {
+      MainDialogClass dialog(this);
+      if (dialog.Execute() != SystemClass::CANCEL) {
         Save();
-        String filepath;
-        if (SystemClass::PathDialog(filepath, "Enter path to save output file to ", "*.ini", "Tab-delimitted file\0*.ini\0", SystemClass::CREATE) == SystemClass::OK) {
-          SystemClass::ClearConsole();
-          LocalFileClass outputfile();
-          if (outputfile.Open(filepath, FileClass::WRITE | FileClass::TEXT)) {
-            uint totalWritten = GetExtensionInfo(c, outputfile);
-            outputfile.Close();
-            if (totalWritten > 0) {
-              SystemClass::Message(SystemClass::ICONINFORMATION, "File Created Sucessfully", "File saved at '" + filepath + "'");
-              Console.WriteLine("Create Input file for Search and Carve completed successfully");
-            }
-            else {
-              SystemClass::Message(SystemClass::ICONEXCLAMATION, "No keywords found!", "File saved at '" + filepath + "'");
-              Console.WriteLine("No keywords found! File saved at '" + filepath + "'");
-            }
+        SystemClass::ClearConsole();
+        LocalFileClass outputfile();
+        if (outputfile.Open(OutputFilePath, FileClass::WRITE | FileClass::TEXT)) {
+          uint totalWritten = GetExtensionInfo(c, outputfile);
+          outputfile.Close();
+          if (totalWritten > 0) {
+            SystemClass::Message(SystemClass::ICONINFORMATION, "File Created Sucessfully", "File saved at '" + OutputFilePath + "'");
+            Console.WriteLine("Create Input file for Search and Carve completed successfully");
           }
           else {
-            Console.WriteLine("Could not open file '" + filepath + "' for writing");
+#ifdef VERSION_7
+            SystemClass::Message(SystemClass::ICONEXCLAMATION, "No keywords found!", "Did you select tags?");
+            Console.WriteLine("No keywords found! Did you select tags?");
+#else
+            SystemClass::Message(SystemClass::ICONEXCLAMATION, "No keywords found!", "Did you select entries?");
+            Console.WriteLine("No keywords found! Did you select entries?");
+#endif
           }
+        }
+        else {
+          Console.WriteLine("Could not open file '" + OutputFilePath + "' for writing");
         }
       }
     }
