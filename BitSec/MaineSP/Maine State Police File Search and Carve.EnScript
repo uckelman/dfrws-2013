@@ -1,6 +1,6 @@
 /*
 
-Last Updated: 06 December 2012
+Last Updated: 27 January 2013
 Version     : 1.5
 
 Updated By  : Lightbox Technologies, Inc.
@@ -892,7 +892,12 @@ class MainClass {
       SystemClass::StatusMessage("Waiting for dialog input. Check taskbar for dialog!");
       if (gui.Execute() == SystemClass::OK) {
 #ifdef VERSION_7
-        Options.Iter.Open(c, ItemIteratorClass::PROMPT, ItemIteratorClass::TAGGED);
+        if (Options.SelectedOnly) {
+          Options.Iter.Open(c, ItemIteratorClass::PROMPT | ItemIteratorClass::NOPROXY, ItemIteratorClass::TAGGED);
+        }
+        else {
+          Options.Iter.Open(c, ItemIteratorClass::NOPROXY, ItemIteratorClass::ALL);
+        }
 #endif
         Options.Save();
         SystemClass::StatusMessage("Processing...");
