@@ -218,8 +218,9 @@ class OutputClass {
   }
 
   void Alert() {
-    if (Options.DoAlert)
+    if (Options.DoAlert) {
       SystemClass::OpenFile(Options.AlertFilePath);
+    }
   }
 
   String GetUncPath(const String &path) { // fix for > 262 path length
@@ -829,6 +830,16 @@ class MainClass {
     return "3.1";
   }
 
+  void SetAlert(GuiOptionsClass Options) {
+    if (!Options.AlertFilePath) {
+      String alertPath = SystemClass::ScriptPath().GetFilePath() + "\\Include\\alert.wav";
+      Console.WriteLine(alertPath);
+      if (LocalMachine.PathExists(alertPath)) {
+        Options.AlertFilePath = alertPath;
+      }
+    }
+  }
+
   void Main(CaseClass c) {
     bool good = true;
     if (!c) {
@@ -849,6 +860,7 @@ class MainClass {
     if (good) {
       SystemClass::ClearConsole();
       GuiOptionsClass Options();
+      SetAlert(Options);
       String about = "Description:  The Maine State Police File Search and Carve EnScripts were designed to look for known files by detecting specific keywords "
                      "at certain file offsets.  Though originally designed to search for known images and / or videos of child exploitation, it has proven equally "
                      "effective at identifying any number of known file types where keywords can be commonly located at specific offsets.   Surveillance videos are but one example."
