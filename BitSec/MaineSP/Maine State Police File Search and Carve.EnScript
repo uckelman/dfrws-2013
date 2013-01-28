@@ -833,7 +833,6 @@ class MainClass {
   void SetAlert(GuiOptionsClass Options) {
     if (!Options.AlertFilePath) {
       String alertPath = SystemClass::ScriptPath().GetFilePath() + "\\Include\\alert.wav";
-      Console.WriteLine(alertPath);
       if (LocalMachine.PathExists(alertPath)) {
         Options.AlertFilePath = alertPath;
       }
@@ -901,11 +900,15 @@ class MainClass {
       }
 #endif
       GuiClass gui(null, Options, about, usage);
-      SystemClass::StatusMessage("Waiting for dialog input. Check taskbar for dialog!");
       if (gui.Execute() == SystemClass::OK) {
 #ifdef VERSION_7
         if (Options.SelectedOnly) {
           Options.Iter.Open(c, ItemIteratorClass::PROMPT | ItemIteratorClass::NOPROXY, ItemIteratorClass::TAGGED);
+          if (!Options.Iter.Name()) {
+            SystemClass::Message(SystemClass::ICONSTOP, "Error", "No tags were selected, please try again.");
+            Console.WriteLine("No tags were selected, nothing to do");
+            SystemClass::Exit();
+          }
         }
         else {
           Options.Iter.Open(c, ItemIteratorClass::NOPROXY, ItemIteratorClass::ALL);
