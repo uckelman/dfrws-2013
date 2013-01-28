@@ -18,6 +18,7 @@ For         : Sgt. Glenn Lang
 
 */
 
+class MainClass;
 
 /* CarveSizeDialogClass
    This class represents a dialog that dynamically
@@ -80,7 +81,48 @@ class CarveSizeDialogClass : DialogClass {
   }
 }
 
+class WarningDialogClass : DialogClass {
+
+  StaticTextClass Message;
+  CheckBoxClass   DontShow;
+
+  WarningDialogClass(MainClass main):
+    DialogClass(null, MainClass::ScriptName() + " - v " + MainClass::Version()),
+    Message(this, "In v7, this script runs on either all entries or tagged entries, rather than blue checked entries.\n\n"
+            "If you wish to run on a selected subset of entries,  you must have previously tagged the relevant entries AND know the tag name. "
+            "You will be prompted to select the tag name(s).\n\nIf you need to tag entries, please hit Cancel and do so now.",
+            START, START, 260, 65, 0),
+    DontShow(this, "Don't show this again", SAME, NEXT, 200, 10, 0, main.DontShow)
+  {
+  }
+}
+
 class MainClass {
+
+  bool DontShow;
+
+  static String ScriptName() {
+    return "Create Input file for Search and Carve";
+  }
+
+  static String Version() {
+    return "3.1";
+  }
+
+  void EditStorage(StorageClass s) {
+    s.Value("DontShow", DontShow);
+  }
+
+  void Load() {
+    StorageClass s(MainClass::ScriptName());
+    EditStorage(s);
+  }
+
+  void Save() {
+    StorageClass s(MainClass::ScriptName(), StorageClass::WRITE);
+    EditStorage(s);
+  }
+
   /* This function displays a dialog to the user where extension offsets
      are to be populated. The retrieved information is then passed onto
      the required data structures (SearchTerms).
@@ -179,6 +221,7 @@ class MainClass {
   }
 
   void Main(CaseClass c) {
+    Load();
     bool good = true;
     if (!c) {
       SystemClass::Message(SystemClass::ICONEXCLAMATION, "No Case", "There is no case active, please open a case.");
@@ -198,14 +241,18 @@ class MainClass {
     if (good) {
       uint result;
 #ifdef VERSION_7
-      String v7Msg = "In v7, this script operates on tagged entries, not selected (blue checked).\n\nYou must have previously tagged the relevant entries AND know the tag name. "
-                     "You will be prompted to select the tag name(s).\n\nIf you have not tagged any entries, please hit Cancel and do so now.";
-      result = SystemClass::Message(SystemClass::ICONINFORMATION | SystemClass::MBOKCANCEL, "Create Input file for Search & Carve Script", v7Msg);
+      if (!DontShow) {
+        WarningDialogClass warning(this);
+        if (warning.Execute() == SystemClass::CANCEL) {
+          SystemClass::Exit();
+        }
+      }
 #else
       String v6Msg = "Select all entries in encase from which you wish to extract keywords, then press OK to continue";
       result = SystemClass::Message(SystemClass::ICONINFORMATION | SystemClass::MBOKCANCEL, "Create Input file for Search & Carve Script", v6Msg);
 #endif
       if (result != SystemClass::CANCEL) {
+        Save();
         String filepath;
         if (SystemClass::PathDialog(filepath, "Enter path to save output file to ", "*.ini", "Tab-delimitted file\0*.ini\0", SystemClass::CREATE) == SystemClass::OK) {
           SystemClass::ClearConsole();
