@@ -1,0 +1,63 @@
+\documentclass[5p,final,number,sort&compress]{elsarticle}
+
+\usepackage{amsmath}
+\usepackage{microtype}
+\usepackage{natbib}
+
+\usepackage{xcolor}
+
+\newcommand{\ju}[1]{\textcolor{red}{\footnote{\textcolor{red}{ju: #1}}}}
+
+\newcommand{\todo}[1]{\textcolor{red}{#1}}
+
+\begin{document}
+\begin{frontmatter}
+
+\title{Search in a Multi-Encoding World, Or:\\ How I Learned to Stop Worrying and Love Unicode Technical Standard \#18}
+
+\author{Jon Stewart}
+\ead{jon@lightboxtechnologies.com}
+
+\author{Joel Uckelman}
+\ead{joel@lightboxtechnologies.com}
+
+\address{Lightbox Technologies, Inc. \\ Arlington, VA}
+
+\begin{abstract}
+We needed to search a disk image for a pattern, but didn't know how the hits would be encoded. We thought very hard about how to do this. We found an efficient solution.
+\end{abstract}
+
+\end{frontmatter}
+
+\section{Introduction}
+% in which we say what we will say
+
+\section{Character Encoding Basics}
+% in which character encodings are explained
+
+\section{Multipattern Search is Multiencoding Search}
+% in which we sketch a general solution to the problem
+
+\section{Fun With Unicode}
+% in which fun is not actually had
+
+Unicode Technical Standard \#18 (UTS \#18)\citep{uts18} provides guidelines for supporting Unicode characters in regular expressions. 
+
+The literals in UTS \#18 regular expressions are Unicode characters, \emph{not} bytes in a particular Unicode encoding (such as UTF-8). This distinction isn't present when working with traditional ASCII regular expressions, where the characters and the bytes are identical. Distinguishing between characters and bytes in Unicode regular expressions makes the regexes \emph{encoding-independent}, which is a useful property should one wish to search for the same character string in several different encodings.\ju{Example here?} Furthermore, having literals be Unicode characters improves regex readability over specifying them by code point: \todo{\texttt{somegreek}} vs.\ \todo{\texttt{codepoints}}
+
+UTS \#18 defines three levels of support for Unicode in regexes. Level~1, Basic Unicode Support, requires support for specifying Unicode characters by their code points (RL1.1), selectors for Unicode properties (RL1.2), character class subtraction and intersection (RL1.3), simple word boundary matching (RL1.4), simple loose matching (RL1.5), (RL1.6) line boundary matching, and expression of the full range of Unicode characters (RL1.7). Level~2, Extended Unicode Support, requires support for matching cannonical equivalents (RL2.1), extended grapheme clusters (RL2.2), default word boundaries (RL2.3) and name properties (RL2.5), all Unicode properties (RL2.7), as well as support for default case folding and (RL2.4) and wildcards in property names (RL2.6). Level~3, Tailored Support, requires locale-specific punctuation properties (RL3.1), grapheme clusters (RL3.2), word boundaries (RL3.3),
+% loose matches (RL3.4),
+as well as context (RL3.6) and incremental (RL3.7) matching, the generation of posssible match sets (RL3.9), and match subroutines (RL3.11). We now proceed to explain each of the reqiurements.
+
+\section{Encoding Chains}
+
+\section{Interpreting Hits in Context}
+% in which we describe issues with decoding hit context
+
+\section{Conclusion}
+% in which we say what we have said
+
+\bibliographystyle{elsarticle-num}
+\bibliography{enc}
+
+\end{document}

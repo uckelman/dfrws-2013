@@ -1,0 +1,38 @@
+l(u(x)) != x for some lowercase x (e.g., medial S)
+u(l(u)) != x for some uppercase x
+len(u(x)) != len(x) for some x (e.g. for ess-set)
+
+intiutive notion of character != code point (e.g., combining accents)
+byte != character
+byte != code point (except for 00-7F)
+
+Unicode properties are more expansive than you'd expect (e.g., Digits)
+combining accents introduce multiple ways of representing some characters
+several normalization schemes exist for combining accents
+
+How do encodings work?
+
+  Unicode is not an encoding, it is a coded character set
+  UTF-7, UTF-8, UTF-16, UTF-16LE, UTF-16BE, UTF-32, UTF-32LE, UTF-32BE are encodings for Unicode
+  UTF-16, UTF-32 have BOMs
+  UTF-8, UTF-16, UTF-16LE, UTF-16BE are variable width
+  UTF-32* is fixed width
+  UTF-16*, UTF-32* contain internal null bytes, so null (byte) termination can't be used
+  UTF-8 is ASCII-compatible
+
+detecting encodings
+  cannot be done conclusively
+  can genrate spurious hits for short matches
+  encodings can be ruled out by finding invalid bytes (unless data was written with a buggy encoder)
+
+encoding chains
+  0,...,n  cp -> cp
+  1        cp -> byte
+  0,...,n  byte -> byte
+
+  chains can result in multiple branches in an NFA
+
+decoding chains
+  for context around hits
+  must decode from hit to end of context, then walk backwards from start of iht---o/w we could fail to decode the hit properly (e.g., consider adjacent fields in a binary data structure with padding between them)
+
