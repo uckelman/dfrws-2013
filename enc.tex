@@ -228,9 +228,11 @@ RL3.2 requires Level~3-conformant regex languages to have locale-specific collat
 
 RL3.3 requires Level~3-conformant regex languages to have locale-specific word boundaries. Default word boundaries (RL2.3) are insufficient for splitting words in some languages. Thai, for example, has no interword whitespace, so detecting word boundaries is not a simple matter of looking for alternations between word and non-word characters.
 
-RL3.6 requries Level~3-conformant regex languages to support unmatchable leading and trailing context % TODO 
+We chose not to support RL3.1--3 because using them correctly requires language-specific expertise that forensics investigators are unlikely to possess\footnote{To appreciate the problem, consider for how many laguages you are familiar with their collation order.}; given that, implementing these for more than a handful of locales is a gargantuan task with little benefit for forensics.
 
-RL3.7 requires Level~3-conformant regex languages to support incremental matching. % TODO
+RL3.6 requries Level~3-conformant regex languages to support unmatchable leading and trailing context. For a given input text, a target range is specified within which matches may occur, which range sits within a context range where matches may not occur, though the context may be referred to by zero-width look-around assertions. Look-around assertions clearly are useful in forensics, and we intend to implement them; but we see no obvious use in forensics for the remainder of this requirement.
+
+RL3.7 requires Level~3-conformant regex languages to support incremental matching. Normally, a pattern which has not yet matched by the end of input fails to match. E.g., the pattern \re{abc} has no match on the text \texttt{ab}---but, were more text appended, \texttt{cde}, for example, then \re{abc} could still match. Incremental matching is highly desirable for forensics, in particular when searching data which does not fit into RAM, such as disk images. Typically, any large block of data is searched by reading a chunk into a buffer in RAM, searching the buffer, refilling the buffer with the next chunk of data, etc. until all data is exhausted. If partial matches are not carried over from one fill of the buffer to the next, then either matches spanning chunks will be missed, or some horiffically complicated algorithm will required to find cross-chunk matches. By keeping partial matches alive across buffer fills, problems with matches spanning two or more buffers vanish. We support incremental matching by permitting matches to span an unlimited\footnote{Where ``unlimited'' $< 2^{64}$. We don't expect anyone to need offsets larger than 64 bits, at least not in 2013.} number of buffers.
 
 RL3.9 requires Level~3-conformant regex languages to support the generation of possible match sets for any given pattern. Novice regex users have always been plagued by unexpected matches and nonmatches. With the expansion of regexes to Unicode, the possibility that a given regex could match unexpectedly increases---hence, there is great practical utility in being able to see sample matches for any given pattern, especially if that means correcting a faulty pattern before running an hours- or days-long search. We support generation of possible matches for a pattern by randomly walking its search automaton, reading off a match for each complete branch walked.
 
@@ -275,7 +277,7 @@ Level 3: Tailored Support          & $\circ$   &           & $\circ$   &        
 RL3.1 Tailored Punctuation         &           &           &           &           &           \\
 RL3.2 Tailored Grapheme Clusters   &           &           &           &           &           \\
 RL3.6 Context Matching             &           &           & $\circ$   &           &           \\
-RL3.7 Incremental Matches          &           &           &           &           &           \\
+RL3.7 Incremental Matches          & $\bullet$ &           &           &           &           \\
 RL3.9 Possible Match Sets          & $\bullet$ &           &           &           &           \\
 RL3.11 Submatchers                 &           &           &           &           &           \\
 \hline
@@ -287,8 +289,6 @@ $\bullet = $ full support, $\circ = $ partial support
 \end{table}
 
 Table~\ref{tab:uts18-support} summarizes UTS~\#18 conformance for lightgrep, as well as for ICU~50 \citep{icuregex}, Perl~5.6 \citep{perlunicode}, Java~7 \citep{jdk7pattern}, and the Python regex library \citep{pythonregex}.
-
-% FIXME: could add Python regex library
 
 \section{Encoding Chains}
 
