@@ -358,6 +358,13 @@ A prime example of this is Outlook Compressible Encryption, which, despite its n
 \section{Interpreting Hits in Context}
 % in which we describe issues with decoding hit context
 
+Search hits can, in isolation from their context, be uninformative, hard to interpret, or misleading. For example, consider that each of ``cabomba'', ``bombastic'', and ``dirty bomb'' contains a hit for \re{bomb}---but the context, the characters on either side of the hit, are essential for recognizing the hit as relevant to aquatic plants, rhetoric, or terrorism. 
+
+It is possible to provide minimal context support by padding regexes with dots, front and back, thus rolling context into the hits. E.g., \re{.\{0,6\}bomb.\{0,6\}} grabs enough on either side of ``bomb'' in the example above to distinguish the three cases, at the expense of a massive, unacceptable slowdown in searching. The reason for poor performance when capturing leading context as part of a hit is straightforward: A match for \re{.\{0,6\}} can start anywhere in the input, so the regex engine has far more work to do when faced with \re{.\{0,6\}bomb.\{0,6\}} than with \re{bomb}.
+
+The problem of context is exacerbated by encodings. One might simply wave off the difficulties with rolling context into the hit by manually examining the data, using \texttt{less} or a hex editor. While this is not an unreasonable thing to do if the data is ASCII, any investigator relying on this strategy will soon come to grief if the data is in a character encoding he is unable to read directly. Even worse, the data might be base64'd, OCE'd, or XOR'd with some constant byte value. In these cases, the simple expedient of inspecting the data to see hit context falls down. 
+
+
 \section{Conclusion}
 % in which we say what we have said
 
