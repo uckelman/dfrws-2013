@@ -241,41 +241,43 @@ RL3.11 requires Level~3-conformant regex languages to permit registration of arb
 \begin{table}
 \small
 \centering
-\begin{tabular}{l|c|c|c|c|}
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{l|c|c|c|c|c|}
  \multicolumn{1}{c}{}
  & \multicolumn{1}{c}{\rule{1em}{0pt}\makebox[0cm][r]{\rotatebox[origin=rB]{-45}{lightgrep}}}
  & \multicolumn{1}{c}{\rule{1em}{0pt}\makebox[0cm][r]{\rotatebox[origin=rB]{-45}{ICU 50}}}
  & \multicolumn{1}{c}{\rule{1em}{0pt}\makebox[0cm][r]{\rotatebox[origin=rB]{-45}{Perl 5.6}}}
- & \multicolumn{1}{c}{\rule{1em}{0pt}\makebox[0cm][r]{\rotatebox[origin=rB]{-45}{Java 7}}} \\
+ & \multicolumn{1}{c}{\rule{1em}{0pt}\makebox[0cm][r]{\rotatebox[origin=rB]{-45}{Java 7}}}
+ & \multicolumn{1}{c}{\rule{1em}{0pt}\makebox[0cm][r]{\rotatebox[origin=rB]{-45}{Python regex}}} \\
 \hline
-Level 1: Basic Unicode Support     & $\circ$   & $\bullet$ & $\circ$   & $\bullet$  \\
+Level 1: Basic Unicode Support     & $\circ$   & $\bullet$ & $\circ$   & $\bullet$ & $\bullet$ \\
 \hline
-RL1.1 Hex Notation                 & $\bullet$ & $\bullet$ & $\bullet$ & $\bullet$ \\
-RL1.2 Properties                   & $\bullet$ & $\bullet$ & $\bullet$ & $\bullet$  \\
-RL1.3 Subtraction and Intersection & $\circ$   & $\bullet$ & $\circ$   & $\bullet$ \\
-RL1.4 Simple Word Boundaries       &           & $\bullet$ & $\bullet$ & $\bullet$ \\
-RL1.5 Simple Loose Matches         & $\bullet$ & $\bullet$ & $\bullet$ & $\bullet$ \\
-RL1.6 Line Boundaries              &           & $\bullet$ & $\circ$   & $\bullet$ \\
-RL1.7 Supplementary Code Points    & $\bullet$ & $\bullet$ & $\bullet$ & $\bullet$ \\
+RL1.1 Hex Notation                 & $\bullet$ & $\bullet$ & $\bullet$ & $\bullet$ & $\bullet$ \\
+RL1.2 Properties                   & $\bullet$ & $\bullet$ & $\bullet$ & $\bullet$ & $\bullet$ \\
+RL1.3 Subtraction and Intersection & $\circ$   & $\bullet$ & $\circ$   & $\bullet$ & $\bullet$ \\
+RL1.4 Simple Word Boundaries       &           & $\bullet$ & $\bullet$ & $\bullet$ & $\bullet$ \\
+RL1.5 Simple Loose Matches         & $\bullet$ & $\bullet$ & $\bullet$ & $\bullet$ & $\bullet$ \\
+RL1.6 Line Boundaries              &           & $\bullet$ & $\circ$   & $\bullet$ & $\bullet$ \\
+RL1.7 Supplementary Code Points    & $\bullet$ & $\bullet$ & $\bullet$ & $\bullet$ & $\bullet$ \\
 \hline
-Level 2: Extended Unicode Support  & $\circ$   & $\circ$   & $\circ$   & $\circ$ \\
+Level 2: Extended Unicode Support  & $\circ$   & $\circ$   & $\circ$   & $\circ$   & $\circ$   \\
 \hline
-RL2.1 Canonical Equivalents        &           &           &           & $\bullet$ \\
-RL2.2 Extended Grapheme Clusters   &           & $\circ$   & $\circ$   & \\
-RL2.3 Default Word Boundaries      &           & $\bullet$ &           & \\
-RL2.4 Default Case Conversion      &           &           &           & \\
-RL2.5 Name Properties              & $\bullet$ & $\bullet$ & $\bullet$ & \\
-RL2.6 Wildcards in Property Values &           &           &           & \\
-RL2.7 Full Properties              & $\bullet$ &           & $\bullet$ & \\
+RL2.1 Canonical Equivalents        &           &           &           & $\bullet$ &           \\
+RL2.2 Extended Grapheme Clusters   &           & $\circ$   & $\circ$   &           & $\bullet$ \\
+RL2.3 Default Word Boundaries      &           & $\bullet$ &           &           &           \\
+RL2.4 Default Case Conversion      &           &           &           &           &           \\
+RL2.5 Name Properties              & $\bullet$ & $\bullet$ & $\bullet$ &           & $\bullet$ \\
+RL2.6 Wildcards in Property Values &           &           &           &           &           \\
+RL2.7 Full Properties              & $\bullet$ &           & $\bullet$ &           & $\bullet$ \\
 \hline
-Level 3: Tailored Support          & $\circ$   &           & $\circ$   & \\
+Level 3: Tailored Support          & $\circ$   &           & $\circ$   &           &           \\
 \hline
-RL3.1 Tailored Punctuation         &           &           &           & \\
-RL3.2 Tailored Grapheme Clusters   &           &           &           & \\
-RL3.6 Context Matching             &           &           & $\circ$   & \\
-RL3.7 Incremental Matches          &           &           &           & \\
-RL3.9 Possible Match Sets          & $\bullet$ &           &           & \\
-RL3.11 Submatchers                 &           &           &           & \\
+RL3.1 Tailored Punctuation         &           &           &           &           &           \\
+RL3.2 Tailored Grapheme Clusters   &           &           &           &           &           \\
+RL3.6 Context Matching             &           &           & $\circ$   &           &           \\
+RL3.7 Incremental Matches          &           &           &           &           &           \\
+RL3.9 Possible Match Sets          & $\bullet$ &           &           &           &           \\
+RL3.11 Submatchers                 &           &           &           &           &           \\
 \hline
 \end{tabular}
 
@@ -284,7 +286,7 @@ $\bullet = $ full support, $\circ = $ partial support
 \caption{UTS~\#18 Support\label{tab:uts18-support}}
 \end{table}
 
-Table~\ref{tab:uts18-support} summarizes UTS~\#18 conformance for lightgrep, as well as for ICU~50 \citep{icuregex}, Perl~5.6 \citep{perlunicode}, and Java~7 \citep{jdk7pattern}.
+Table~\ref{tab:uts18-support} summarizes UTS~\#18 conformance for lightgrep, as well as for ICU~50 \citep{icuregex}, Perl~5.6 \citep{perlunicode}, Java~7 \citep{jdk7pattern}, and the Python regex library \citep{pythonregex}.
 
 % FIXME: could add Python regex library
 
