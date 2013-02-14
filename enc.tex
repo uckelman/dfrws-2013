@@ -29,6 +29,10 @@
 \usetikzlibrary{positioning}
 \usetikzlibrary{shapes.arrows}
 
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{foreground}
+\pgfsetlayers{background,main,foreground}
+
 \usepackage{xcolor}
 
 \newcommand{\ju}[1]{\textcolor{red}{\footnote{\textcolor{red}{ju: #1}}}}
@@ -61,6 +65,7 @@ We needed to search a disk image for a pattern, but didn't know how the hits wou
 % in which character encodings are explained
 
 \section{Multipattern Search is Multiencoding Search}
+\label{sec:multi}
 % in which we sketch a general solution to the problem
 
 A \emph{coded character set} is list of pairs, each consisting of a character and the unique integer represeting it, known as a \emph{code point}.  An \emph{encoding} is a method for mapping sequences of code points to sequences of bytes. Examples: Unicode is a coded character set consisting of 1,114,112 code points, intended to be sufficient for representing all text produced by humans. UTF-8 and UTF-16 are encodings capable of representing all Unicode code points as bytes. ASCII, commonly used for simple text files (especially by English speakers), is both a coded character set and an encoding---the 128 code points in ASCII, numbered 0--127, are directly encoded as bytes 0--127. Numerous encodings specific to one or more natural languages were developed---such as Shift\_JIS, EUC-KR, KOI8-R, and ISO 8859-1---which are slowly being supplanted by UTF-8 and UTF-16.
@@ -69,9 +74,6 @@ The multiplicity of encodings means that one piece of text can be represented as
 
 \begin{figure*}[th]
 \centering
-\pgfdeclarelayer{background}
-\pgfdeclarelayer{foreground}
-\pgfsetlayers{background,main,foreground}
 \begin{tikzpicture}
   \small
   \matrix (m) [matrix of nodes,nodes in empty cells,nodes={inner sep=0pt,outer sep=0pt,minimum width=5mm},column sep={5mm,between origins},row sep=4ex]
@@ -291,6 +293,7 @@ $\bullet = $ full support, $\circ = $ partial support
 Table~\ref{tab:uts18-support} summarizes UTS~\#18 conformance for lightgrep, as well as for ICU~50 \citep{icuregex}, Perl~5.6 \citep{perlunicode}, Java~7 \citep{jdk7pattern}, and the Python regex library \citep{pythonregex}.
 
 \section{Encoding Chains}
+\label{sec:chains}
 
 \begin{figure*}[ht]
 \centering
@@ -362,8 +365,104 @@ Search hits can, in isolation from their context, be uninformative, hard to inte
 
 It is possible to provide minimal context support by padding regexes with dots, front and back, thus rolling context into the hits. E.g., \re{.\{0,6\}bomb.\{0,6\}} grabs enough on either side of ``bomb'' in the example above to distinguish the three cases, at the expense of a massive, unacceptable slowdown in searching. The reason for poor performance when capturing leading context as part of a hit is straightforward: A match for \re{.\{0,6\}} can start anywhere in the input, so the regex engine has far more work to do when faced with \re{.\{0,6\}bomb.\{0,6\}} than with \re{bomb}.
 
-The problem of context is exacerbated by encodings. One might simply wave off the difficulties with rolling context into the hit by manually examining the data, using \texttt{less} or a hex editor. While this is not an unreasonable thing to do if the data is ASCII, any investigator relying on this strategy will soon come to grief if the data is in a character encoding he is unable to read directly. Even worse, the data might be base64'd, OCE'd, or XOR'd with some constant byte value. In these cases, the simple expedient of inspecting the data to see hit context falls down. 
+The problem of context is exacerbated by encodings. One might simply wave off the difficulties with rolling context into the hit by manually examining the data, using \texttt{less} or a hex editor. While this is not an unreasonable thing to do if the data is ASCII, any investigator relying on this strategy will soon come to grief if the data is in a character encoding he is unable to read directly. Even worse, the data might be base64'd, OCE'd, or XOR'd with some constant byte value, which the investigator will then need to decode. Decoding the context manually could involve finding a starting point which available decoders recognize as valid, which costs yet more time and trouble. In such cases, the simple expedient of inspecting the data to see hit context falls down.
 
+In Section~\ref{sec:multi}, we showed how to put multipattern search to use for multiencoding search, and in Section~\ref{sec:chains}, we described a method for chaining encodings together to make multiply-encoded data easily searchable. A consequence of these is that when we return a hit, we know which pattern and encoding chain produced the hit. Because we know the encoding chain which produced the hit, we can reverse that encoding chain to decode the context around the hit and display the decoded context to the user.
+
+Sadly, this is not as straightforward nor are the results as univocal as we've made them sound. There are numerous ways in which decoding context might fail. The simplest is that the context is not in the same encoding as the hit. This can happen when searching serialized binary data, such as database files, where the fields adjancent to the one containing the hit might have different types from the hit. E.g., if an integer field preceeds a hit in a UTF-16LE text field, then interpreting the part of the leading context overlapping the integer field as UTF-16LE is bound to fail to decode, or if it does decode, to produce garbage. Similarly, a hit and its context could be in different files. One way this could occur is when searching a raw disk image. If a hit runs up to the end of a file system block, there is no guarantee that the next byte on the disk belongs to the same file, either because the file containing the hit is fragmented or because the hit is actually at the end of its file. In either case, the trailing context could be anything, so there is no guarantee that it will decode along with the hit. Similar things can occur when searching unallocated space: the bytes preeceding or trailing the hit could be associated with the hit, or could be part of some file which overwrote part of the hit's file and was then deleted itself. Another way that decoding context can fail is if the context was written with a broken encoder. This is not so far-fetched as it sounds. In the early days of Unicode, there were numerous encoders which failed to follow the standard. (A common example of this was writing overlong character representations in UTF-8.) As we cannot anticipate all the possible ways in which encoders might be broken, we cannot properly decode improperly-encoded byte sequences.\footnote{This puts one in mind of Charles Babbage being asked whether by putting the wrong figures into his Difference Engine, the right answers might come out.}
+
+Finally, it could be the case that the hit's context fails to decode because the hit has been misidentified. For example, ASCII is interoperable with many encodings---UTF-7, UTF-8, all sixteen of the ISO-8859-X encodings, Shift JIS, and GB18030, among others. This means that strings consisting entirely of 7-bit ASCII characters are represented by the same byte sequence in many encodings. Consequently, you cannot deduce the encoding from such sequences, and you are likely to get \emph{mojibake} if you have guessed the wrong encoding for the surrounding context . Mojibake (
+%文字化け
+), which literally means ``character transformation'', is the delightful term borrowed from Japanese for the result of rendering text in the wrong encoding. If, for example, we searched the previous sentence (which we assert, for the purposes of the example, to be UTF-8) for the pattern \re{Mojibake} encoded in Windows-1252 with fifteen characters of trailing context, then our hit plus context would be reported as ``Mojibake (æ–‡å\ —åŒ–ã\ ‘)''. Figure~\ref{fig:mojibake} shows the carnage in detail.\footnote{Note that the bytes AD and 81 are shown as blanks because in Windows-1252, byte AD is \textsc{soft hyphen} (U+AD), which is a non-printing character, and byte 81 is unassigned.}
+
+\begin{figure}[ht]
+\centering
+\small
+\begin{tikzpicture}
+
+  \matrix (m) [matrix of nodes,nodes in empty cells,nodes={inner sep=0pt,outer sep=0pt,minimum width=5mm},column sep={5mm,between origins},row sep={8mm,between origins}]
+  {
+    ( &
+%文
+&&&
+%字
+&&&
+%化
+&&&
+%け
+&&& ) \\
+    28 & E6 & 96 & 87 & E5 & AD & 97 & E5 & 8C & 96 & E3 & 81 & 91 & 29 \\
+    (  & æ  & –  & ‡  & å  &    & —  & å  & Œ  & –  & ã  &    & ‘  & )  \\
+  };
+
+  \draw ([xshift=-2.5mm,yshift=0.5em]m-2-1.north) rectangle ([xshift=2.5mm,yshift=-0.5em]m-2-14.south);
+
+  \foreach \x in {1,...,13}
+    \draw ([xshift=2.5mm,yshift=0.5em]m-2-\x.north) -- ([xshift=2.5mm,yshift=-0.5em]m-2-\x.south);
+
+  \begin{pgfonlayer}{background}
+    \foreach \x in {1,...,14}
+      \draw [line width=1mm,color=gray!30,->] (m-1-\x |- m-1-1.south) -- (m-3-\x |- m-3-1.north);
+
+    \draw [line width=1mm,color=gray!30] ([xshift=-0.5mm,yshift=-1mm]m-1-2.south) -- ([xshift=0.5mm,yshift=-1mm]m-1-4.south);
+    \draw [line width=1mm,color=gray!30] ([xshift=-0.5mm,yshift=-1mm]m-1-5.south) -- ([xshift=0.5mm,yshift=-1mm]m-1-7.south);
+    \draw [line width=1mm,color=gray!30] ([xshift=-0.5mm,yshift=-1mm]m-1-8.south) -- ([xshift=0.5mm,yshift=-1mm]m-1-10.south);
+    \draw [line width=1mm,color=gray!30] ([xshift=-0.5mm,yshift=-1mm]m-1-11.south) -- ([xshift=0.5mm,yshift=-1mm]m-1-13.south);
+  \end{pgfonlayer}
+
+\end{tikzpicture}
+\caption{UTF-8 misinterpred as Windows-1252\label{fig:mojibake}}
+\end{figure}
+
+An even stranger thing can happen with UTF-8 and UTF-16LE: There are UTF-16LE strings which contain completely different UTF-8 strings as prefixes. For example the byte sequence which is ``nonsense'' in UTF-8 is ``
+%浵捩摥
+'' in UTF-16LE (!) and not only that, both can manage to be correctly null-terminated for their encoding (!!). Figure~\ref{fig:8or16} shows how. The explanation for this is that lowercase Latin letters in ASCII fall in the byte range $[61,7\mathrm{A}]$, while all four-digit code points starting with hex digits 6 or 7 are Chinese ideographs. (This applies also to uppercase Latin letters in ASCII, $[41,5\mathrm{A}]$, since four-digit code points starting with 4 or 5 are also Chinese ideographs.)
+
+We do not know whether %潮獮湥敳
+is intelligible Chinese, but we suppose that there must be some byte sequences which are both meaningful Chinese when decoded from UTF-16LE and words in some language using the Latin alphabet when decoded from UTF-8.
+\begin{figure}[ht]
+\centering
+\small
+\begin{tikzpicture}
+
+  \matrix (m) [matrix of nodes,nodes in empty cells,nodes={inner sep=0pt,outer sep=0pt,minimum width=5mm},column sep={5mm,between origins},row sep={8mm,between origins}]
+  {
+    n  & o  & n  & s  & e  & n  & s  & e  &    & \\
+    6E & 6F & 6E & 73 & 65 & 6E & 73 & 65 & 00 & 00 \\
+       &    &    &    &    &    &    &    &    & \\
+% 潮獮湥敳 
+  };
+
+  \draw ([xshift=-2.5mm,yshift=0.5em]m-2-1.north) rectangle ([xshift=2.5mm,yshift=-0.5em]m-2-10.south);
+
+  \foreach \x in {1,...,9}
+    \draw ([xshift=2.5mm,yshift=0.5em]m-2-\x.north) -- ([xshift=2.5mm,yshift=-0.5em]m-2-\x.south);
+
+  \begin{pgfonlayer}{background}
+    \foreach \x in {1,...,9}
+      \draw [line width=1mm,color=gray!30,<-] (m-1-\x |- m-1-1.south) -- ([yshift=-3mm]m-3-\x |- m-2-1.south);
+
+    \draw [line width=1mm,color=gray!30] ([xshift=-0.5mm,yshift=-3mm]m-2-1.south) -- ([xshift=0.5mm,yshift=-3mm]m-2-2.south);
+    \draw [line width=1mm,color=gray!30] ([xshift=-0.5mm,yshift=-3mm]m-2-3.south) -- ([xshift=0.5mm,yshift=-3mm]m-2-4.south);
+    \draw [line width=1mm,color=gray!30] ([xshift=-0.5mm,yshift=-3mm]m-2-5.south) -- ([xshift=0.5mm,yshift=-3mm]m-2-6.south);
+    \draw [line width=1mm,color=gray!30] ([xshift=-0.5mm,yshift=-3mm]m-2-7.south) -- ([xshift=0.5mm,yshift=-3mm]m-2-8.south);
+    \draw [line width=1mm,color=gray!30] ([xshift=-0.5mm,yshift=-3mm]m-2-9.south) -- ([xshift=0.5mm,yshift=-3mm]m-2-10.south);
+
+    \draw [line width=1mm,color=gray!30,->] (m-2-2.south) -- (m-3-2.north);
+    \draw [line width=1mm,color=gray!30,->] (m-2-4.south) -- (m-3-4.north);
+    \draw [line width=1mm,color=gray!30,->] (m-2-6.south) -- (m-3-6.north);
+    \draw [line width=1mm,color=gray!30,->] (m-2-8.south) -- (m-3-8.north);
+    \draw [line width=1mm,color=gray!30,->] (m-2-10.south) -- (m-3-10.north);
+
+  \end{pgfonlayer}
+
+\end{tikzpicture}
+\caption{Bytes in UTF-8 or UTF-16LE\label{fig:8or16}}
+\end{figure}
+
+Finally, a word on what encoding bytes \emph{are}: Bytes can be decoded or not, but don't themselves have an encoding. Bytes are just bytes. All we observe is whether we can decode a byte sequence successfully. As the above discussion makes plain, decoding a sequence without error is no guarantee that the bytes were written with that encoding. The lesson here from philosophy of science is that we can rule out hypotheses from observation, but never prove them conclusively. Hence, we can assert that a given sequence of bytes, say D8 00 DC 00 D8 00 DC 01, \emph{could not} have been written with a (correct) UTF-8 encoder, but only that this sequence is \emph{consistent} with being written by a UTF-16LE encoder.\footnote{In fact, it would decode as the first two glyphs of the yet-undeciphered Linear B language from ancient Crete.} This is not to say that we cannot draw positive conclusions. The longer the sequence which can be validly decoded, the less likely it is to be accidental or mojibake. Encoded text tends to be highly structured when viewed as byte sequences. E.g., 100 random bytes will decode to 7-bit ASCII only one in $2^{100}$ times, because in 7-bit ASCII the high bit in each byte is always off. Similar things may be said about other encodings (though calculating the precise odds for, say, UTF-8, is not so easy.) Thus, \emph{ceteris paribus}, it is probable that long sequences which decode successfully were written in the encoding they appear to have been written in.
+
+There is one implementation detail regarding decoding hit context which is of interest. % TODO: talk about segmentation here 
 
 \section{Conclusion}
 % in which we say what we have said
