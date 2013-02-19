@@ -20,6 +20,7 @@
 \usepackage{amsmath}
 \usepackage{microtype}
 \usepackage{natbib}
+\usepackage{subfig}
 
 \usepackage{tikz}
 \usetikzlibrary{calc}
@@ -421,7 +422,7 @@ An even stranger thing can happen with UTF-8 and UTF-16LE: There are UTF-16LE st
 '' in UTF-16LE (!) and not only that, both can manage to be correctly null-terminated for their encoding (!!). Figure~\ref{fig:8or16} shows how. The explanation for this is that lowercase Latin letters in ASCII fall in the byte range $[61,7\mathrm{A}]$, while all four-digit code points starting with hex digits 6 or 7 are Chinese ideographs. (This applies also to uppercase Latin letters in ASCII, $[41,5\mathrm{A}]$, since four-digit code points starting with 4 or 5 are also Chinese ideographs.)
 
 We do not know whether %潮獮湥敳
-is intelligible Chinese, but we suppose that there must be some byte sequences which are both meaningful Chinese when decoded from UTF-16LE and words in some language using the Latin alphabet when decoded from UTF-8.
+is intelligible Chinese, but we can say that at the time of writing, Google returns 263,000 results for this character sequence. Regardless, we suppose that there must be some byte sequences which are both meaningful Chinese when decoded from UTF-16LE and words in some language using the Latin alphabet when decoded from UTF-8.
 \begin{figure}[ht]
 \centering
 \small
@@ -462,13 +463,13 @@ is intelligible Chinese, but we suppose that there must be some byte sequences w
 \caption{Bytes in UTF-8 or UTF-16LE\label{fig:8or16}}
 \end{figure}
 
-Finally, a word on what encoding bytes \emph{are}: Bytes can be decoded or not, but don't themselves have an encoding. Bytes are just bytes. All we observe is whether we can decode a byte sequence successfully. As the above discussion makes plain, decoding a sequence without error is no guarantee that the bytes were written with that encoding. The lesson here from philosophy of science is that we can rule out hypotheses from observation, but never prove them conclusively. Hence, we can assert that a given sequence of bytes, say D8 00 DC 00 D8 00 DC 01, \emph{could not} have been written with a (correct) UTF-8 encoder, but only that this sequence is \emph{consistent} with being written by a UTF-16LE encoder.\footnote{In fact, it would decode as the first two glyphs of the yet-undeciphered Linear B language from ancient Crete.} This is not to say that we cannot draw positive conclusions. The longer the sequence which can be validly decoded, the less likely it is to be accidental or mojibake. Encoded text tends to be highly structured when viewed as byte sequences. E.g., 100 random bytes will decode to 7-bit ASCII only one in $2^{100}$ times, because in 7-bit ASCII the high bit in each byte is always off. Similar things may be said about other encodings (though calculating the precise odds for, say, UTF-8, is not so easy.) Thus, \emph{ceteris paribus}, it is probable that long sequences which decode successfully were written in the encoding they appear to have been written in.
+Finally, a word on what encoding bytes \emph{are}: Bytes can be decoded or not, but don't themselves have an encoding. Bytes are just bytes. All we observe is whether we can decode a byte sequence successfully. As the above discussion makes plain, decoding a sequence without error is no guarantee that the bytes were written with that encoding. The lesson here from philosophy of science is that we can rule out hypotheses from observation, but never prove them conclusively. Hence, we can assert that a given sequence of bytes, say D8 00 DC 00 D8 00 DC 01, \emph{could not} have been written with a (correct) UTF-8 encoder, but only that this sequence is \emph{consistent} with being written by a UTF-16LE encoder.\footnote{In fact, it would decode as the first two glyphs of the Linear B script for writing Mycenaen Greek.} This is not to say that we cannot draw positive conclusions. The longer the sequence which can be validly decoded, the less likely it is to be accidental or mojibake. Encoded text tends to be highly structured when viewed as byte sequences. E.g., 100 random bytes will decode to 7-bit ASCII only one in $2^{100}$ times, because in 7-bit ASCII the high bit in each byte is always off. Similar things may be said about other encodings (though calculating the precise odds for, say, UTF-8, is not so easy.) Thus, \emph{ceteris paribus}, it is probable that long sequences which decode successfully were written in the encoding they appear to have been written in.
 
 There are two implementation details regarding decoding hit context which are of interest: whether to measure the width of the context around a hit in bytes or in characters, and where in the context decoding should start.
 
 Measuring context width in bytes has the advantage that we can trivially locate the start of leading context and the end of trailing context in the data, because these are simply offsets from the start and end of the hit, which we already know. Unfortunately, this is the only advantage of measuring context width in bytes. Measuring in bytes means that the limits of the context could fall in the middle of a character, and that the number of decoded characters for the same number of context bytes can vary from encoding to encoding. If the user wants decoded context, then we already know that the user is thinking in terms of characters, so presumably the number of context characters is more salient for the user than the number of bytes. Furthermore, unless the user is familiar with the technical details of the encoding in use, he will not know how many characters to expect a given number of bytes to produce when decoded. Therefore, we chose to let the user specify the width of the context in characters, not bytes.
 
-The issue of where context decoding should start is more complex. A na\"ive strategy would be to start decoding at the leading end of the context, across the hit, and through to the trailing end. This fails if, for example, the hit is too close to to the start of the data to fill out the context, as in Figure~\ref{fig:alignment}. If we start decoding UTF-16LE from the left end of the buffer, we get the Chinese ideographs shown below, while if we decode from the start of the hit (highlighted) we get a sequence of \textsc{latin small letter x}. Clearly we must ensure that we have proper byte alignment when the decoder reaches the start of the hit. 
+The issue of where context decoding should start is more complex. A na\"ive strategy would be to start decoding at the leading end of the context, across the hit, and through to the trailing end, as seen in Figure~\ref{fig:decode}\subref{subfig:lr}. This fails if, for example, the leading context is not a multiple of the bytes-per-character for the encoding, as seen in Figure~\ref{fig:alignment}. If we start decoding UTF-16LE from the left end of the buffer, we get the Chinese ideographs shown below, while if we decode from the start of the hit (highlighted) we get a sequence of \textsc{latin small letter x}. Clearly we must ensure that we have proper byte alignment when the decoder reaches the start of the hit.\footnote{Note that some encodings, such as UTF-8, are \emph{variable width}, meaning that some characters produce more bytes than others when encoded. This makes proper byte alignment for left-to-right decoding even more vexed.}
 
 \begin{figure}[ht]
 \centering
@@ -505,111 +506,112 @@ The issue of where context decoding should start is more complex. A na\"ive stra
 \caption{Bad alignment when decoding UTF-16LE\label{fig:alignment}}
 \end{figure}
 
-A little reflection on the examples above reveals that this is still inadequate, because there could be parts of the context which fail to decode. (E.g., suppose the context spans a field boundary in a database file.) We could work around this by advancing by one byte and resetting the decoder each time we encounter an invalid byte, but this too can fail catastrophically.
-% TODO: example
-Because there is no guarantee that the bytes preceding the hit were encoded at the same time as the hit, or are even related to it, the only way we can ensure that the hit is decoded successfully according to the encoding chain of the pattern which matched it is to begin decoding from the start of the it, not from some point in its preceding context.
+A little reflection on the examples above reveals that this is still inadequate, because there could be parts of the context which fail to decode. (E.g., suppose the context spans a field boundary in a database file.) We could work around this by advancing by one byte and resetting the decoder each time we encounter an invalid byte, as demonstrated in Figure~\ref{fig:decode}\subref{subfig:lr-restart}, but this too can fail catastrophically. Step~1 in the figure shows decoding from the left end of the context to byte offset~2, where the decoding fails. In step~2, the decoder restarts at offset~2, successfully decoding to offset~6, where decoding fails once again. In step~3, the decoder restarts at offset~6, but fails immediately. (This could occur if $b_6$ is an invalid start byte for the encoding.) In step~4, we give up on the byte at offset~6 as invalid, reset the decoder, and decode bytes 7--12. From the point of view of the user, this behavior is a disaster, as we failed to decode a byte in the middle of the hit.
 
-Furthermore, the problem of misdecoding the hit by beginning to decode to its left applies equally to decode the leading context. Starting from the far left of the context window has the potential to create mojibake by the time the decoder reaches the end of the leading context. How, then, to decode the preceding context?
+Because there is no guarantee that the bytes preceding the hit were encoded at the same time as the hit, or are even related to it, the only way we can ensure that the hit is decoded successfully according to the encoding chain of the pattern which matched it is to begin decoding from the start of the hit, not from some point in its preceding context.
 
-Consider the common case of a hit in the middle of some text. What we would ideally like to do is decode the longest sequences possible which are contiguous with the hit. For the trailing context, this means that decoding may continue rightwards after finishing the hit. For the leading context, it means that the most important character to decode is the one immediately before the hit, with importance decreasing leftwards. Suppose the hit is the byte sequence $b_m\dotsb b_n$. Then we first try to decode only $b_{m-1}$, the byte to the left of the hit. If that succeeds, we then try to decode $b_{m-2}b_{m-1}$, and continue to extend our decoding window to the left one byte at a time until either decoding fails or we reach the limit of the context. If we hit the context limit, we are done---the entirety of the leading context has decoded successfully. If decoding fails, we keep the longest successfully decoded sequence contiguous with the hit.
-% FIXME: not a great description of the algorithm
+Furthermore, the problem of misdecoding the hit by beginning to decode to its left applies equally to decoding the leading context. Starting from the far left of the context window has the potential to create mojibake by the time the decoder reaches the end of the leading context. How, then, to decode the context to the left of the hit?
 
-\begin{figure}[ht]
-\centering
-\small
-\tikzstyle{byte} = [draw,draw,inner sep=0pt,outer sep=0pt,minimum size=3mm]
-\begin{tikzpicture}
+Consider the common case of a hit in the middle of some text. What we would ideally like to do is decode the longest sequences possible which are contiguous with the hit. For the trailing context, this means that decoding may continue rightwards after finishing the hit. For the leading context, it means that the most important character to decode is the one immediately before the hit, with importance decreasing leftwards. Suppose the hit is the byte sequence $b_m\dotsb b_n$. Then we first try to decode only $b_{m-1}$, the byte to the left of the hit. If that succeeds, we then try to decode $b_{m-2}b_{m-1}$, and continue to extend our decoding window to the left one byte at a time until either decoding fails or we reach the limit of the context. If we hit the context limit, we are done---the entirety of the leading context has decoded successfully. If decoding fails, we keep the longest successfully decoded sequence contiguous with the hit. An example of this appears in Figure~\ref{fig:decode}\subref{subfig:leading-reverse}. In step~1, we decode the hit and the trailing context. In step~2, we successfully decode the byte offset~$-1$ from the beginning of the hit. In step~2, we back up one byte to offset~-2, and attempt to decode towards the hit from there, but decoding fails at offset~$-1$. In step~3, we back up another byte and successfully decode toward the hit from offset~$-3$. Finally, in step~4, we retreat one more byte and successfuly decode from offset~$-4$ to the start of the hit.
 
-  \matrix (m) [matrix of nodes,nodes in empty cells,nodes={anchor=center},column sep={3mm,between origins},row sep={8mm,between origins}]
-  {
-   $\cdots$ &[1ex] |[byte]| & |[byte]| & |[byte]| & |[byte]| & |[byte]| & |[byte]| & |[byte]| & |[byte]| & |[byte]| & |[byte]| & |[byte]| & |[byte]| & |[byte]| & |[byte]| & |[byte]| &[1ex] $\cdots$ \\
-  };
+This procedure guarantees both that the hit will decode successfully and that we decode the longest segments of context contiguous with the hit which we can while still remaining within the context window. The runtime of decoding the leading context this way is $O(n^2)$ in the worst case, due to needing decode $\sum^n_{i=1} i = \frac{n(n-1)}{2}$ bytes, where $n$ is the length of the leading context. This can be mitigated somewhat by clever choice of the decoding order: If we can successfully decode from offset $o$ to the start of the hit, then there is no need to try decoding from $p$ to the start of the hit, for any offset $p > o$. As decoders are fast and $n$ will generally be small, this should not pose a significant problem when presenting decoded context for display purposes.
 
-  \draw [densely dotted] ([yshift=1em]m-1-3.north west) -- ([yshift=-1em]m-1-3.south west);
-  \draw [densely dotted] ([yshift=1em]m-1-15.north east) -- ([yshift=-1em]m-1-15.south east);
 
-  \begin{pgfonlayer}{background}
-    \draw [line width=6pt,color=gray!30,cap=round] (m-1-7.center) -- (m-1-11.center);
-  \end{pgfonlayer}
-
-  \draw [line width=1.5pt,-latex] ([yshift=0.5em]m-1-3.north west) -- ([yshift=0.5em]m-1-15.north east); 
-
-\end{tikzpicture}
-\caption{}
-\end{figure}
 
 \begin{figure}[ht]
 \centering
 \small
 \tikzstyle{byte} = [draw,draw,inner sep=0pt,outer sep=0pt,minimum size=3mm]
-\begin{tikzpicture}
+\subfloat[Decoding left to right]{\label{subfig:lr}
+  \begin{tikzpicture}
 
-  \matrix (m) [matrix of nodes,nodes in empty cells,nodes={anchor=center},column sep={3mm,between origins},row sep={8mm,between origins}]
-  {
-   $\cdots$ &[1ex] |[byte]| & |[byte]| & |[byte]| & |[byte]| & |[byte]| & |[byte]| & |[byte]| & |[byte]| & |[byte]| & |[byte]| & |[byte]| & |[byte]| & |[byte]| & |[byte]| & |[byte]| &[1ex] $\cdots$ \\
-  };
+    \matrix (m) [matrix of nodes,nodes in empty cells,nodes={anchor=center},column sep={3mm,between origins},row sep={8mm,between origins},ampersand replacement=\&]
+    {
+     $\cdots$ \&[1ex] |[byte]| \& |[byte]| \& |[byte]| \& |[byte]| \& |[byte]| \& |[byte]| \& |[byte]| \& |[byte]| \& |[byte]| \& |[byte]| \& |[byte]| \& |[byte]| \& |[byte]| \& |[byte]| \& |[byte]| \&[1ex] $\cdots$ \\
+    };
 
-  \draw [densely dotted] ([yshift=4em]m-1-3.north west) -- ([yshift=-1em]m-1-3.south west);
-  \draw [densely dotted] ([yshift=4em]m-1-15.north east) -- ([yshift=-1em]m-1-15.south east);
+    \draw [densely dotted] ([yshift=1em]m-1-3.north west) -- ([yshift=-0.5em]m-1-3.south west);
+    \draw [densely dotted] ([yshift=1em]m-1-15.north east) -- ([yshift=-0.5em]m-1-15.south east);
 
-  \begin{pgfonlayer}{background}
-    \draw [line width=6pt,color=gray!30,cap=round] (m-1-7.center) -- (m-1-11.center);
-  \end{pgfonlayer}
+    \begin{pgfonlayer}{background}
+      \draw [line width=6pt,color=gray!30,cap=round] (m-1-7.center) -- (m-1-11.center);
+    \end{pgfonlayer}
 
-  \node [starburst,fill=yellow,draw=red,starburst point height=1mm,inner sep=2pt] at ([yshift=0.5em]m-1-5.north) {};
-  \draw [line width=1.5pt,-latex] ([yshift=0.5em]m-1-3.north west) -- ([yshift=0.5em]m-1-5.north); 
+    \draw [line width=1.5pt,-latex] ([yshift=0.5em]m-1-3.north west) -- ([yshift=0.5em]m-1-15.north east); 
 
-  \node [starburst,fill=yellow,draw=red,starburst point height=1mm,inner sep=2pt] at ([yshift=1.5em]m-1-9.north) {};
-  \draw [line width=1.5pt,-latex] ([yshift=1.5em]m-1-5.north west) -- ([yshift=1.5em]m-1-9.north);
+  \end{tikzpicture}
+}
+\\
+\subfloat[Decoding left to right, restarting on error]{\label{subfig:lr-restart}
+  \begin{tikzpicture}
 
-  \node [starburst,fill=yellow,draw=red,starburst point height=1mm,inner sep=2pt] at ([yshift=2.5em]m-1-9.north) {};
+    \matrix (m) [matrix of nodes,nodes in empty cells,nodes={anchor=center},column sep={3mm,between origins},row sep={8mm,between origins},ampersand replacement=\&]
+    {
+     $\cdots$ \&[1ex] |[byte]| \& |[byte]| \& |[byte]| \& |[byte]| \& |[byte]| \& |[byte]| \& |[byte]| \& |[byte]| \& |[byte]| \& |[byte]| \& |[byte]| \& |[byte]| \& |[byte]| \& |[byte]| \& |[byte]| \&[1ex] $\cdots$ \\
+    };
 
-  \node [forbidden sign,line width=1pt,inner sep=1.5pt,draw=red] at ([yshift=3.5em]m-1-9.north) {};
-  \draw [line width=1.5pt,-latex,] ([yshift=3.5em]m-1-10.north west) -- ([yshift=3.5em]m-1-15.north east);
+    \draw [densely dotted] ([yshift=4em]m-1-3.north west) -- ([yshift=-0.5em]m-1-3.south west);
+    \draw [densely dotted] ([yshift=4em]m-1-15.north east) -- ([yshift=-0.5em]m-1-15.south east);
 
-\end{tikzpicture}
-\caption{}
-\end{figure}
+    \begin{pgfonlayer}{background}
+      \draw [line width=6pt,color=gray!30,cap=round] (m-1-7.center) -- (m-1-11.center);
+    \end{pgfonlayer}
 
-\begin{figure}[ht]
-\centering
-\small
-\tikzstyle{byte} = [draw,draw,inner sep=0pt,outer sep=0pt,minimum size=3mm]
-\begin{tikzpicture}
+    \node [starburst,fill=yellow,draw=red,starburst point height=1mm,inner sep=2pt] at ([yshift=0.5em]m-1-5.north) {};
+    \draw [line width=1.5pt,-latex] ([yshift=0.5em]m-1-3.north west) -- ([yshift=0.5em]m-1-5.north); 
 
-  \matrix (m) [matrix of nodes,nodes in empty cells,nodes={anchor=center},column sep={3mm,between origins},row sep={8mm,between origins}]
-  {
-   $\cdots$ &[1ex] |[byte]| & |[byte]| & |[byte]| & |[byte]| & |[byte]| & |[byte]| & |[byte]| & |[byte]| & |[byte]| & |[byte]| & |[byte]| & |[byte]| & |[byte]| & |[byte]| & |[byte]| &[1ex] $\cdots$ \\
-  };
+    \node [starburst,fill=yellow,draw=red,starburst point height=1mm,inner sep=2pt] at ([yshift=1.5em]m-1-9.north) {};
+    \draw [line width=1.5pt,-latex] ([yshift=1.5em]m-1-5.north west) -- ([yshift=1.5em]m-1-9.north);
 
-%  \foreach \x in {3,...,16}
-%    \draw [densely dotted] ([yshift=2em]m-1-\x.north west) -- ([yshift=-1em]m-1-\x.south west);
-  \draw [densely dotted] ([yshift=5em]m-1-3.north west) -- ([yshift=-1em]m-1-3.south west);
-  \draw [densely dotted] ([yshift=5em]m-1-15.north east) -- ([yshift=-1em]m-1-15.south east);
+    \node [starburst,fill=yellow,draw=red,starburst point height=1mm,inner sep=2pt] at ([yshift=2.5em]m-1-9.north) {};
 
-  \begin{pgfonlayer}{background}
-    \draw [line width=6pt,color=gray!30,cap=round] (m-1-7.center) -- (m-1-11.center);
-  \end{pgfonlayer}
+    \node [forbidden sign,line width=1pt,inner sep=1.5pt,draw=red] at ([yshift=3.5em]m-1-9.north) {};
+    \draw [line width=1.5pt,-latex,] ([yshift=3.5em]m-1-10.north west) -- ([yshift=3.5em]m-1-15.north east);
 
-  \draw [line width=1.5pt,-latex] ([yshift=0.5em]m-1-7.north west) -- ([yshift=0.5em]m-1-15.north east);
+    \node[anchor=center] at ([yshift=0.5em]m-1-2.north) {\tiny 1};
+    \node[anchor=center] at ([yshift=1.5em]m-1-2.north) {\tiny 2};
+    \node[anchor=center] at ([yshift=2.5em]m-1-2.north) {\tiny 3};
+    \node[anchor=center] at ([yshift=3.5em]m-1-2.north) {\tiny 4};
+  \end{tikzpicture}
+}
+\\
+\subfloat[Decoding leading context in reverse, after decoding the hit and trailing context]{\label{subfig:leading-reverse}
+  \begin{tikzpicture}
 
-  \draw [line width=1.5pt,-latex] ([yshift=1.5em]m-1-6.north west) -- ([yshift=1.5em]m-1-6.north east);
+    \matrix (m) [matrix of nodes,nodes in empty cells,nodes={anchor=center},column sep={3mm,between origins},row sep={8mm,between origins},ampersand replacement=\&]
+    {
+     $\cdots$ \&[1ex] |[byte]| \& |[byte]| \& |[byte]| \& |[byte]| \& |[byte]| \& |[byte]| \& |[byte]| \& |[byte]| \& |[byte]| \& |[byte]| \& |[byte]| \& |[byte]| \& |[byte]| \& |[byte]| \& |[byte]| \&[1ex] $\cdots$ \\
+    };
 
-  \node [starburst,fill=yellow,draw=red,starburst point height=1mm,inner sep=2pt] at ([yshift=2.5em]m-1-6.north) {};
-  \draw [line width=1.5pt,-latex] ([yshift=2.5em]m-1-5.north west) -- ([yshift=2.5em]m-1-6.north);
+  %  \foreach \x in {3,...,16}
+  %    \draw [densely dotted] ([yshift=2em]m-1-\x.north west) -- ([yshift=-1em]m-1-\x.south west);
+    \draw [densely dotted] ([yshift=5em]m-1-3.north west) -- ([yshift=-0.5em]m-1-3.south west);
+    \draw [densely dotted] ([yshift=5em]m-1-15.north east) -- ([yshift=-0.5em]m-1-15.south east);
 
-  \draw [line width=1.5pt,-latex] ([yshift=3.5em]m-1-4.north west) -- ([yshift=3.5em]m-1-6.north east);
+    \begin{pgfonlayer}{background}
+      \draw [line width=6pt,color=gray!30,cap=round] (m-1-7.center) -- (m-1-11.center);
+    \end{pgfonlayer}
 
-  \draw [line width=1.5pt,-latex] ([yshift=4.5em]m-1-3.north west) -- ([yshift=4.5em]m-1-6.north east);
+    \draw [line width=1.5pt,-latex] ([yshift=0.5em]m-1-7.north west) -- ([yshift=0.5em]m-1-15.north east);
 
-  \node[anchor=center] at ([yshift=0.5em]m-1-2.north) {\tiny 1};
-  \node[anchor=center] at ([yshift=1.5em]m-1-2.north) {\tiny 2};
-  \node[anchor=center] at ([yshift=2.5em]m-1-2.north) {\tiny 3};
-  \node[anchor=center] at ([yshift=3.5em]m-1-2.north) {\tiny 4};
-  \node[anchor=center] at ([yshift=4.5em]m-1-2.north) {\tiny 5};
+    \draw [line width=1.5pt,-latex] ([yshift=1.5em]m-1-6.north west) -- ([yshift=1.5em]m-1-6.north east);
 
-\end{tikzpicture}
-\caption{}
+    \node [starburst,fill=yellow,draw=red,starburst point height=1mm,inner sep=2pt] at ([yshift=2.5em]m-1-6.north) {};
+    \draw [line width=1.5pt,-latex] ([yshift=2.5em]m-1-5.north west) -- ([yshift=2.5em]m-1-6.north);
+
+    \draw [line width=1.5pt,-latex] ([yshift=3.5em]m-1-4.north west) -- ([yshift=3.5em]m-1-6.north east);
+
+    \draw [line width=1.5pt,-latex] ([yshift=4.5em]m-1-3.north west) -- ([yshift=4.5em]m-1-6.north east);
+
+    \node[anchor=center] at ([yshift=0.5em]m-1-2.north) {\tiny 1};
+    \node[anchor=center] at ([yshift=1.5em]m-1-2.north) {\tiny 2};
+    \node[anchor=center] at ([yshift=2.5em]m-1-2.north) {\tiny 3};
+    \node[anchor=center] at ([yshift=3.5em]m-1-2.north) {\tiny 4};
+    \node[anchor=center] at ([yshift=4.5em]m-1-2.north) {\tiny 5};
+
+  \end{tikzpicture}
+}
+\caption{Three methods of decoding hits and context\label{fig:decode}}
 \end{figure}
 
 \section{Conclusion}
