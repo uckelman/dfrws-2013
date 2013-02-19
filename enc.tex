@@ -421,7 +421,7 @@ An even stranger thing can happen with UTF-8 and UTF-16LE: There are UTF-16LE st
 '' in UTF-16LE (!) and not only that, both can manage to be correctly null-terminated for their encoding (!!). Figure~\ref{fig:8or16} shows how. The explanation for this is that lowercase Latin letters in ASCII fall in the byte range $[61,7\mathrm{A}]$, while all four-digit code points starting with hex digits 6 or 7 are Chinese ideographs. (This applies also to uppercase Latin letters in ASCII, $[41,5\mathrm{A}]$, since four-digit code points starting with 4 or 5 are also Chinese ideographs.)
 
 We do not know whether %潮獮湥敳
-is intelligible Chinese, but we suppose that there must be some byte sequences which are both meaningful Chinese when decoded from UTF-16LE and words in some language using the Latin alphabet when decoded from UTF-8.
+is intelligible Chinese, but we can say that at the time of writing, Google returns 263,000 results for this character sequence. Regardless, we suppose that there must be some byte sequences which are both meaningful Chinese when decoded from UTF-16LE and words in some language using the Latin alphabet when decoded from UTF-8.
 \begin{figure}[ht]
 \centering
 \small
