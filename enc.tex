@@ -255,7 +255,6 @@ Fortunately, multipattern search rescues us in this situation: Searching in para
 \begin{tikzpicture}[node distance=1.5cm,thick,initial text=,initial distance=0.75em,every initial by arrow/.style={-stealth'}]
 
   \node[state,initial]   (0)                    {};
-%  \node[state]           (6) [right=8em of 0]   {};
   \node                  (X) [right=8em of 0]   {};
 
   \node[state]           (1) [above left=of X] {};
@@ -266,15 +265,6 @@ Fortunately, multipattern search rescues us in this situation: Searching in para
   \node[state]           (6) [right=of X]   {};
   \node[state]           (7) [below=of X] {};
   \node[state]           (8) [above=of X] {};
-
-%  \node[state]           (1) [above right=of 0] {};
-%  \node[state]           (2) [below right=of 0] {};
-%  \node[state]           (3) [right=of 0]       {};
-%  \node[state,accepting] (4) [right=12em of 1]  {};
-%  \node[state,accepting] (5) [right=12em of 2]  {};
-%  \node[state]           (6) [right=6em of 3]   {};
-%  \node[state]           (7) [below right=7em of 3] {};
-%  \node[state]           (8) [above right=7em of 3] {};
 
   \path[->,shorten >=1pt,>=stealth']
     (0) edge node [above,sloped] {0xA4} (1)
@@ -296,7 +286,6 @@ Fortunately, multipattern search rescues us in this situation: Searching in para
         edge [bend right] node [below]      {0--9} (5)
     (8) edge [out=120,in=60,distance=1.7em] node [above] {0x09,0x20} (8)
         edge [bend left] node [above]      {0--9} (4);
-
 
 \end{tikzpicture}  
 \caption{Merged search automaton for \re{[\texteuro\$][ \whack t]*\whack d+} in ISO-8859-15 and Windows-1252}
