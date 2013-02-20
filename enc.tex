@@ -75,7 +75,7 @@ A \emph{coded character set} is list of pairs, each consisting of a character an
 
 The multiplicity of encodings means that one piece of text can be represented as bytes in numerous ways. E.g., the text ``IRLIBSYR'' can be encoded as in Figure~\ref{fig:enc}.
 
-\begin{figure*}[th]
+\begin{figure}[th]
 \centering
 \begin{tikzpicture}
   \small
@@ -102,9 +102,13 @@ The multiplicity of encodings means that one piece of text can be represented as
   \foreach \x in {1,...,7}
     \draw ([xshift=2.5mm,yshift=0.5em]m-3-\x.north) -- ([xshift=2.5mm,yshift=-0.5em]m-3-\x.south);
 
-  \node [left=5mm of m-1-1.west] {ASCII and UTF-8};
-  \node [left=5mm of m-2-1.west] {UTF16-LE};
-  \node [left=5mm of m-3-1.west] {EBCDIC 37};
+  \node [right=of m-1-7.east] (ascii) {ASCII and UTF-8};
+  \node [below=of m-2-15] (utf16) {UTF16-LE};
+  \node [right=of m-3-7.east] (ebcdic) {EBCDIC 37};
+
+  \draw [help lines] (ascii) -- (m-1-8.east);
+  \draw [help lines,shorten >=4pt] (utf16) -- (m-2-15.south);
+  \draw [help lines] (ebcdic) -- (m-3-8.east);
 
   \foreach \x in {1,...,16}
     \pgfmathparse{\x-1}
@@ -138,7 +142,7 @@ The multiplicity of encodings means that one piece of text can be represented as
   \end{pgfonlayer}
 \end{tikzpicture}
 \caption{Several encodings of the text ``IRLIBSYR''\label{fig:enc}}
-\end{figure*}
+\end{figure}
 
 The UTF-16LE encoding, while containing values similar to the UTF-8 encoding, is twice the length, while the EBCDIC 37 encoding bears no resemblance to the other two. Searching a block of bytes for ``IRLIBSYR'' can mean searching for ``IRLIBSYR'' once for each possible encoding. Hundreds of encodings exist, and while the vast majority of them are obsolete and unlikely to be encountered in data from a contemporary computer, there are still a few dozen which are in common usage. Therefore, if we are trying to establish the existence of a particular string within data for which we don't know the encoding beforehand, the search task can be rather large. Should we need to do this for hundreds, or even thousands of strings (or, in the general case, regular expressions), then it will require a prohibitive amount of time to carry out the search serially, reading the data once for each pattern-encoding pair.
 
