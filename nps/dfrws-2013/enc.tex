@@ -23,6 +23,8 @@
 \usepackage{subfig}
 
 \usepackage{tikz}
+\usetikzlibrary{arrows}
+\usetikzlibrary{automata}
 \usetikzlibrary{calc}
 \usetikzlibrary{decorations}
 \usetikzlibrary{decorations.pathreplacing}
@@ -148,6 +150,157 @@ Fortunately, multipattern search rescues us in this situation: Searching in para
 %The literals in our regexes are Unicode characters, \emph{not} bytes in a particular Unicode encoding (such as UTF-8). This distinction isn't present when working with traditional ASCII regular expressions, where the characters and the bytes are identical. Distinguishing between characters and bytes in Unicode regular expressions makes the regexes \emph{encoding-independent}, which is a useful property should one wish to search for the same character string in several different encodings.\ju{Example here?} Furthermore, having literals be Unicode characters can improve regex readability over specifying them by code point: While
 %\texttt{\textchinesetrad{屁股}} and \texttt{\textchinesetrad{地洞}}
 %are easily confusable for those unfamiliar with Chinese, and thus specifying the characters by code point may be called for, of the two patterns matching the Greek name for the city of Athens, even non-Grecophones are likely to prefer \re{\textgreek{Αθήνα}} to \re{\whack x\{0391\}\whack x\{03B8\}\whack x\{03AE\}\whack x\{03BD\}\whack x\{03B1\}}.
+
+\begin{figure*}
+\centering
+\small
+\tikzset{every state/.style={minimum size=0pt}}
+\begin{tikzpicture}[node distance=0.7cm,on grid,thick,initial text=,initial distance=0.75em,every initial by arrow/.style={-stealth'}
+]
+
+  \node[state,initial]   (0)                     {};
+  \node[state]           (1) [right=of 0]        {};
+  \node[state]           (2) at ($(1) + (60:0.75cm)$) {};
+  \node[state]           (3) [right=of 2]        {};
+  \node[state]           (4) [right=of 3]        {};
+  \node[state]           (5) [right=of 4]        {};
+  \node[state,accepting] (6) [right=of 5]        {};
+
+  \node[state]           (7) [below right=of 1]  {};
+  \node[state]           (8) at ($(7) + (30:0.75cm)$) {};
+  \node[state]           (9) [right=of 8]        {};
+  \node[state]          (10) [right=of 9]        {};
+  \node[state]          (11) [right=of 10]       {};
+  \node[state]          (12) [right=of 11]       {};
+  \node[state]          (13) [right=of 12]       {};
+  \node[state]          (14) [right=of 13]       {};
+  \node[state]          (15) [right=of 14]       {};
+  \node[state]          (16) [right=of 15]       {};
+  \node[state,accepting](17) [right=of 16]       {};
+  
+  \node[state]          (18) [below right=of 7]  {};
+  \node[state]          (19) [right=of 18]       {};
+  \node[state]          (20) [right=of 19]       {};
+  \node[state]          (21) [right=of 20]       {};
+  \node[state]          (22) [right=of 21]       {};
+  \node[state]          (23) [right=of 22]       {};
+  \node[state]          (24) [right=of 23]       {};
+  \node[state]          (25) [right=of 24]       {};
+  \node[state]          (26) [right=of 25]       {};
+  \node[state]          (27) [right=of 26]       {};
+  \node[state]          (28) [right=of 27]       {};
+  \node[state]          (29) [right=of 28]       {};
+  \node[state]          (30) [right=of 29]       {};
+  \node[state]          (31) [right=of 30]       {};
+  \node[state]          (32) [right=of 31]       {};
+  \node[state]          (33) [right=of 32]       {};
+  \node[state]          (34) [right=of 33]       {};
+  \node[state]          (35) [right=of 34]       {};
+  \node[state]          (36) [right=of 35]       {};
+  \node[state]          (37) [right=of 36]       {};
+  \node[state]          (38) [right=of 37]       {};
+  \node[state,accepting](39) [right=of 38]       {};
+
+  \path[->,shorten >=1pt,>=stealth']
+    (0) edge node [above]      {L} (1)
+    (1) edge node [above left] {o} (2)
+    (2) edge node [above]      {l} (3)
+    (3) edge node [above]      {i} (4)
+    (4) edge node [above]      {t} (5)
+    (5) edge node [above]      {a} (6)
+  
+     (1) edge node [below left] {$\emptyset$}  (7)
+     (7) edge node [above left] {o}            (8)
+     (8) edge node [above]      {$\emptyset$}  (9)
+     (9) edge node [above]      {l}           (10)
+    (10) edge node [above]      {$\emptyset$} (11)
+    (11) edge node [above]      {i}           (12)
+    (12) edge node [above]      {$\emptyset$} (13)
+    (13) edge node [above]      {t}           (14)
+    (14) edge node [above]      {$\emptyset$} (15)
+    (15) edge node [above]      {a}           (16)
+    (16) edge node [above]      {$\emptyset$} (17)
+
+     (7) edge node [below left] {$\emptyset$} (18)
+    (18) edge node [above]      {$\emptyset$} (19)
+    (19) edge node [above]      {o}           (20)
+    (20) edge node [above]      {$\emptyset$} (21)
+    (21) edge node [above]      {$\emptyset$} (22)
+    (22) edge node [above]      {$\emptyset$} (23)
+    (23) edge node [above]      {l}           (24)
+    (24) edge node [above]      {$\emptyset$} (25)
+    (25) edge node [above]      {$\emptyset$} (26)
+    (26) edge node [above]      {$\emptyset$} (27)
+    (27) edge node [above]      {i}           (28)
+    (28) edge node [above]      {$\emptyset$} (29)
+    (29) edge node [above]      {$\emptyset$} (30)
+    (30) edge node [above]      {$\emptyset$} (31)
+    (31) edge node [above]      {t}           (32)
+    (32) edge node [above]      {$\emptyset$} (33)
+    (33) edge node [above]      {$\emptyset$} (34)
+    (34) edge node [above]      {$\emptyset$} (35)
+    (35) edge node [above]      {a}           (36)
+    (36) edge node [above]      {$\emptyset$} (37)
+    (37) edge node [above]      {$\emptyset$} (38)
+    (38) edge node [above]      {$\emptyset$} (39);
+
+\end{tikzpicture}
+\caption{Merged search automaton for \re{Lolita} in UTF-8, UTF-16LE, and UTF-32LE}
+\end{figure*}
+
+\begin{figure}
+\centering
+\small
+\tikzset{every state/.style={minimum size=10pt}}
+\begin{tikzpicture}[node distance=1.5cm,thick,initial text=,initial distance=0.75em,every initial by arrow/.style={-stealth'}]
+
+  \node[state,initial]   (0)                    {};
+%  \node[state]           (6) [right=8em of 0]   {};
+  \node                  (X) [right=8em of 0]   {};
+
+  \node[state]           (1) [above left=of X] {};
+  \node[state]           (2) [below left=of X] {};
+  \node[state]           (3) [left=of X]       {};
+  \node[state,accepting] (4) [above right=of X]  {};
+  \node[state,accepting] (5) [below right=of X]  {};
+  \node[state]           (6) [right=of X]   {};
+  \node[state]           (7) [below=of X] {};
+  \node[state]           (8) [above=of X] {};
+
+%  \node[state]           (1) [above right=of 0] {};
+%  \node[state]           (2) [below right=of 0] {};
+%  \node[state]           (3) [right=of 0]       {};
+%  \node[state,accepting] (4) [right=12em of 1]  {};
+%  \node[state,accepting] (5) [right=12em of 2]  {};
+%  \node[state]           (6) [right=6em of 3]   {};
+%  \node[state]           (7) [below right=7em of 3] {};
+%  \node[state]           (8) [above right=7em of 3] {};
+
+  \path[->,shorten >=1pt,>=stealth']
+    (0) edge node [above,sloped] {0xA4} (1)
+        edge node [below,sloped] {0x80} (2)
+        edge node [above]      {\$}   (3)
+    (1) edge node [below,pos=0.25]      {0--9} (4)
+        edge [bend left] node [above left] {0x09,0x20} (8)
+    (2) edge node [above,pos=0.25]      {0--9} (5)
+        edge [bend right] node [below left] {0x09,0x20} (7)
+    (3) edge node [above,sloped,pos=0.25] {0--9} (4)
+        edge node [below,sloped,pos=0.25] {0--9} (5)
+        edge node [above,pos=0.6]      {0x09,0x20} (6)
+    (4) edge [out=30,in=-30,distance=1.7em] node [right] {0--9} (4)
+    (5) edge [out=30,in=-30,distance=1.7em] node [right] {0--9} (5)
+    (6) edge [out=30,in=-30,distance=1.7em] node [right] {0x09,0x20} (6)
+        edge node [right]      {0--9} (4)
+        edge node [right]      {0--9} (5)
+    (7) edge [out=-120,in=-60,distance=1.7em] node [below] {0x09,0x20} (7)
+        edge [bend right] node [below]      {0--9} (5)
+    (8) edge [out=120,in=60,distance=1.7em] node [above] {0x09,0x20} (8)
+        edge [bend left] node [above]      {0--9} (4);
+
+
+\end{tikzpicture}  
+\caption{Merged search automaton for \re{[\texteuro\$][ \whack t]*\whack d+} in ISO-8859-15 and Windows-1252}
+\end{figure}
 
 
 \section{Fun With Unicode}
