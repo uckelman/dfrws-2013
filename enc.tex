@@ -1,24 +1,30 @@
 \documentclass[5p,final,number,sort&compress]{elsarticle}
 
-\usepackage{lmodern}
-\usepackage{textcomp}
+\usepackage[cm-default]{fontspec}
+\usepackage{xunicode}
+\usepackage{xltxtra}
+\setmainfont[%
+  Mapping=tex-text,
+  BoldFont={* Bold},
+  ItalicFont={* Italic},
+  BoldItalicFont={* BoldItalic},
+  SmallCapsFont={* CapsRegular},
+]{LMRoman10}
+\setmonofont[%
+  Mapping=tex-text,
+  BoldFont={* Dark},
+  ItalicFont={* Italic},
+  SmallCapsFont={* CapsRegular},
+]{LMTypewriter10}
 
-\usepackage{graphicx}
-
-\usepackage{ucs}
-\usepackage[utf8x]{inputenc}
-%\usepackage[greek,english]{babel}
-\usepackage[LUC,T1]{fontenc}
-
-\makeatletter
-\ProvideTextCommandDefault{\textunicodechar}[1]{\uni@char{#1}}
-\makeatother
+\newfontface\cjk{AR PL UMing CN}
 
 \newcommand{\re}[1]{\texttt{#1}}
 \newcommand*{\whack}{\textbackslash}
 
 \usepackage{amsmath}
-\usepackage{microtype}
+%\usepackage{microtype}
+\usepackage{graphicx}
 \usepackage{natbib}
 \usepackage{subfig}
 
@@ -288,12 +294,7 @@ Fortunately, multipattern search rescues us in this situation: Searching in para
 \caption{Merged search automaton for \re{[\texteuro\$][ \whack t]*\whack d+} in ISO-8859-15 and Windows-1252\label{fig:money}}
 \end{figure}
 
-The literals in our regexes are Unicode characters, \emph{not} bytes in a particular Unicode encoding (such as UTF-8). This distinction isn't present when working with traditional ASCII regular expressions, where the characters and the bytes are identical. Distinguishing between characters and bytes in Unicode regular expressions makes the regexes \emph{encoding-independent}, which is a useful property should one wish to search for the same character string in several different encodings. Furthermore, having literals be Unicode characters can improve regex readability over specifying them by code point: While
-% FIXME
-%\texttt{屁股}
-and
-%\texttt{地洞}
-are easily confusable for those unfamiliar with Chinese, and thus specifying the characters by code point may be called for, of the two patterns matching the Greek name for the city of Athens, even non-Grecophones are likely to prefer \re{
+The literals in our regexes are Unicode characters, \emph{not} bytes in a particular Unicode encoding (such as UTF-8). This distinction isn't present when working with traditional ASCII regular expressions, where the characters and the bytes are identical. Distinguishing between characters and bytes in Unicode regular expressions makes the regexes \emph{encoding-independent}, which is a useful property should one wish to search for the same character string in several different encodings. Furthermore, having literals be Unicode characters can improve regex readability over specifying them by code point: While {\cjk 屁股} and {\cjk 地洞} are easily confusable for those unfamiliar with Chinese, and thus specifying the characters by code point may be called for, of the two patterns matching the Greek name for the city of Athens, even non-Grecophones are likely to prefer \re{
 % FIXME
 %Αθήνα
 } to
@@ -537,10 +538,7 @@ In Section~\ref{sec:multi}, we showed how to put multipattern search to use for 
 
 Sadly, this is not as straightforward nor are the results as univocal as we've made them sound. There are numerous ways in which decoding context might fail. The simplest is that the context is not in the same encoding as the hit. This can happen when searching serialized binary data, such as database files, where the fields adjacent to the one containing the hit might have different types from the hit. E.g., if an integer field precedes a hit in a UTF-16LE text field, then interpreting the part of the leading context overlapping the integer field as UTF-16LE is bound to fail to decode, or if it does decode, to produce garbage. Similarly, a hit and its context could be in different files. One way this could occur is when searching a raw disk image. If a hit runs up to the end of a file system block, there is no guarantee that the next byte on the disk belongs to the same file, either because the file containing the hit is fragmented or because the hit is actually at the end of its file. In either case, the trailing context could be anything, so there is no guarantee that it will decode along with the hit. Similar things can occur when searching unallocated space: the bytes preceding or trailing the hit could be associated with the hit, or could be part of some file which overwrote part of the hit's file and was then deleted itself. Another way that decoding context can fail is if the context was written with a broken encoder. This is not so far-fetched as it sounds. In the early days of Unicode, there were numerous encoders which failed to follow the standard. (A common example of this was writing overlong character representations in UTF-8.) As we cannot anticipate all the possible ways in which encoders might be broken, we cannot properly decode improperly-encoded byte sequences.\footnote{This puts one in mind of Charles Babbage being asked whether by putting the wrong figures into his Difference Engine, the right answers might come out.}
 
-Finally, it could be the case that the hit's context fails to decode because the hit has been misidentified. For example, ASCII is interoperable with many encodings---UTF-7, UTF-8, all sixteen of the ISO-8859-X encodings, Shift JIS, and GB18030, among others. This means that strings consisting entirely of 7-bit ASCII characters are represented by the same byte sequence in many encodings. Consequently, you cannot deduce the encoding from such sequences, and you are likely to get \emph{mojibake} if you have guessed the wrong encoding for the surrounding context . Mojibake (
-% FIXME
-%文字化け
-), which literally means ``character transformation'', is the delightful term borrowed from Japanese for the result of rendering text in the wrong encoding. If, for example, we searched the previous sentence (which we assert, for the purposes of the example, to be UTF-8) for the pattern \re{Mojibake} encoded in Windows-1252 with fifteen characters of trailing context, then our hit plus context would be reported as ``Mojibake (æ–‡å\ —åŒ–ã\ ‘)''. Figure~\ref{fig:mojibake} shows the carnage in detail.\footnote{Note that the bytes AD and 81 are shown as blanks because in Windows-1252, byte AD is \textsc{soft hyphen} (U+AD), which is a non-printing character, and byte 81 is unassigned.}
+Finally, it could be the case that the hit's context fails to decode because the hit has been misidentified. For example, ASCII is interoperable with many encodings---UTF-7, UTF-8, all sixteen of the ISO-8859-X encodings, Shift JIS, and GB18030, among others. This means that strings consisting entirely of 7-bit ASCII characters are represented by the same byte sequence in many encodings. Consequently, you cannot deduce the encoding from such sequences, and you are likely to get \emph{mojibake} if you have guessed the wrong encoding for the surrounding context. Mojibake ({\cjk 文字化け}), which literally means ``character transformation'', is the delightful term borrowed from Japanese for the result of rendering text in the wrong encoding. If, for example, we searched the previous sentence (which we assert, for the purposes of the example, to be UTF-8) for the pattern \re{Mojibake} encoded in Windows-1252 with fifteen characters of trailing context, then our hit plus context would be reported as ``Mojibake (æ–‡å\ —åŒ–ã\ ‘)''. Figure~\ref{fig:mojibake} shows the carnage in detail.\footnote{Note that the bytes AD and 81 are shown as blanks because in Windows-1252, byte AD is \textsc{soft hyphen} (U+AD), which is a non-printing character, and byte 81 is unassigned.}
 
 \begin{figure}[ht]
 \centering
@@ -549,16 +547,7 @@ Finally, it could be the case that the hit's context fails to decode because the
 
   \matrix (m) [matrix of nodes,nodes in empty cells,nodes={inner sep=0pt,outer sep=0pt,minimum width=5mm},column sep={5mm,between origins},row sep={8mm,between origins}]
   {
-    ( &
-% FIXME
-%文
-&&&
-%字
-&&&
-%化
-&&&
-%け
-&&& ) \\
+    ( && \cjk 文 &&& \cjk 字 &&& \cjk 化 &&& \cjk け && ) \\
     28 & E6 & 96 & 87 & E5 & AD & 97 & E5 & 8C & 96 & E3 & 81 & 91 & 29 \\
     (  & æ  & –  & ‡  & å  &    & —  & å  & Œ  & –  & ã  &    & ‘  & )  \\
   };
@@ -582,15 +571,9 @@ Finally, it could be the case that the hit's context fails to decode because the
 \caption{UTF-8 misinterpreted as Windows-1252\label{fig:mojibake}}
 \end{figure}
 
-An even stranger thing can happen with UTF-8 and UTF-16LE: There are UTF-16LE strings which contain completely different UTF-8 strings as prefixes. For example the byte sequence which is ``nonsense'' in UTF-8 is ``
-% FIXME
-%浵捩摥
-'' in UTF-16LE (!) and not only that, both can manage to be correctly null-terminated for their encoding (!!). Figure~\ref{fig:8or16} shows how. The explanation for this is that lowercase Latin letters in ASCII fall in the byte range $[61,7\mathrm{A}]$, while all four-digit code points starting with hex digits 6 or 7 are Chinese ideographs. (This applies also to uppercase Latin letters in ASCII, $[41,5\mathrm{A}]$, since four-digit code points starting with 4 or 5 are also Chinese ideographs.)
+An even stranger thing can happen with UTF-8 and UTF-16LE: There are UTF-16LE strings which contain completely different UTF-8 strings as prefixes. For example the byte sequence which is ``nonsense'' in UTF-8 is {\cjk 潮獮湥敳} in UTF-16LE (!) and not only that, both can manage to be correctly null-terminated for their encoding (!!). Figure~\ref{fig:8or16} shows how. The explanation for this is that lowercase Latin letters in ASCII fall in the byte range $[61,7\mathrm{A}]$, while all four-digit code points starting with hex digits 6 or 7 are Chinese ideographs. (This applies also to uppercase Latin letters in ASCII, $[41,5\mathrm{A}]$, since four-digit code points starting with 4 or 5 are also Chinese ideographs.)
 
-We do not know whether
-% FIXME
-%潮獮湥敳
-is intelligible Chinese, but we can say that at the time of writing, Google returns 263,000 results for this character sequence. Regardless, we suppose that there must be some byte sequences which are both meaningful Chinese when decoded from UTF-16LE and words in some language using the Latin alphabet when decoded from UTF-8.
+We do not know whether {\cjk 潮獮湥敳} is intelligible Chinese, but we can say that at the time of writing, Google returns 263,000 results for this character sequence. Regardless, we suppose that there must be some byte sequences which are both meaningful Chinese when decoded from UTF-16LE and words in some language using the Latin alphabet when decoded from UTF-8.
 \begin{figure}[ht]
 \centering
 \small
@@ -598,11 +581,9 @@ is intelligible Chinese, but we can say that at the time of writing, Google retu
 
   \matrix (m) [matrix of nodes,nodes in empty cells,nodes={inner sep=0pt,outer sep=0pt,minimum width=5mm},column sep={5mm,between origins},row sep={8mm,between origins}]
   {
-    n  & o  & n  & s  & e  & n  & s  & e  &    & \\
-    6E & 6F & 6E & 73 & 65 & 6E & 73 & 65 & 00 & 00 \\
-       &    &    &    &    &    &    &    &    & \\
-% FIXME
-% 潮獮湥敳 
+    n  & o  & n  & s  & e  & n  & s  & e  &    &    \\
+    6E & 6F & 6E & 73 & 65 & 6E & 73 & 65 & 00 & 00 \\[2mm]
+       & \cjk 潮 && \cjk 獮 && \cjk 湥 && \cjk 敳 && \phantom{\cjk 敳} \\
   };
 
   \draw ([xshift=-2.5mm,yshift=0.5em]m-2-1.north) rectangle ([xshift=2.5mm,yshift=-0.5em]m-2-10.south);
@@ -666,12 +647,10 @@ The issue of where context decoding should start is more complex. A na\"ive stra
   \draw [semithick,decorate,decoration={brace,amplitude=5pt,raise=6pt}] (m-1-6.north west) -- (m-1-7.north east) node [midway,above=10pt,text centered] {x};
   \draw [semithick,decorate,decoration={brace,amplitude=5pt,raise=6pt}] (m-1-8.north west) -- (m-1-9.north east) node [midway,above=10pt,text centered] {x};
 
-% 硸砀砀砀
-
-  \draw [semithick,decorate,decoration={brace,amplitude=5pt,raise=6pt}] (m-1-2.south east) -- (m-1-1.south west) node [midway,above=10pt,text centered] {};
-  \draw [semithick,decorate,decoration={brace,amplitude=5pt,raise=6pt}] (m-1-4.south east) -- (m-1-3.south west) node [midway,above=10pt,text centered] {};
-  \draw [semithick,decorate,decoration={brace,amplitude=5pt,raise=6pt}] (m-1-6.south east) -- (m-1-5.south west) node [midway,above=10pt,text centered] {};
-  \draw [semithick,decorate,decoration={brace,amplitude=5pt,raise=6pt}] (m-1-8.south east) -- (m-1-7.south west) node [midway,above=10pt,text centered] {};
+  \draw [semithick,decorate,decoration={brace,amplitude=5pt,raise=6pt}] (m-1-2.south east) -- (m-1-1.south west) node [midway,below=10pt,text centered] {\cjk 硸};
+  \draw [semithick,decorate,decoration={brace,amplitude=5pt,raise=6pt}] (m-1-4.south east) -- (m-1-3.south west) node [midway,below=10pt,text centered] {\cjk 硸};
+  \draw [semithick,decorate,decoration={brace,amplitude=5pt,raise=6pt}] (m-1-6.south east) -- (m-1-5.south west) node [midway,below=10pt,text centered] {\cjk 硸};
+  \draw [semithick,decorate,decoration={brace,amplitude=5pt,raise=6pt}] (m-1-8.south east) -- (m-1-7.south west) node [midway,below=10pt,text centered] {\cjk 硸};
 
 \end{tikzpicture}
 \caption{Bad alignment when decoding UTF-16LE\label{fig:alignment}}
