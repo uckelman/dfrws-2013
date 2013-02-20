@@ -67,15 +67,15 @@ We needed to search a disk image for a pattern, but didn't know how the hits wou
 \section{Character Encoding Basics}
 % in which character encodings are explained
 
+A \emph{coded character set} is list of pairs, each consisting of a character and the unique integer representing it, known as a \emph{code point}.  An \emph{encoding} is a method for mapping sequences of code points to sequences of bytes. Examples: Unicode is a coded character set consisting of 1,114,112 code points, intended to be sufficient for representing all text produced by humans. UTF-8 and UTF-16 are encodings capable of representing all Unicode code points as bytes. ASCII, commonly used for simple text files (especially by English speakers), is both a coded character set and an encoding---the 128 code points in ASCII, numbered 0--127, are directly encoded as bytes 0--127. Numerous encodings specific to one or more natural languages were developed---such as Shift\_JIS, EUC-KR, KOI8-R, and ISO 8859-1---which are slowly being supplanted by UTF-8 and UTF-16.
+
 \section{Multipattern Search is Multiencoding Search}
 \label{sec:multi}
 % in which we sketch a general solution to the problem
 
-A \emph{coded character set} is list of pairs, each consisting of a character and the unique integer representing it, known as a \emph{code point}.  An \emph{encoding} is a method for mapping sequences of code points to sequences of bytes. Examples: Unicode is a coded character set consisting of 1,114,112 code points, intended to be sufficient for representing all text produced by humans. UTF-8 and UTF-16 are encodings capable of representing all Unicode code points as bytes. ASCII, commonly used for simple text files (especially by English speakers), is both a coded character set and an encoding---the 128 code points in ASCII, numbered 0--127, are directly encoded as bytes 0--127. Numerous encodings specific to one or more natural languages were developed---such as Shift\_JIS, EUC-KR, KOI8-R, and ISO 8859-1---which are slowly being supplanted by UTF-8 and UTF-16.
-
 The multiplicity of encodings means that one piece of text can be represented as bytes in numerous ways. E.g., the text ``IRLIBSYR'' can be encoded as in Figure~\ref{fig:enc}.
 
-\begin{figure*}[th]
+\begin{figure}[th]
 \centering
 \begin{tikzpicture}
   \small
@@ -102,9 +102,13 @@ The multiplicity of encodings means that one piece of text can be represented as
   \foreach \x in {1,...,7}
     \draw ([xshift=2.5mm,yshift=0.5em]m-3-\x.north) -- ([xshift=2.5mm,yshift=-0.5em]m-3-\x.south);
 
-  \node [left=5mm of m-1-1.west] {ASCII and UTF-8};
-  \node [left=5mm of m-2-1.west] {UTF16-LE};
-  \node [left=5mm of m-3-1.west] {EBCDIC 37};
+  \node [right=of m-1-7.east] (ascii) {ASCII and UTF-8};
+  \node [below=of m-2-15] (utf16) {UTF16-LE};
+  \node [right=of m-3-7.east] (ebcdic) {EBCDIC 37};
+
+  \draw [help lines] (ascii) -- (m-1-8.east);
+  \draw [help lines,shorten >=4pt] (utf16) -- (m-2-15.south);
+  \draw [help lines] (ebcdic) -- (m-3-8.east);
 
   \foreach \x in {1,...,16}
     \pgfmathparse{\x-1}
@@ -138,7 +142,7 @@ The multiplicity of encodings means that one piece of text can be represented as
   \end{pgfonlayer}
 \end{tikzpicture}
 \caption{Several encodings of the text ``IRLIBSYR''\label{fig:enc}}
-\end{figure*}
+\end{figure}
 
 The UTF-16LE encoding, while containing values similar to the UTF-8 encoding, is twice the length, while the EBCDIC 37 encoding bears no resemblance to the other two. Searching a block of bytes for ``IRLIBSYR'' can mean searching for ``IRLIBSYR'' once for each possible encoding. Hundreds of encodings exist, and while the vast majority of them are obsolete and unlikely to be encountered in data from a contemporary computer, there are still a few dozen which are in common usage. Therefore, if we are trying to establish the existence of a particular string within data for which we don't know the encoding beforehand, the search task can be rather large. Should we need to do this for hundreds, or even thousands of strings (or, in the general case, regular expressions), then it will require a prohibitive amount of time to carry out the search serially, reading the data once for each pattern-encoding pair.
 
@@ -245,7 +249,7 @@ Fortunately, multipattern search rescues us in this situation: Searching in para
     (38) edge node [above]      {$\emptyset$} (39);
 
 \end{tikzpicture}
-\caption{Merged search automaton for \re{Lolita} in UTF-8, UTF-16LE, and UTF-32LE}
+\caption{Merged search automaton for \re{Lolita} in UTF-8, UTF-16LE, and UTF-32LE\label{fig:lolita}}
 \end{figure*}
 
 \begin{figure}
@@ -255,7 +259,6 @@ Fortunately, multipattern search rescues us in this situation: Searching in para
 \begin{tikzpicture}[node distance=1.5cm,thick,initial text=,initial distance=0.75em,every initial by arrow/.style={-stealth'}]
 
   \node[state,initial]   (0)                    {};
-%  \node[state]           (6) [right=8em of 0]   {};
   \node                  (X) [right=8em of 0]   {};
 
   \node[state]           (1) [above left=of X] {};
@@ -266,15 +269,6 @@ Fortunately, multipattern search rescues us in this situation: Searching in para
   \node[state]           (6) [right=of X]   {};
   \node[state]           (7) [below=of X] {};
   \node[state]           (8) [above=of X] {};
-
-%  \node[state]           (1) [above right=of 0] {};
-%  \node[state]           (2) [below right=of 0] {};
-%  \node[state]           (3) [right=of 0]       {};
-%  \node[state,accepting] (4) [right=12em of 1]  {};
-%  \node[state,accepting] (5) [right=12em of 2]  {};
-%  \node[state]           (6) [right=6em of 3]   {};
-%  \node[state]           (7) [below right=7em of 3] {};
-%  \node[state]           (8) [above right=7em of 3] {};
 
   \path[->,shorten >=1pt,>=stealth']
     (0) edge node [above,sloped] {0xA4} (1)
@@ -297,9 +291,8 @@ Fortunately, multipattern search rescues us in this situation: Searching in para
     (8) edge [out=120,in=60,distance=1.7em] node [above] {0x09,0x20} (8)
         edge [bend left] node [above]      {0--9} (4);
 
-
 \end{tikzpicture}  
-\caption{Merged search automaton for \re{[\texteuro\$][ \whack t]*\whack d+} in ISO-8859-15 and Windows-1252}
+\caption{Merged search automaton for \re{[\texteuro\$][ \whack t]*\whack d+} in ISO-8859-15 and Windows-1252\label{fig:money}}
 \end{figure}
 
 
