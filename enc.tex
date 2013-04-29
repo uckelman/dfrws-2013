@@ -303,7 +303,6 @@ in UTF-8 has an NFA with 94 vertices, does not fit on the page, and looks like a
 Unicode Technical Standard \#18 (hereafter, UTS~\#18) provides guidelines for supporting Unicode characters in regular expressions \citep{uts18}.
 
 % FIXME: missing RL1.2a
-% FIXME: also, what happened to RL2.1?
 
 UTS~\#18 defines three levels of support for Unicode in regexes. Level~1, Basic Unicode Support, requires support for specifying Unicode characters by their code points (RL1.1), selectors for Unicode properties (RL1.2), character class union, subtraction, and intersection (RL1.3), simple word boundary matching (RL1.4), simple loose matching (RL1.5), line boundary matching (RL1.6), and expression of the full range of Unicode characters (RL1.7). Level~2, Extended Unicode Support, requires support for matching canonical equivalents (RL2.1), extended grapheme clusters (RL2.2), default word boundaries (RL2.3), name properties (RL2.5), all Unicode properties (RL2.7), as well as support for full default case folding and (RL2.4) and wildcards in property names (RL2.6). Level~3, Tailored Support, requires locale-specific punctuation properties (RL3.1), grapheme clusters (RL3.2), and word boundaries (RL3.3), as well as context (RL3.6) and incremental (RL3.7) matching, the generation of possible match sets (RL3.9), and match subroutines (RL3.11). We now proceed to explain each of the requirements.
 
