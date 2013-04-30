@@ -46,11 +46,15 @@
 \author{Joel Uckelman}
 \ead{joel@lightboxtechnologies.com}
 
-\address{Lightbox Technologies, Inc. \\ Arlington, VA}
+\address{Lightbox Technologies, Inc. \\ 1400 Key Boulevard, Suite 1000 \\ Arlington, VA 22209}
 
 \begin{abstract}
 This paper discusses problems arising in digital forensics with regard to Unicode, character encodings, and search. It describes how multipattern search can handle the different text encodings encountered in digital forensics and a number of issues pertaining to proper handling of Unicode in search patterns. Finally, we demonstrate the feasibility of the approach and discuss the integration of our developed search engine, lightgrep, with the popular bulk\_extractor tool.
 \end{abstract}
+
+\begin{keyword}
+Unicode \sep regular expression \sep regex \sep search
+\end{keyword}
 
 \end{frontmatter}
 
@@ -64,15 +68,15 @@ A number of regular expression engines provide searching over Unicode text, but 
 \section{Character Encoding Basics}
 % in which character encodings are explained
 
-A \emph{coded character set} is a list of pairs, each consisting of a character and the unique integer, known as a \emph{code point}, representing it.  An \emph{encoding} is a method for mapping sequences of code points to sequences of bytes. Examples: Unicode is a coded character set consisting of 1,114,112 code points, intended to be sufficient for representing all text produced by humans. UTF-8 and UTF-16 are encodings capable of representing all Unicode code points as bytes. ASCII, commonly used for simple text files (especially by English speakers), is both a coded character set and an encoding---the 128 code points in ASCII, numbered 0--127, are directly encoded as bytes 0--127. Numerous encodings which were developed specifically for one or more natural languages---such as Shift JIS, EUC-KR, KOI8-R, and ISO 8859-1---are slowly being supplanted by UTF-8 and UTF-16.
+A \emph{coded character set} is a list of pairs, each consisting of a character and the unique integer, known as a \emph{code point}, representing it.  An \emph{encoding} maps sequences of code points to sequences of bytes. Examples: Unicode is a coded character set consisting of 1,114,112 code points, intended to be sufficient for representing all text produced by humans. UTF-8 and UTF-16 are encodings capable of representing all Unicode code points as bytes. ASCII, commonly used for simple text files (especially by English speakers), is both a coded character set and an encoding---the 128 code points in ASCII, numbered 0--127, are directly encoded as bytes 0--127. Numerous encodings which were developed specifically for one or more natural languages---such as Shift JIS, EUC-KR, KOI8-R, and ISO 8859-1---are slowly being supplanted by UTF-8 and UTF-16.
 
 \section{Multipattern Search is Multiencoding Search}
 \label{sec:multi}
 % in which we sketch a general solution to the problem
 
-The multiplicity of encodings means that one piece of text can be represented as bytes in numerous ways. E.g., the text ``IRLIBSYR'' can be encoded as in Figure~\ref{fig:enc}.
+The multiplicity of encodings means that one piece of text can be represented as bytes in numerous ways. E.g., the text ``IRLIBSYR'' can be encoded as in Figure~\ref{fig:enc}. The UTF-16LE encoding, while containing values similar to the UTF-8 encoding, is twice the length, while the EBCDIC~37 encoding bears no resemblance to the other two. Searching a block of bytes for ``IRLIBSYR'' can mean searching for ``IRLIBSYR'' once for each possible encoding. Hundreds of encodings exist, and while the vast majority of them are obsolete and unlikely to be encountered in data from a contemporary computer, there are still a few dozen which are in common usage. Therefore, if we are trying to establish the existence of a particular string within data for which we don't know the encoding beforehand, the search task can be rather large. Should we need to do this for hundreds, or even thousands of strings (or, in the general case, regular expressions), it will require a prohibitive amount of time to carry out the search serially, reading the data once for each pattern-encoding pair.
 
-\begin{figure}[th]
+\begin{figure}
 \centering
 \begin{tikzpicture}
   \small
@@ -80,7 +84,7 @@ The multiplicity of encodings means that one piece of text can be represented as
   {
     49 & 52 & 4C & 49 & 42 & 53 & 59 & 52 &    &    &    &    &    &    &    & \\
     49 & 00 & 52 & 00 & 4C & 00 & 49 & 00 & 42 & 00 & 53 & 00 & 59 & 00 & 52 & 00 \\
-    C9 & D9 & D3 & C9 & C2 & E2 & E8 & D9 \\
+    C9 & D9 & D3 & C9 & C2 & E2 & E8 & D9 \\[-1.5ex]
     I  & R  & L  & I  & B  & S  & Y  & R \\
   };
 
@@ -141,9 +145,7 @@ The multiplicity of encodings means that one piece of text can be represented as
 \caption{Several encodings of the text ``IRLIBSYR''\label{fig:enc}}
 \end{figure}
 
-The UTF-16LE encoding, while containing values similar to the UTF-8 encoding, is twice the length, while the EBCDIC~37 encoding bears no resemblance to the other two. Searching a block of bytes for ``IRLIBSYR'' can mean searching for ``IRLIBSYR'' once for each possible encoding. Hundreds of encodings exist, and while the vast majority of them are obsolete and unlikely to be encountered in data from a contemporary computer, there are still a few dozen which are in common usage. Therefore, if we are trying to establish the existence of a particular string within data for which we don't know the encoding beforehand, the search task can be rather large. Should we need to do this for hundreds, or even thousands of strings (or, in the general case, regular expressions), it will require a prohibitive amount of time to carry out the search serially, reading the data once for each pattern-encoding pair.
-
-Fortunately, multipattern search rescues us in this situation: Searching in parallel for one string rendered in multiple encodings is structurally the same problem as searching in parallel for multiple strings each rendered in one encoding. Hence, a search for the pattern \texttt{IRLIBSYR.*?SACPOP}\footnote{``IRLIBSYR'' being the nuclear-armed coalition of Iran-Libya-Syria, led by notorious AMNAT-SOVWAR interloper Evan Ingersoll, who is trying to fend off Strikes Against Civilian Populations (SACPOP). For more, see \citep{InfiniteJest}.} in UTF-8, UTF-16LE, UTF-16BE, UTF-32LE, and UTF-32BE does not necessitate five passes over the data (once for each encoding), but merely adds five patterns to the pattern set from which we build our search automaton. For a detailed description of the techniques necessary for efficient multipattern search see \citep{StewartUckelmanIFIP2011}.
+Fortunately, multipattern search rescues us in this situation: Searching in parallel for one string rendered in multiple encodings is structurally the same problem as searching in parallel for multiple distinct strings. Hence, a search for the pattern \texttt{IRLIBSYR.*?SACPOP}\footnote{``IRLIBSYR'' being the nuclear-armed coalition of Iran-Libya-Syria, led by notorious AMNAT--SOVWAR interloper Evan Ingersoll, who is trying to fend off Strikes Against Civilian Populations (SACPOP). For more, see \citep[pp.~321--342]{InfiniteJest}.} in UTF-8, UTF-16LE, UTF-16BE, UTF-32LE, and UTF-32BE does not necessitate five passes over the data (once for each encoding), but merely adds five patterns to the pattern set from which we build our search automaton. For a detailed description of the techniques necessary for efficient multipattern search see \citep{StewartUckelmanIFIP2011}.
 
 \begin{figure*}
 \centering
@@ -303,7 +305,6 @@ in UTF-8 has an NFA with 94 vertices, does not fit on the page, and looks like a
 Unicode Technical Standard \#18 (hereafter, UTS~\#18) provides guidelines for supporting Unicode characters in regular expressions \citep{uts18}.
 
 % FIXME: missing RL1.2a
-% FIXME: also, what happened to RL2.1?
 
 UTS~\#18 defines three levels of support for Unicode in regexes. Level~1, Basic Unicode Support, requires support for specifying Unicode characters by their code points (RL1.1), selectors for Unicode properties (RL1.2), character class union, subtraction, and intersection (RL1.3), simple word boundary matching (RL1.4), simple loose matching (RL1.5), line boundary matching (RL1.6), and expression of the full range of Unicode characters (RL1.7). Level~2, Extended Unicode Support, requires support for matching canonical equivalents (RL2.1), extended grapheme clusters (RL2.2), default word boundaries (RL2.3), name properties (RL2.5), all Unicode properties (RL2.7), as well as support for full default case folding and (RL2.4) and wildcards in property names (RL2.6). Level~3, Tailored Support, requires locale-specific punctuation properties (RL3.1), grapheme clusters (RL3.2), and word boundaries (RL3.3), as well as context (RL3.6) and incremental (RL3.7) matching, the generation of possible match sets (RL3.9), and match subroutines (RL3.11). We now proceed to explain each of the requirements.
 
@@ -311,7 +312,7 @@ UTS~\#18 defines three levels of support for Unicode in regexes. Level~1, Basic 
 
 RL1.1 requires Level~1-conformant regex languages to provide a way of specifying code points in hexadecimal. Following the venerable Perl Compatible Regular Expression library (PCRE), lightgrep meets this requirement with the metacharacter \re{\whack x}, which takes a hexadecimal code point as its argument. E.g., \textsc{latin small letter a} (a) and \textsc{arabic ligature sallallahou alayhe wasallam} ({\fontspec[ExternalLocation]{PakType_Naqsh.ttf}ﷺ}), which is virtually illegible on-screen at 10pt, can be specified as \re{\whack x\{61\}} and \re{\whack x\{FDFA\}}, respectively.
 
-RL1.2 requires Level~1-conformant regex languages to support the character classes defined by the Unicode properties General Category, Script, Alphabetic, Uppercase, Lowercase, White Space, Noncharacter Code Point, Default Ignorable Code Point, Any, ASCII, and Assigned. Unicode properties are fundamentally sets of characters. The General Category and Script properties are multivalued, while the other properties are binary. For example, any given character is either Uppercase or not, while the Script for a letter might be Arabic, Latin, Greek, Cyrillic, or any of 100 other scripts defined in Unicode~6.2.\footnote{For a complete list, see the Unicode~6.2 data file \texttt{PropertyValueAliases.txt} \citep{ustd62}.} Following PCRE, we meet this requirement with the metacharacter \re{\whack p}, which takes a Unicode property name (with possible value) as its argument. E.g., \re{\whack p\{Script=Arabic\}} matches any character in Arabic script; \re{\whack p\{General Category=Currency Symbol\}} matches currency symbols such as \$, ¢, \texteuro, and ¥; and \re{\whack p\{White Space\}} matches spaces, tabs, newlines, and carriage returns, as well as more exotic whitespace such as \textsc{mongolian vowel separator}.  \re{\whack p\{Any\}} is the class of all Unicode code points, while \re{\whack p\{Assigned\}} is the class of all code points with a character assigned to them. UTS~\#18 recommends (but does not require) leniency with regard to spaces, case, hyphens, and underscores---which we respect. Hence, \re{\whack p\{Whitespace\}}, \re{\whack p\{wHiTeSpAcE\}}, and \re{\whack p\{\_\_\_white\;\;\;\;space\_\_\_\}} are equivalent. The Unicode Standard defines numerous short forms of properties (such as ``Khmer'' for ``Script=Khmer''), which we also support.
+RL1.2 requires Level~1-conformant regex languages to support the character classes defined by the Unicode properties General Category, Script, Alphabetic, Uppercase, Lowercase, White Space, Noncharacter Code Point, Default Ignorable Code Point, Any, ASCII, and Assigned. Unicode properties are fundamentally sets of characters. The General Category and Script properties are multivalued, while the other properties are binary. For example, any given character is either Uppercase or not, while the Script for a letter might be Arabic, Latin, Greek, Cyrillic, or any of 100 other scripts defined in Unicode~6.2.\footnote{For a complete list, see the Unicode~6.2 data file \texttt{PropertyValueAliases.txt} \citep{ustd62}.} Following PCRE, we meet this requirement with the metacharacter \re{\whack p}, which takes a Unicode property name (with possible value) as its argument. E.g., \re{\whack p\{Script=Arabic\}} matches any character in Arabic script; \re{\whack p\{General Category=\linebreak Currency Symbol\}} matches currency symbols such as \$, ¢, \texteuro, and ¥; and \re{\whack p\{White Space\}} matches spaces, tabs, newlines, and carriage returns, as well as more exotic whitespace such as \textsc{mongolian vowel separator}.  \re{\whack p\{Any\}} is the class of all Unicode code points, while \re{\whack p\{Assigned\}} is the class of all code points with a character assigned to them. UTS~\#18 recommends, but does not require, leniency with regard to spaces, case, hyphens, and underscores. Hence, \re{\whack p\{Whitespace\}}, \re{\whack p\{wHiTeSpAcE\}}, and \linebreak\re{\whack p\{\_\_\_white\;\;\;\;space\_\_\_\}} are equivalent. The Unicode Standard defines short forms for some properties (such as ``Khmer'' for ``Script=Khmer''), which we also support.
 
 RL1.3 requires Level~1-conformant regex languages to support union, intersection, and set difference on character classes. E.g., one might wish to search for anything Cyrillic or Greek (the union of Cyrillic and Greek scripts), or lowercase Latin letters (the intersection of the Latin letters and the lowercase letters, or, equivalently, the Latin letters minus the uppercase letters). We support all three operations (and also symmetric difference, whihc is suggested, but not required). The patterns \re{[\whack p\{Cyrillic\}\whack p\{Greek\}]} and \re{[\whack p\{Latin\}\&\&\whack p\{Lowercase\}]} correspond to the searches just mentioned.
 
@@ -334,7 +335,7 @@ RL1.7 requires Level~1-conformant regex languages to handle all code points, as 
 
 RL2.1 deals with canonical equivalents of strings, but states no clear requirement. Ideally, if a pattern matches a string $S$, then it would also match every string $T$ which has the same normalization as $S$. Unicode defines several normalizations (e.g., NFS, NFKD), and as it is unclear how to normalize data of mixed or unknown encoding before searching, we do not yet support RL2.1.
 
-RL2.2 requires Level~2-conformant regex languages to provide a way of matching any extended grapheme cluster, a literal cluster, and extended grapheme cluster boundaries. An \emph{extended grapheme cluster} is the glyph that from a user's point of view consists of a single character.\footnote{This is a gloss. For the definition, see \citep[\S 3]{uax29}.} E.g., the sequence of the two Unicode characters \textsc{latin small letter o} and \textsc{combining double acute accent} form the extended grapheme cluster \H{o} used in Hungarian (which can also be produced by the single Unicode character \textsc{latin small letter o with double acute}). The metacharacter for matching any extended grapheme clusters is analogous to the dot metacharacter for matching any single code point. PCRE uses \re{\whack X} for this purpose. E.g., on the sequence $\langle \text{o U+030B} \rangle$, the regex \re{.} matches the o, while \re{\whack X} matches the o and its combining accent as a unit. The requirement for matching literal clusters is intended to facilitate including them in character classes, e.g., as in \re{[\H{o}\whack q\{o\whack x\{030B\}\}]} which follows the UTS~\#18 sample syntax and is intended to match either representation of~\H{o}. Support for literal clusters is vexing, as it means that a character class can no longer be expected always to match a single character---in the example, one member of the class is two Unicode characters long, instead of one. We do not yet support any of RL2.2.
+RL2.2 requires Level~2-conformant regex languages to provide a way of matching any extended grapheme cluster, a literal cluster, and extended grapheme cluster boundaries. An \emph{extended grapheme cluster} is the glyph that from a user's point of view consists of a single character. (This is a gloss. For the definition, see \citep[\S 3]{uax29}.) E.g., the sequence of the two Unicode characters \textsc{latin small letter o} and \textsc{combining double acute accent} form the extended grapheme cluster \H{o} used in Hungarian (which can also be produced by the single Unicode character \textsc{latin small letter o with double acute}). The metacharacter for matching any extended grapheme clusters is analogous to the dot metacharacter for matching any single code point. PCRE uses \re{\whack X} for this purpose. E.g., on the sequence $\langle \text{o U+030B} \rangle$, the regex \re{.} matches the o, while \re{\whack X} matches the o and its combining accent as a unit. The requirement for matching literal clusters is intended to facilitate including them in character classes, e.g., as in \re{[\H{o}\whack q\{o\whack x\{030B\}\}]} which follows the UTS~\#18 sample syntax and is intended to match either representation of~\H{o}. Support for literal clusters is vexing, as it means that a character class can no longer be expected always to match a single character---in the example, one member of the class is two Unicode characters long, instead of one. We do not yet support any of RL2.2.
 
 RL2.3 requires Level~2-conformant regex languages to provide assertions for matching Unicode default word boundaries, as defined in \citep[\S 4]{uax29}. This requirement is far more demanding than simple word boundaries as defined in RL1.4, and we do not presently support it.
 
@@ -360,7 +361,7 @@ RL3.2 requires Level~3-conformant regex languages to have locale-specific collat
 
 RL3.3 requires Level~3-conformant regex languages to have locale-specific word boundaries. Default word boundaries (RL2.3) are insufficient for splitting words in some languages. Thai, for example, has no interword whitespace, so detecting word boundaries is not a simple matter of finding adjacent word and non-word characters.
 
-We chose not to support RL3.1--3 because using them correctly requires language-specific expertise that forensics investigators are unlikely to possess\footnote{To appreciate the problem, consider for how many languages you are familiar with their collation order.}; given that, implementing these for more than a handful of locales is a gargantuan task with little benefit for forensics.
+We chose not to support RL3.1--3 because using them correctly requires language-specific expertise that forensics investigators are unlikely to possess---to appreciate the problem, consider for how many languages for which you are familiar with their collation order. Given that, implementing these for more than a handful of locales is a gargantuan task with little benefit for forensics.
 
 RL3.6 requires Level~3-conformant regex languages to support unmatchable leading and trailing context. For a given input text, a target range is specified within which matches may occur, which range sits within a context range where matches may not occur, though the context may be referred to by zero-width look-around assertions. Look-around assertions clearly are useful in forensics, and we intend to implement them; but we see no obvious use in forensics for the remainder of this requirement.
 
@@ -373,16 +374,16 @@ RL3.11 requires Level~3-conformant regex languages to permit registration of arb
 \subsection{UTS~\#18 Conformance}
 
 \begin{table}
-\small
+\footnotesize
 \centering
 \setlength{\tabcolsep}{3pt}
 \begin{tabular}{l|c|c|c|c|c|}
  \multicolumn{1}{c}{}
- & \multicolumn{1}{c}{\rule{1em}{0pt}\makebox[0cm][r]{\rotatebox[origin=rB]{-45}{lightgrep}}}
- & \multicolumn{1}{c}{\rule{1em}{0pt}\makebox[0cm][r]{\rotatebox[origin=rB]{-45}{ICU 50}}}
- & \multicolumn{1}{c}{\rule{1em}{0pt}\makebox[0cm][r]{\rotatebox[origin=rB]{-45}{Perl 5.16}}}
- & \multicolumn{1}{c}{\rule{1em}{0pt}\makebox[0cm][r]{\rotatebox[origin=rB]{-45}{Java 7}}}
- & \multicolumn{1}{c}{\rule{1em}{0pt}\makebox[0cm][r]{\rotatebox[origin=rB]{-45}{Python regex}}} \\
+ & \multicolumn{1}{c}{\rule{1em}{0pt}\makebox[0cm][r]{\rotatebox[origin=rB]{-30}{lightgrep}}}
+ & \multicolumn{1}{c}{\rule{1em}{0pt}\makebox[0cm][r]{\rotatebox[origin=rB]{-30}{ICU 50}}}
+ & \multicolumn{1}{c}{\rule{1em}{0pt}\makebox[0cm][r]{\rotatebox[origin=rB]{-30}{Perl 5.16}}}
+ & \multicolumn{1}{c}{\rule{1em}{0pt}\makebox[0cm][r]{\rotatebox[origin=rB]{-30}{Java 7}}}
+ & \multicolumn{1}{c}{\rule{1em}{0pt}\makebox[0cm][r]{\rotatebox[origin=rB]{-30}{Python regex}}} \\
 \hline
 Level 1: Basic Unicode Support     & $\circ$   & $\bullet$ & $\circ$   & $\bullet$ & $\bullet$ \\
 \hline
@@ -427,6 +428,7 @@ Support for Unicode in regexes is far from complete, both in our implementation 
 
 \begin{figure}[ht]
 \centering
+\vspace{-\baselineskip}
 \scalebox{0.85}{%
 \tikzstyle{func} = [draw,rounded corners,minimum width=6mm]
 \begin{tikzpicture}[every to/.style={thick,->}]
@@ -447,11 +449,15 @@ Support for Unicode in regexes is far from complete, both in our implementation 
   \draw [semithick] ([yshift=-3pt]m-1-6.south) -- +(0,-1.25cm) node [below] {\small code point-byte transformation};
 
 \end{tikzpicture}}
+\vspace{-\baselineskip}
 \caption{An abstract transformation chain\label{fig:abs-chain}}
 \end{figure}
 
+Character encodings are a special case of something more general. Character encodings map (sequences of) code points to sequences of bytes. One could also imagine transformations which map (sequences of) code points to (sequences of) code points, and sequences of bytes to sequences of bytes, and that such transformations could be chained together, as in Figure~\ref{fig:abs-chain}. (\emph{Composed} would be the mathematical term here.) For example, the Caesar cipher, ROT-13, and URL-encoding can be thought of as maps from code points to points, while the XOR and ROR/ROL obfuscation schemes\footnote{Didier Stevens' XORSearch utility handles these schemes as well. See \url{http://blog.didierstevens.com/programs/xorsearch/.}} common to malware are maps from bytes to bytes. It is not far-fetched to think that one might want to search for text which is both encoded and transformed in one of these additional ways.
 
-\begin{figure*}[ht]
+A prime example of this is Outlook Compressible Encryption, which, in keeping with its oxymoronic name, is just a substitution cipher used to obfuscate email data within Microsoft Outlook PST archive files.\footnote{The subsitution scheme is documented in Joaquin Metz's libpff, \url{http://code.google.com/p/libpff/}.} This provides no real security and is easily defeated by frequency analysis---nonetheless, OCE is an impediment to searching Outlook mailbox files, since it changes the byte patterns contained therein. This forces the investigator either to hand-adjust patterns to account for OCE (which requires knowledge of both the target character encoding and OCE), or to decipher the OCE'd portions of Outlook PST files before searching them (which will not find email fragments in unallocated space). A better solution---one which we have implemented---generalizes specifying multiple encodings for each pattern by letting the user specify one or more \emph{transformation chains} per pattern. Continuing with the example above, specifying the chain \texttt{UTF-8|OCE} on the pattern \texttt{IRLIBSYR} would cause the byte sequence searched for to be UTF-8-encoded, then OCE'd, as seen in Figure~\ref{fig:concrete-chain}, thus permitting us to search for hits for this pattern in OCE'd Outlook mailboxes directly, without any human expertise required.
+
+\begin{figure}
 \centering
 \small
 \begin{tikzpicture}
@@ -467,7 +473,7 @@ Support for Unicode in regexes is far from complete, both in our implementation 
   \foreach \x in {1,...,7}
     \draw ([xshift=2.5mm,yshift=0.5em]utf8-1-\x.north) -- ([xshift=2.5mm,yshift=-0.5em]utf8-1-\x.south);
 
-  \matrix (oce) [matrix of nodes,nodes in empty cells,nodes={inner sep=0pt,outer sep=0pt,minimum width=5mm},column sep={5mm,between origins},right=of utf8]
+  \matrix (oce) [matrix of nodes,nodes in empty cells,nodes={inner sep=0pt,outer sep=0pt,minimum width=5mm},column sep={5mm,between origins},below=2.5mm of utf8]
   {
     C9 & B3 & 85 & C9 & 56 & 0F & A7 & B3 \\
   };
@@ -479,15 +485,11 @@ Support for Unicode in regexes is far from complete, both in our implementation 
 
   \path [every edge/.style={draw,semithick,->}]
     (text) edge node [above] {\footnotesize UTF-8} (utf8)
-    (utf8) edge node [above] {\footnotesize OCE} (oce);
+    (utf8.east) edge [out=0,in=0,looseness=2] node [right] {\footnotesize OCE} (oce.east);
 
 \end{tikzpicture}
 \caption{The chain \texttt{UTF-8|OCE} applied to text ``IRLIBSYR''\label{fig:concrete-chain}}
-\end{figure*}
-
-Character encodings are a special case of something more general. Character encodings map (sequences of) code points to sequences of bytes. One could also imagine transformations which map (sequences of) code points to (sequences of) code points, and sequences of bytes to sequences of bytes, and that such transformations could be chained together, as in Figure~\ref{fig:abs-chain}. (\emph{Composed} would be the mathematical term here.) For example, the Caesar cipher, ROT-13, and URL-encoding can be thought of as maps from code points to points, while the XOR and ROR/ROL obfuscation schemes\footnote{Didier Stevens' XORSearch utility handles these schemes as well. See \url{http://blog.didierstevens.com/programs/xorsearch/.}} common to malware are maps from bytes to bytes. It is not far-fetched to think that one might want to search for text which is both encoded and transformed in one of these additional ways.
-
-A prime example of this is Outlook Compressible Encryption, which, in keeping with its oxymoronic name, is just a substitution cipher used to obfuscate email data within Microsoft Outlook PST archive files.\footnote{The subsitution scheme is documented in Joaquin Metz's libpff, \url{http://code.google.com/p/libpff/}.} This provides no real security and is easily defeated by frequency analysis---nonetheless, OCE is an impediment to searching Outlook mailbox files, since it changes the byte patterns contained therein. This forces the investigator either to hand-adjust patterns to account for OCE (which requires knowledge of both the target character encoding and OCE), or to decipher the OCE'd portions of Outlook PST files before searching them (which will not find email fragments in unallocated space). A better solution---one which we have implemented---generalizes specifying multiple encodings for each pattern by letting the user specify one or more \emph{transformation chains} per pattern. Continuing with the example above, specifying the chain \texttt{UTF-8|OCE} on the pattern \texttt{IRLIBSYR} would cause the byte sequence searched for to be UTF-8-encoded, then OCE'd, as seen in Figure~\ref{fig:concrete-chain}, thus permitting us to search for hits for this pattern in OCE'd Outlook mailboxes directly, without any human expertise required.
+\end{figure}
 
 \section{Interpreting Hits in Context}
 % in which we describe issues with decoding hit context
@@ -507,6 +509,7 @@ Finally, it could be the case that the hit's context fails to decode because the
 \begin{figure}[ht]
 \centering
 \small
+\vspace{-0.5\baselineskip}
 \begin{tikzpicture}
 
   \matrix (m) [matrix of nodes,nodes in empty cells,nodes={inner sep=0pt,outer sep=0pt,minimum width=5mm},column sep={5mm,between origins},row sep={8mm,between origins}]
@@ -532,6 +535,7 @@ Finally, it could be the case that the hit's context fails to decode because the
   \end{pgfonlayer}
 
 \end{tikzpicture}
+\vspace{-0.5\baselineskip}
 \caption{UTF-8 misinterpreted as Windows-1252\label{fig:mojibake}}
 \end{figure}
 
@@ -541,6 +545,7 @@ We do not know whether {\cjk 潮獮湥敳} is intelligible Chinese, but we can s
 \begin{figure}[ht]
 \centering
 \small
+\vspace{-0.5\baselineskip}
 \begin{tikzpicture}
 
   \matrix (m) [matrix of nodes,nodes in empty cells,nodes={inner sep=0pt,outer sep=0pt,minimum width=5mm},column sep={5mm,between origins},row sep={8mm,between origins}]
@@ -574,10 +579,13 @@ We do not know whether {\cjk 潮獮湥敳} is intelligible Chinese, but we can s
   \end{pgfonlayer}
 
 \end{tikzpicture}
+\vspace{-0.5\baselineskip}
 \caption{Bytes in UTF-8 or UTF-16LE\label{fig:8or16}}
 \end{figure}
 
-Finally, a word on what encoding bytes \emph{are}: Bytes can be decoded or not, but don't themselves have an encoding. Bytes are just bytes. All we observe is whether we can decode a byte sequence successfully. As the above discussion makes plain, decoding a sequence without error is no guarantee that the bytes were written with that encoding. The lesson here from philosophy of science is that we can rule out hypotheses from observation, but never prove them conclusively. Hence, we can assert that a given sequence of bytes, say D8 00 DC 00 D8 00 DC 01, \emph{could not} have been written with a (correct) UTF-8 encoder, but only that this sequence is \emph{consistent} with being written by a UTF-16LE encoder.\footnote{In fact, it would decode as the first two glyphs of the Linear B script for writing Mycenaen Greek.} This is not to say that we cannot draw positive conclusions. The longer the sequence which can be validly decoded, the less likely it is to be accidental or mojibake. Encoded text tends to be highly structured when viewed as byte sequences. E.g., 100 random bytes will decode to 7-bit ASCII only one in $2^{100}$ times, because in 7-bit ASCII the high bit in each byte is always off. Similar things may be said about other encodings (though calculating the precise odds for, say, UTF-8, is not so easy.) Thus, \emph{ceteris paribus}, it is probable that long sequences which decode successfully were written in the encoding they appear to have been written in.
+Finally, a word on what encoding bytes \emph{are}: Bytes can be decoded or not, but don't themselves have an encoding. Bytes are just bytes. All we observe is whether we can decode a byte sequence successfully. As the above discussion makes plain, decoding a sequence without error is no guarantee that the bytes were written with that encoding. The lesson here from philosophy of science is that we can rule out hypotheses from observation, but never prove them conclusively. Hence, we can assert that a given sequence of bytes, say D8 00 DC 00 D8 00 DC 01, \emph{could not} have been written with a (correct) UTF-8 encoder, but only that this sequence is \emph{consistent} with being written by a UTF-16LE encoder.
+%\footnote{In fact, it would decode as the first two glyphs of the Linear B script for writing Mycenaen Greek.}
+This is not to say that we cannot draw positive conclusions. The longer the sequence which can be validly decoded, the less likely it is to be accidental or mojibake. Encoded text tends to be highly structured when viewed as byte sequences. E.g., 100 random bytes will decode to 7-bit ASCII only one in $2^{100}$ times, because in 7-bit ASCII the high bit in each byte is always off. Similar things may be said about other encodings (though calculating the precise odds for, say, UTF-8, is not so easy.) Thus, \emph{ceteris paribus}, it is probable that long sequences which decode successfully were written in the encoding they appear to have been written in.
 
 \subsection{Context Decoding Implementation}
 
@@ -590,6 +598,7 @@ The issue of where context decoding should start is more complex. A na\"ive stra
 \begin{figure}[ht]
 \centering
 \small
+%\vspace{-0.5\baselineskip}
 \begin{tikzpicture}
 
   \matrix (m) [matrix of nodes,nodes in empty cells,nodes={inner sep=0pt,outer sep=0pt,minimum width=5mm},column sep={5mm,between origins},row sep={8mm,between origins}]
@@ -617,22 +626,11 @@ The issue of where context decoding should start is more complex. A na\"ive stra
   \draw [semithick,decorate,decoration={brace,amplitude=5pt,raise=6pt}] (m-1-8.south east) -- (m-1-7.south west) node [midway,below=10pt,text centered] {\cjk 砀};
 
 \end{tikzpicture}
+\vspace{-0.5\baselineskip}
 \caption{Bad alignment when decoding UTF-16LE\label{fig:alignment}}
 \end{figure}
 
-A little reflection on the examples above reveals that this is still inadequate, because there could be parts of the context which fail to decode. (E.g., suppose the context spans a field boundary in a database file.) We could work around this by advancing by one byte and resetting the decoder each time we encounter an invalid byte, as demonstrated in Figure~\ref{fig:decode}\subref{subfig:lr-restart}, but this too can fail catastrophically. Step~1 in the figure shows decoding from the left end of the context to byte offset~2, where the decoding fails. In step~2, the decoder restarts at offset~2, successfully decoding to offset~6, where decoding fails once again. In step~3, the decoder restarts at offset~6, but fails immediately. (This could occur if $b_6$ is an invalid start byte for the encoding.) In step~4, we give up on the byte at offset~6 as invalid, reset the decoder, and decode bytes 7--12. From the point of view of the user, this behavior is a disaster, as we failed to decode a byte in the middle of the hit.
-
-As there is no guarantee that the hit and the bytes before it were encoded at the same time or are even related to it, the only way we can ensure that the hit is decoded successfully according to the encoding chain of the pattern which matched it is to begin decoding from the start of the hit, not from some point in its preceding context.
-
-Furthermore, the problem of misdecoding the hit by beginning to decode to its left applies equally to decoding the leading context. Starting from the far left of the context window has the potential to create mojibake by the time the decoder reaches the end of the leading context. How, then, to decode the context to the left of the hit?
-
-Consider the common case of a hit in the middle of some text. What we would ideally like to do is decode the longest sequences possible which are contiguous with the hit. For the trailing context, this means that decoding may continue rightwards after finishing the hit. For the leading context, it means that the most important character to decode is the one immediately before the hit, with importance decreasing leftwards. Suppose the hit is the byte sequence $b_m\dotsb b_n$. Then we first try to decode only $b_{m-1}$, the byte to the left of the hit. If that succeeds, we then try to decode $b_{m-2}b_{m-1}$, and continue to extend our decoding window to the left one byte at a time until either decoding fails or we reach the limit of the context. If we hit the context limit, we are done---the entirety of the leading context has decoded successfully. If decoding fails, we keep the longest successfully decoded sequence contiguous with the hit. An example of this appears in Figure~\ref{fig:decode}\subref{subfig:leading-reverse}. In step~1, we decode the hit and the trailing context. In step~2, we successfully decode the byte offset~$-1$ from the beginning of the hit. In step~2, we back up one byte to offset~$-2$, and attempt to decode towards the hit from there, but decoding fails at offset~$-1$. In step~3, we back up another byte and successfully decode toward the hit from offset~$-3$. Finally, in step~4, we retreat one more byte and successfuly decode from offset~$-4$ to the start of the hit.
-
-This procedure guarantees both that the hit will decode successfully and that we decode the longest segments of context contiguous with the hit which we can while still remaining within the context window. The runtime of decoding the leading context this way is $O(n^2)$ in the worst case, due to needing decode $\sum^n_{i=1} i = \frac{n(n+1)}{2}$ bytes, where $n$ is the length of the leading context. This can be mitigated somewhat by clever choice of the decoding order: If we can successfully decode from offset $o$ to the start of the hit, then there is no need to try decoding from $p$ to the start of the hit, for any offset $p > o$. As decoders are fast and $n$ will generally be small, this should not pose a significant problem when presenting decoded context for display purposes.\footnote{If leading context longer than is feasible to decode using a quadratic algorithm is required, it should be possible to decode the leading context from right to left in $O(n)$ time, i.e., decoding each byte only once---but not with off-the-shelf decoders, such as the ones provided by ICU, which are expecting to read left-to-right. While writing a right-to-left decoder for any given stateless encoding is unlikely to be difficult, writing one for each of the more than 200 encodings ICU supports is a daunting task. Decoding stateful encodings right-to-left introduces the additional complication that we may need to track a set of possible encoder states as we work our way rightward. We doubt that the collective difficulty of writing and testing right-to-left decoders for all encodings one might encounter is justified by the amount of use these decoders would receive over the simpler quadratic left-to-right, backtracking versions.}
-
-
-
-\begin{figure}[ht]
+\begin{figure}
 \centering
 \small
 \tikzstyle{byte} = [draw,draw,inner sep=0pt,outer sep=0pt,minimum size=3mm]
@@ -728,9 +726,21 @@ This procedure guarantees both that the hit will decode successfully and that we
 \caption{Three methods of decoding hits and context\label{fig:decode}}
 \end{figure}
 
+A little reflection on the examples above reveals that this is still inadequate, because there could be parts of the context which fail to decode. (E.g., suppose the context spans a field boundary in a database file.) We could work around this by advancing by one byte and resetting the decoder each time we encounter an invalid byte, as demonstrated in Figure~\ref{fig:decode}\subref{subfig:lr-restart}, but this too can fail catastrophically. Step~1 in the figure shows decoding from the left end of the context to byte offset~2, where the decoding fails. In step~2, the decoder restarts at offset~2, successfully decoding to offset~6, where decoding fails once again. In step~3, the decoder restarts at offset~6, but fails immediately. (This could occur if $b_6$ is an invalid start byte for the encoding.) In step~4, we give up on the byte at offset~6 as invalid, reset the decoder, and decode bytes 7--12. From the point of view of the user, this behavior is a disaster, as we failed to decode a byte in the middle of the hit.
+
+As there is no guarantee that the hit and the bytes before it were encoded at the same time or are even related to it, the only way we can ensure that the hit is decoded successfully according to the encoding chain of the pattern which matched it is to begin decoding from the start of the hit, not from some point in its preceding context.
+
+Furthermore, the problem of misdecoding the hit by beginning to decode to its left applies equally to decoding the leading context. Starting from the far left of the context window has the potential to create mojibake by the time the decoder reaches the end of the leading context. How, then, to decode the context to the left of the hit?
+
+Consider the common case of a hit in the middle of some text. What we would ideally like to do is decode the longest sequences possible which are contiguous with the hit. For the trailing context, this means that decoding may continue rightwards after finishing the hit. For the leading context, it means that the most important character to decode is the one immediately before the hit, with importance decreasing leftwards. Suppose the hit is the byte sequence $b_m\dotsb b_n$. Then we first try to decode only $b_{m-1}$, the byte to the left of the hit. If that succeeds, we then try to decode $b_{m-2}b_{m-1}$, and continue to extend our decoding window to the left one byte at a time until either decoding fails or we reach the limit of the context. If we hit the context limit, we are done---the entirety of the leading context has decoded successfully. If decoding fails, we keep the longest successfully decoded sequence contiguous with the hit. An example of this appears in Figure~\ref{fig:decode}\subref{subfig:leading-reverse}. In step~1, we decode the hit and the trailing context. In step~2, we successfully decode the byte offset~$-1$ from the beginning of the hit. In step~2, we back up one byte to offset~$-2$, and attempt to decode towards the hit from there, but decoding fails at offset~$-1$. In step~3, we back up another byte and successfully decode toward the hit from offset~$-3$. Finally, in step~4, we retreat one more byte and successfuly decode from offset~$-4$ to the start of the hit.
+
+This procedure guarantees both that the hit will decode successfully and that we decode the longest segments of context contiguous with the hit which we can while still remaining within the context window. The runtime of decoding the leading context this way is $O(n^2)$ in the worst case, due to needing decode $\sum^n_{i=1} i = \frac{n(n+1)}{2}$ bytes, where $n$ is the length of the leading context. This can be mitigated somewhat by clever choice of the decoding order: If we can successfully decode from offset $o$ to the start of the hit, then there is no need to try decoding from $p$ to the start of the hit, for any offset $p > o$. As decoders are fast and $n$ will generally be small, this should not pose a significant problem when presenting decoded context for display purposes.\footnote{If leading context longer than is feasible to decode using a quadratic algorithm is required, it should be possible to decode the leading context from right to left in $O(n)$ time, i.e., decoding each byte only once---but not with off-the-shelf decoders, such as the ones provided by ICU, which are expecting to read left-to-right. While writing a right-to-left decoder for any given stateless encoding is unlikely to be difficult, writing one for each of the more than 200 encodings ICU supports is a daunting task. Decoding stateful encodings right-to-left introduces the additional complication that we may need to track a set of possible encoder states as we work our way rightward. We doubt that the collective difficulty of writing and testing right-to-left decoders for all encodings one might encounter is justified by the amount of use these decoders would receive over the simpler quadratic left-to-right, backtracking versions.}
+
+
+
 \section{Search in practice}
 
-In cooperation with the Naval Postgraduate School, the lightgrep search engine has been open-sourced and integrated into bulk\_extractor. It provides an alternate search mechanism to the GNU Regex and TRE libraries used in bulk\_extractor's ``scan\_find'' plugin and generally offers much greater performance. The International Components for Unicode (ICU) library is used by lightgrep to provide the definitions of code point names and properties, as well as mappings for legacy codepages. ICU nicely solves the daunting enumerative task of supporting Unicode and staying up-to-date as the standard evolves.\footnote{We do not use ICU's own regular expression library, as it lacks support for multipattern searches.}
+In cooperation with the Naval Postgraduate School, the lightgrep search engine has been open-sourced and integrated into bulk\_extractor. It provides an alternate search mechanism to the GNU Regex and TRE libraries used in bulk\_extractor's ``scan\_find'' plugin and generally offers much greater performance. The International Components for Unicode (ICU) library is used by lightgrep to provide the definitions of code point names and properties, as well as mappings for legacy codepages. ICU nicely solves the daunting enumerative task of supporting Unicode and staying up-to-date as the standard evolves. (We do not use ICU's own regular expression library, as it lacks support for multipattern searches.)
 
 While use of multiple encodings increases automata size substantially, search bandwidth with bulk\_extractor is adequate for most sets of patterns. As an example, Table~\ref{table:experiment} shows the results of running the list of 10,198 U.S.\ place names in Grady Ward's Moby word list against images from the NPS 2009 M57 Patents-Redacted scenario in the NPS Digital Corpora. UTF-8 and UTF-16LE encodings were enabled for all these terms, effectively doubling the set of patterns. In all runs, processing bandwidth remained around 100\,MB/s on a 12-core Xeon workstation, with the evidence stored on a three 7200\,RPM drives in a RAID5. Owing to some short names and homonyms in the place names list, many hits were not relevant to an investigation, but we believe this illustrates the capability.
 
@@ -745,7 +755,7 @@ While use of multiple encodings increases automata size substantially, search ba
   Pat-2009-11-12.E01 & 12GB & 522,220 & 124.7 MB/s  \\
   \hline
 \end{tabular}
-\caption{Summary of search performance using lightgrep via bulk\_extractor\label{table:experiment}}
+\caption{Search performance using lightgrep via bulk\_extractor\label{table:experiment}}
 \end{table}
 
 \subsection{Language identification with properties}
@@ -763,7 +773,7 @@ Finally, we note that the principle of using Unicode properties to restrict the 
 
 \section{Conclusion}
 
-While the esoterica of Unicode and UTS~\#18 may seem daunting, and the number of encodings overwhelming, lightgrep serves as an existence proof that it is feasible to conduct Unicode-aware searches of digital media without a priori knowledge of the encodings used. Multipattern search allows for the simultaneous searching of patterns in different encodings in their raw byte forms, without having to worry about decoding. The features proposed in UTF~\#18 are a guide to the library implementor and to the user in how to conduct Unicode-aware searches. Encoding chains are a declarative mechanism for confronting a number of the stateless obfuscation schemes commonly encountered in forensics. Finally, the ability to decode matches and their surrounding context into UTF-8 means that investigators and developers who use lightgrep will not need to confront head-on the variety of encodings found in digital evidence.
+While the esoterica of Unicode and UTS~\#18 may seem daunting and the number of encodings overwhelming, lightgrep serves as an existence proof that it is feasible to conduct Unicode-aware searches of digital media without knowledge of the encodings used. Multipattern search allows for the simultaneous searching of patterns in different encodings in their raw byte forms, without having to worry about decoding. The features proposed in UTF~\#18 are a guide to the library implementor and to the user in how to conduct Unicode-aware searches. Encoding chains are a declarative mechanism for confronting a number of the stateless obfuscation schemes commonly encountered in forensics. Finally, the ability to decode matches and their surrounding context into UTF-8 means that investigators and developers who use lightgrep need not confront head-on the variety of encodings found in digital evidence.
 
 \bibliographystyle{elsarticle-num}
 \bibliography{enc}
