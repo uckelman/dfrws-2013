@@ -1,0 +1,2906 @@
+﻿# UTF-8 Byte Order Marker; see http://unicode.org/faq/utf_bom.html
+# BANNER FILE NOT PROVIDED (-b option)# BULK_EXTRACTOR-Version: 1.3.1 ($Rev: 10844 $)
+# Feature-Recorder: lightgrep
+# Filename: /home/jon/data/ev/digitalcorpora/corp/nps/drives/corp/nps/drives/nps-2009-m57-patents-redacted/pat-2009-11-12.E01
+# Histogram-File-Version: 1.1
+n=68548	loa	(utf16=9873)
+n=61157	rea	(utf16=9088)
+n=55572	colo	(utf16=15694)
+n=34815	helper	(utf16=1556)
+n=28354	register	(utf16=3561)
+n=24256	una	(utf16=9893)
+n=20830	noti	(utf16=3908)
+n=19546	destin	(utf16=874)
+n=19288	meta	(utf16=3584)
+n=12507	printer	(utf16=3419)
+n=10718	reader	(utf16=894)
+n=10603	redmon	(utf16=252)
+n=10163	ord	(utf16=3062)
+n=8189	ava	(utf16=2030)
+n=5911	brea	(utf16=1477)
+n=5794	seco	(utf16=2270)
+n=5532	roma	(utf16=2326)
+n=4751	cana	(utf16=1579)
+n=4698	arabi	(utf16=2514)
+n=4600	friendly	(utf16=1515)
+n=4562	protection	(utf16=1888)
+n=4515	outlook	(utf16=1666)
+n=3882	cale	(utf16=882)
+n=3189	holder	(utf16=70)
+n=2869	rota	(utf16=635)
+n=2707	ina	(utf16=1088)
+n=2332	avera	(utf16=1934)
+n=2041	painter	(utf16=46)
+n=1715	united	(utf16=512)
+n=1455	ora	(utf16=293)
+n=1413	banner	(utf16=393)
+n=1407	moro	(utf16=87)
+n=1404	traver	(utf16=61)
+n=1359	verda	(utf16=411)
+n=1027	opp	(utf16=273)
+n=1013	capac	(utf16=321)
+n=999	pana	(utf16=609)
+n=932	millis	(utf16=202)
+n=904	reading	(utf16=396)
+n=885	arp	(utf16=434)
+n=879	smoot	(utf16=164)
+n=867	nome	(utf16=566)
+n=865	pala	(utf16=513)
+n=862	guin	(utf16=605)
+n=855	rollin	(utf16=694)
+n=847	isola	(utf16=423)
+n=842	early	(utf16=157)
+n=822	bala	(utf16=301)
+n=801	andale	(utf16=9)
+n=800	philipp	(utf16=100)
+n=785	dema	(utf16=353)
+n=757	philippi	(utf16=100)
+n=720	igo	(utf16=443)
+n=703	amo	(utf16=78)
+n=638	rew	(utf16=146)
+n=636	mongo	(utf16=436)
+n=609	thorndale
+n=568	tama	(utf16=433)
+n=564	ola	(utf16=113)
+n=550	ute	(utf16=26)
+n=531	questa	(utf16=274)
+n=525	eleva	(utf16=232)
+n=513	olivet	(utf16=483)
+n=510	york	(utf16=52)
+n=506	ono	(utf16=226)
+n=486	como	(utf16=296)
+n=482	falkland	(utf16=151)
+n=469	walker	(utf16=23)
+n=468	hooks	(utf16=216)
+n=467	jud	(utf16=21)
+n=464	zim	(utf16=215)
+n=447	almo	(utf16=55)
+n=442	casa	(utf16=64)
+n=430	hill	(utf16=38)
+n=412	caro	(utf16=83)
+n=411	winn	(utf16=188)
+n=405	avant	(utf16=328)
+n=401	chaska	(utf16=110)
+n=384	cardin	(utf16=25)
+n=382	breaks	(utf16=140)
+n=377	winder	(utf16=86)
+n=374	ajo	(utf16=122)
+n=374	mcafee	(utf16=306)
+n=358	amma	(utf16=26)
+n=357	iva	(utf16=3)
+n=336	blocker	(utf16=186)
+n=332	bly	(utf16=93)
+n=331	oto	(utf16=118)
+n=323	ary	(utf16=29)
+n=319	centre	(utf16=221)
+n=317	oran	(utf16=100)
+n=308	carrier	(utf16=220)
+n=305	ayr	(utf16=95)
+n=300	conde	(utf16=152)
+n=278	voca	(utf16=105)
+n=270	longs
+n=270	ong	(utf16=96)
+n=267	jal	(utf16=8)
+n=265	cora	(utf16=121)
+n=261	kentuck	(utf16=44)
+n=257	colora	(utf16=25)
+n=253	ona	(utf16=59)
+n=253	toler	(utf16=98)
+n=252	dumont	(utf16=85)
+n=248	university	(utf16=39)
+n=237	dix	(utf16=12)
+n=235	adel	(utf16=52)
+n=232	bim	(utf16=11)
+n=229	ulm	(utf16=17)
+n=224	dlo	(utf16=8)
+n=223	cass	(utf16=4)
+n=221	luna	(utf16=119)
+n=220	alta	(utf16=49)
+n=220	gove	(utf16=19)
+n=217	buda	(utf16=49)
+n=217	reform
+n=215	cooper	(utf16=128)
+n=205	eudora	(utf16=29)
+n=203	salem	(utf16=46)
+n=202	hye	(utf16=9)
+n=202	julian	(utf16=20)
+n=202	luxemburg	(utf16=169)
+n=199	agra	(utf16=53)
+n=199	meno	(utf16=67)
+n=198	arma	(utf16=97)
+n=190	grenada	(utf16=108)
+n=183	truk	(utf16=50)
+n=181	kosrae	(utf16=58)
+n=180	ponape	(utf16=50)
+n=178	anguilla	(utf16=90)
+n=178	tempe	(utf16=87)
+n=176	gambier	(utf16=47)
+n=175	cisco	(utf16=133)
+n=175	nevis	(utf16=109)
+n=155	chino	(utf16=117)
+n=152	falls	(utf16=34)
+n=151	millen	(utf16=74)
+n=151	mio	(utf16=9)
+n=150	edmon	(utf16=28)
+n=148	cory
+n=148	murdo	(utf16=26)
+n=145	kinde	(utf16=128)
+n=144	parkin	(utf16=11)
+n=139	coolin	(utf16=72)
+n=139	hext
+n=138	corea	(utf16=123)
+n=136	kinder	(utf16=128)
+n=132	ila	(utf16=3)
+n=130	campo	(utf16=24)
+n=130	palmer	(utf16=24)
+n=129	dille	(utf16=120)
+n=127	grants	(utf16=15)
+n=127	numa	(utf16=88)
+n=124	nederland	(utf16=83)
+n=123	caledonia	(utf16=58)
+n=122	cade	(utf16=61)
+n=122	majuro	(utf16=34)
+n=122	marengo	(utf16=35)
+n=121	blanks	(utf16=14)
+n=121	evan
+n=121	kings	(utf16=30)
+n=119	honor	(utf16=19)
+n=118	hima	(utf16=34)
+n=118	juda	(utf16=3)
+n=118	tye	(utf16=12)
+n=116	chama	(utf16=18)
+n=116	childs	(utf16=2)
+n=116	menominee	(utf16=26)
+n=116	ney	(utf16=7)
+n=115	eek	(utf16=8)
+n=115	keo	(utf16=12)
+n=115	vincennes	(utf16=29)
+n=113	vevay	(utf16=30)
+n=112	anza	(utf16=49)
+n=111	anthon
+n=111	dawes
+n=111	kell	(utf16=10)
+n=111	zahl	(utf16=87)
+n=110	dola	(utf16=108)
+n=108	winamac	(utf16=30)
+n=107	cary
+n=107	ladd	(utf16=17)
+n=107	salix	(utf16=2)
+n=106	currie	(utf16=18)
+n=102	diller	(utf16=102)
+n=101	redig	(utf16=88)
+n=100	glace	(utf16=22)
+n=100	gotha
+n=100	minden	(utf16=87)
+n=97	malo	(utf16=31)
+n=95	noma	(utf16=43)
+n=95	saipan	(utf16=33)
+n=95	wales	(utf16=11)
+n=94	argo	(utf16=9)
+n=93	wenden	(utf16=66)
+n=91	sena	(utf16=22)
+n=91	waves	(utf16=43)
+n=90	britt	(utf16=16)
+n=86	filer	(utf16=35)
+n=86	lowes	(utf16=25)
+n=85	robins	(utf16=2)
+n=84	novi	(utf16=60)
+n=83	ivor	(utf16=47)
+n=83	joiner	(utf16=19)
+n=81	crum
+n=81	philo	(utf16=28)
+n=80	flushing	(utf16=8)
+n=77	mora	(utf16=12)
+n=76	geyserville	(utf16=10)
+n=76	napa	(utf16=43)
+n=76	ranger
+n=76	smiley	(utf16=71)
+n=76	starke	(utf16=25)
+n=75	galax	(utf16=27)
+n=75	riva	(utf16=26)
+n=73	casper	(utf16=61)
+n=73	wyoming	(utf16=20)
+n=72	medina
+n=72	welling	(utf16=20)
+n=71	tiff	(utf16=2)
+n=69	tula	(utf16=40)
+n=68	rosario	(utf16=24)
+n=68	wana	(utf16=14)
+n=65	huey	(utf16=59)
+n=64	reno	(utf16=18)
+n=63	equality
+n=63	fisher	(utf16=37)
+n=63	hills	(utf16=7)
+n=62	bena	(utf16=36)
+n=62	desha	(utf16=58)
+n=62	strang	(utf16=1)
+n=62	vadis	(utf16=8)
+n=61	duran	(utf16=9)
+n=60	elmo	(utf16=16)
+n=59	linn
+n=59	viper	(utf16=40)
+n=58	sabin
+n=57	ensenada	(utf16=20)
+n=57	epes	(utf16=57)
+n=57	independence	(utf16=32)
+n=57	ingle	(utf16=37)
+n=57	nitro	(utf16=14)
+n=56	parker	(utf16=7)
+n=56	seguin	(utf16=51)
+n=56	vesta	(utf16=44)
+n=55	doss	(utf16=11)
+n=54	charlo	(utf16=7)
+n=54	justin
+n=53	devol	(utf16=17)
+n=53	poca
+n=52	jeffers
+n=52	norge	(utf16=43)
+n=52	zuni	(utf16=10)
+n=51	chico	(utf16=15)
+n=51	stephan
+n=50	gravity	(utf16=19)
+n=50	hauppauge	(utf16=21)
+n=50	manito
+n=49	cima	(utf16=4)
+n=49	shoshone
+n=49	trent
+n=48	atco
+n=48	brill	(utf16=23)
+n=48	clancy	(utf16=40)
+n=48	dolph	(utf16=45)
+n=48	durant	(utf16=9)
+n=48	gwynn
+n=48	yorkshire
+n=47	elsa	(utf16=11)
+n=47	teton
+n=47	vick
+n=46	milano
+n=46	mott	(utf16=31)
+n=46	nikep	(utf16=6)
+n=46	saxe
+n=46	turner
+n=45	caddo	(utf16=8)
+n=45	wann	(utf16=35)
+n=44	castell	(utf16=38)
+n=44	hammon
+n=44	jansen
+n=44	lynd
+n=43	burns	(utf16=3)
+n=43	carlos
+n=43	carter	(utf16=4)
+n=43	gordo	(utf16=8)
+n=43	mina	(utf16=18)
+n=43	scipio
+n=42	homer
+n=42	owen	(utf16=2)
+n=41	andreas
+n=41	baker	(utf16=12)
+n=41	barto	(utf16=8)
+n=41	coden	(utf16=23)
+n=41	eucha
+n=41	grantsdale	(utf16=14)
+n=41	malaga	(utf16=16)
+n=41	mena	(utf16=25)
+n=40	milton	(utf16=7)
+n=40	nuevo	(utf16=31)
+n=40	pekin	(utf16=7)
+n=40	warne	(utf16=4)
+n=39	alco	(utf16=8)
+n=39	asco	(utf16=2)
+n=39	zeeland	(utf16=32)
+n=38	alviso	(utf16=14)
+n=38	browning	(utf16=8)
+n=38	fagus
+n=38	manti	(utf16=7)
+n=38	pavo	(utf16=5)
+n=37	achille
+n=37	diablo	(utf16=32)
+n=37	marne
+n=37	shoshoni
+n=36	bache
+n=36	erin	(utf16=3)
+n=36	granada	(utf16=13)
+n=36	malin	(utf16=8)
+n=36	solen
+n=36	whitt
+n=36	winner	(utf16=8)
+n=35	blackfoot	(utf16=19)
+n=35	buhl	(utf16=31)
+n=35	cambria
+n=35	carmel
+n=35	dalmatia	(utf16=7)
+n=35	seale	(utf16=9)
+n=35	vina	(utf16=2)
+n=34	bagdad	(utf16=28)
+n=34	leakey
+n=34	odon
+n=34	olds	(utf16=3)
+n=34	warner	(utf16=2)
+n=33	arapaho	(utf16=8)
+n=33	gile	(utf16=4)
+n=33	marcell
+n=33	steff
+n=32	thatcher
+n=32	venetia
+n=31	barco	(utf16=5)
+n=31	farmer	(utf16=8)
+n=31	harman	(utf16=7)
+n=31	runa	(utf16=17)
+n=31	springs	(utf16=1)
+n=31	torrey
+n=31	vada
+n=31	waka	(utf16=10)
+n=30	annona
+n=30	aragon	(utf16=12)
+n=30	banco	(utf16=1)
+n=30	tokio	(utf16=20)
+n=30	tolar	(utf16=29)
+n=30	yuma
+n=29	castanea
+n=29	corsica	(utf16=4)
+n=29	fremont
+n=29	loma
+n=29	plains
+n=29	prue	(utf16=13)
+n=29	welches	(utf16=29)
+n=28	edinburg	(utf16=15)
+n=28	guadalupe	(utf16=13)
+n=28	kiel	(utf16=17)
+n=28	kuna	(utf16=26)
+n=28	nabb
+n=28	sinton	(utf16=24)
+n=28	tiro	(utf16=7)
+n=28	totz
+n=28	wilder
+n=27	bronte
+n=27	deale	(utf16=21)
+n=27	hume	(utf16=1)
+n=27	ledger	(utf16=10)
+n=27	loco	(utf16=14)
+n=27	lodi	(utf16=22)
+n=27	sardinia	(utf16=4)
+n=27	silva	(utf16=3)
+n=27	stamps	(utf16=8)
+n=26	chilo
+n=26	lucien
+n=26	maize	(utf16=19)
+n=26	mojave
+n=26	osage	(utf16=8)
+n=26	rives	(utf16=26)
+n=26	rupert
+n=26	tyro
+n=26	winston
+n=25	carmi
+n=25	cato
+n=25	edmond	(utf16=2)
+n=25	elbe
+n=25	everest	(utf16=2)
+n=25	hode	(utf16=2)
+n=25	levan
+n=25	lolo	(utf16=2)
+n=25	lytton
+n=25	maud
+n=25	moneta	(utf16=12)
+n=25	onemo	(utf16=22)
+n=24	adena	(utf16=2)
+n=24	bennet
+n=24	flippin	(utf16=15)
+n=24	hooker
+n=24	leary
+n=24	levant
+n=24	lyndon
+n=24	meade
+n=24	provo	(utf16=7)
+n=24	salford
+n=24	singer	(utf16=4)
+n=24	vesuvius	(utf16=8)
+n=24	vici
+n=24	zephyr	(utf16=3)
+n=23	agar	(utf16=3)
+n=23	dover	(utf16=7)
+n=23	fairbank
+n=23	fairbanks
+n=23	nada	(utf16=18)
+n=23	nimitz
+n=23	pitts
+n=22	babb
+n=22	brooks
+n=22	gautier
+n=22	hamel
+n=22	leicester
+n=22	nyssa
+n=22	orlean
+n=22	pima
+n=22	rochelle
+n=22	tripp	(utf16=8)
+n=22	yosemite	(utf16=8)
+n=21	amery	(utf16=18)
+n=21	antigo	(utf16=3)
+n=21	avalon	(utf16=10)
+n=21	burnet
+n=21	cortez
+n=21	hettinger
+n=21	mansfield
+n=21	melba
+n=21	napier
+n=21	omar	(utf16=1)
+n=21	paradis	(utf16=1)
+n=21	rayle
+n=21	reyno
+n=21	sylva
+n=21	tesla	(utf16=8)
+n=21	volga
+n=21	weaver	(utf16=16)
+n=20	adin
+n=20	bayard
+n=20	diaz
+n=20	dupo	(utf16=4)
+n=20	herod
+n=20	inkom	(utf16=17)
+n=20	merton
+n=20	nemo	(utf16=10)
+n=20	orla
+n=20	plano	(utf16=7)
+n=20	sula	(utf16=1)
+n=20	tatum
+n=20	wickliffe
+n=19	belk	(utf16=5)
+n=19	berger
+n=19	bourg
+n=19	bude	(utf16=12)
+n=19	firth
+n=19	fries	(utf16=6)
+n=19	geff
+n=19	irmo	(utf16=8)
+n=19	kona	(utf16=14)
+n=19	lorentz
+n=19	lott
+n=19	marlow
+n=19	milo
+n=19	mima
+n=19	minoa
+n=19	orland
+n=19	pella
+n=19	potter
+n=19	reva	(utf16=2)
+n=19	tangier
+n=19	tivoli	(utf16=16)
+n=18	aladdin	(utf16=1)
+n=18	aleppo
+n=18	bula	(utf16=5)
+n=18	connell
+n=18	eland
+n=18	hendrix
+n=18	lillie
+n=18	nebo	(utf16=3)
+n=18	petros
+n=18	pittsburg
+n=18	sparks	(utf16=8)
+n=18	talbot
+n=18	tobias
+n=18	ucon
+n=18	wheeler
+n=17	birds	(utf16=7)
+n=17	bogart
+n=17	bunn	(utf16=9)
+n=17	cordova	(utf16=2)
+n=17	derma
+n=17	etna	(utf16=1)
+n=17	fielding
+n=17	gorin
+n=17	lorenzo
+n=17	lyme
+n=17	neville
+n=17	paisley
+n=17	rudd	(utf16=3)
+n=17	sidon
+n=17	thorp
+n=17	valencia	(utf16=6)
+n=17	veblen
+n=16	amite
+n=16	ararat
+n=16	balko	(utf16=16)
+n=16	barnum
+n=16	crichton
+n=16	declo
+n=16	ellington
+n=16	erick
+n=16	fillmore
+n=16	gallina
+n=16	hammett
+n=16	haywood
+n=16	ionia
+n=16	iraan	(utf16=16)
+n=16	kosciusko
+n=16	laguna	(utf16=4)
+n=16	lakota
+n=16	libby	(utf16=3)
+n=16	likely	(utf16=6)
+n=16	mcrae	(utf16=15)
+n=16	merrimac
+n=16	orford
+n=16	paige
+n=16	philadelphia
+n=16	progreso	(utf16=8)
+n=16	quincy
+n=16	redford
+n=16	risco	(utf16=16)
+n=16	rover	(utf16=2)
+n=16	stowe
+n=16	vernon
+n=16	wister
+n=15	alleman	(utf16=15)
+n=15	bowler	(utf16=14)
+n=15	camas
+n=15	cleves	(utf16=14)
+n=15	croton
+n=15	dingus
+n=15	falkner
+n=15	fonda
+n=15	hana
+n=15	highlands
+n=15	joplin
+n=15	livonia
+n=15	mays	(utf16=2)
+n=15	monon
+n=15	nunn
+n=15	oceano	(utf16=9)
+n=15	olean
+n=15	olpe
+n=15	orma	(utf16=3)
+n=15	otho
+n=15	pooler	(utf16=6)
+n=15	ruso	(utf16=13)
+n=15	sasser	(utf16=12)
+n=15	sundance	(utf16=3)
+n=15	trimble	(utf16=3)
+n=15	varna	(utf16=7)
+n=15	wendel
+n=15	winnebago
+n=15	zell	(utf16=1)
+n=14	balta	(utf16=14)
+n=14	bannister
+n=14	beecher
+n=14	chardon
+n=14	comstock
+n=14	daniels	(utf16=1)
+n=14	dardanelle
+n=14	dresden
+n=14	emmet
+n=14	glasgo
+n=14	gunter
+n=14	iliamna
+n=14	lovell
+n=14	merced	(utf16=1)
+n=14	racine
+n=14	reseda
+n=14	romney
+n=14	smilax
+n=14	susquehanna
+n=14	trafalgar
+n=14	wilber
+n=13	albee
+n=13	aline	(utf16=3)
+n=13	andalusia
+n=13	apalachicola
+n=13	ariel
+n=13	beaufort
+n=13	browns
+n=13	bunker
+n=13	clovis
+n=13	dania	(utf16=7)
+n=13	darrow
+n=13	defoe
+n=13	dowell
+n=13	erving
+n=13	eure
+n=13	frazer
+n=13	gipsy
+n=13	glover	(utf16=8)
+n=13	harper
+n=13	hernando
+n=13	iona	(utf16=6)
+n=13	metter
+n=13	moselle
+n=13	nunez
+n=13	okeechobee
+n=13	platina	(utf16=13)
+n=13	powhatan
+n=13	prole
+n=13	pruden
+n=13	reliance	(utf16=2)
+n=13	rockingham
+n=13	savanna
+n=13	sellers
+n=13	selz
+n=13	stilwell
+n=13	tacoma
+n=13	thorndike
+n=13	ventura	(utf16=8)
+n=13	webber
+n=13	wren
+n=12	alston
+n=12	amanda
+n=12	ashton
+n=12	canute
+n=12	darby
+n=12	delmar
+n=12	dumas
+n=12	ehrenberg
+n=12	eton
+n=12	ewen	(utf16=2)
+n=12	grundy
+n=12	hilda
+n=12	klamath
+n=12	lafitte
+n=12	leiter	(utf16=12)
+n=12	lexa	(utf16=2)
+n=12	marvell
+n=12	olmsted
+n=12	paton
+n=12	pepin
+n=12	rhineland
+n=12	roby
+n=12	shorter	(utf16=1)
+n=12	siluria
+n=12	summit	(utf16=7)
+n=12	trion
+n=12	tunica
+n=12	yellowstone
+n=11	alda
+n=11	amazonia
+n=11	arapahoe
+n=11	austerlitz
+n=11	bethune
+n=11	bloomer
+n=11	brewer
+n=11	brutus
+n=11	buckingham
+n=11	buna	(utf16=10)
+n=11	carlsbad
+n=11	cartwright
+n=11	ceiba
+n=11	chattahoochee
+n=11	chesterfield
+n=11	colbert
+n=11	comer	(utf16=4)
+n=11	dreyfus
+n=11	earle
+n=11	elbert
+n=11	enka
+n=11	fellows	(utf16=7)
+n=11	gardiner
+n=11	goodyear
+n=11	greeley
+n=11	harrod
+n=11	herrick
+n=11	herrin
+n=11	huntingdon
+n=11	hutto
+n=11	kinsey
+n=11	landing	(utf16=6)
+n=11	latimer
+n=11	lebo	(utf16=1)
+n=11	lennon
+n=11	macdona	(utf16=3)
+n=11	magdalena
+n=11	martel
+n=11	mathis
+n=11	menno
+n=11	monongah
+n=11	noyes
+n=11	nuremberg
+n=11	olar	(utf16=11)
+n=11	paxton
+n=11	penobscot
+n=11	provencal
+n=11	ringling
+n=11	ruskin
+n=11	sayre
+n=11	soudan	(utf16=3)
+n=11	sparr	(utf16=1)
+n=11	tecumseh
+n=11	ticonderoga
+n=11	vass
+n=11	wilton
+n=11	wiseman
+n=11	zoar
+n=10	arriba	(utf16=4)
+n=10	ashmore	(utf16=10)
+n=10	balaton
+n=10	bally
+n=10	bancroft
+n=10	barree	(utf16=6)
+n=10	bebe	(utf16=3)
+n=10	bono
+n=10	booker
+n=10	boykin
+n=10	braman
+n=10	cathay
+n=10	chloe
+n=10	constable
+n=10	cumming
+n=10	curtiss
+n=10	darlington
+n=10	deerfield	(utf16=8)
+n=10	donalds	(utf16=4)
+n=10	elwood
+n=10	gadsden
+n=10	girard
+n=10	glady
+n=10	higginson
+n=10	hildebran
+n=10	hollis
+n=10	irons
+n=10	jenner
+n=10	joffre
+n=10	kathryn
+n=10	landa	(utf16=2)
+n=10	lando
+n=10	lehi	(utf16=3)
+n=10	maitland
+n=10	manilla	(utf16=4)
+n=10	marmora
+n=10	marquand
+n=10	mauldin
+n=10	moira
+n=10	oberon
+n=10	orson
+n=10	ravenna
+n=10	roanoke
+n=10	roebling
+n=10	rowan
+n=10	rubicon
+n=10	salida	(utf16=7)
+n=10	skene	(utf16=10)
+n=10	smiths
+n=10	speer
+n=10	tilden
+n=10	turpin
+n=10	warfield
+n=10	wayland
+n=10	wentworth
+n=10	worthing
+n=9	abilene
+n=9	altro	(utf16=9)
+n=9	anson	(utf16=1)
+n=9	archie	(utf16=2)
+n=9	arco	(utf16=4)
+n=9	bastian
+n=9	canadensis
+n=9	carver
+n=9	cayuse
+n=9	daisy	(utf16=2)
+n=9	dennison	(utf16=8)
+n=9	dustin
+n=9	edgard
+n=9	elmore
+n=9	engelhard
+n=9	fowler
+n=9	galva
+n=9	gans
+n=9	gillett
+n=9	grampian
+n=9	greenville
+n=9	guffey
+n=9	heimdal
+n=9	ione
+n=9	jameson
+n=9	kalama
+n=9	langtry
+n=9	lepanto
+n=9	lille
+n=9	mahomet
+n=9	marcellus
+n=9	mcguffey
+n=9	millington
+n=9	monaca
+n=9	muskogee	(utf16=2)
+n=9	omer
+n=9	overly
+n=9	pinckney
+n=9	ricketts
+n=9	roscoe
+n=9	savona
+n=9	scotts
+n=9	serena
+n=9	sontag	(utf16=1)
+n=9	springdale
+n=9	valdez
+n=9	winfred
+n=9	zamora
+n=9	zapata
+n=8	acra
+n=8	albers
+n=8	albion
+n=8	appomattox
+n=8	ayrshire
+n=8	barker
+n=8	benoit
+n=8	blain
+n=8	boley
+n=8	boling
+n=8	bouton	(utf16=8)
+n=8	brothers	(utf16=7)
+n=8	camden
+n=8	cincinnatus
+n=8	danese	(utf16=7)
+n=8	dorr	(utf16=1)
+n=8	drums
+n=8	ebro
+n=8	ennis	(utf16=4)
+n=8	farragut
+n=8	folsom
+n=8	garnett
+n=8	glendo
+n=8	goldbar	(utf16=8)
+n=8	grenville
+n=8	guage	(utf16=8)
+n=8	gulliver
+n=8	hasse
+n=8	herculaneum
+n=8	holley
+n=8	huguenot
+n=8	husser
+n=8	jeannette
+n=8	jena	(utf16=2)
+n=8	kerens
+n=8	kila	(utf16=1)
+n=8	klondike
+n=8	kohler
+n=8	koppel	(utf16=5)
+n=8	krum
+n=8	langston
+n=8	lehr
+n=8	loris
+n=8	lucan
+n=8	lula	(utf16=2)
+n=8	manson
+n=8	marissa
+n=8	metz
+n=8	milford
+n=8	molina
+n=8	muenster
+n=8	odell
+n=8	oglala
+n=8	okean	(utf16=8)
+n=8	ophelia
+n=8	oregonia
+n=8	paola
+n=8	parnell
+n=8	pawnee
+n=8	ponca
+n=8	ramona
+n=8	ramsay
+n=8	robson
+n=8	rolfe
+n=8	rolla
+n=8	roseau
+n=8	roswell
+n=8	royston
+n=8	rugby
+n=8	ryde
+n=8	salado
+n=8	salome
+n=8	samantha
+n=8	sealy
+n=8	sennett
+n=8	shelly
+n=8	shreve
+n=8	soddy
+n=8	solano
+n=8	sultana	(utf16=5)
+n=8	swansea
+n=8	teasdale
+n=8	thacker
+n=8	trappe
+n=8	trevor
+n=8	underwood
+n=8	uriah
+n=8	verden	(utf16=8)
+n=8	vian	(utf16=8)
+n=8	wanda
+n=8	waterford
+n=8	weimar
+n=8	wimbledon
+n=8	wollaston
+n=8	woodhull
+n=8	xenia
+n=7	alamogordo
+n=7	amalia
+n=7	ashford
+n=7	baroda
+n=7	barron
+n=7	beaconsfield
+n=7	bethany
+n=7	beulah
+n=7	biddle
+n=7	blanca
+n=7	bolingbroke
+n=7	cahokia
+n=7	callao
+n=7	caretta
+n=7	castile
+n=7	chelmsford
+n=7	chelsea
+n=7	clarissa
+n=7	colp
+n=7	corfu
+n=7	cowley
+n=7	cullen
+n=7	denison
+n=7	doty	(utf16=5)
+n=7	dundee
+n=7	earp	(utf16=1)
+n=7	erhard
+n=7	fingal
+n=7	georgiana
+n=7	gilmer
+n=7	glastonbury
+n=7	gotebo
+n=7	groves
+n=7	heber	(utf16=3)
+n=7	hialeah
+n=7	hico
+n=7	howells
+n=7	husk	(utf16=3)
+n=7	ipswich
+n=7	jodie
+n=7	kilauea
+n=7	kossuth
+n=7	kula	(utf16=3)
+n=7	lamont
+n=7	leet	(utf16=1)
+n=7	linton
+n=7	llewellyn
+n=7	maher
+n=7	malibu
+n=7	marston
+n=7	maximo
+n=7	means	(utf16=2)
+n=7	merrick
+n=7	mertens
+n=7	mize	(utf16=2)
+n=7	moroni
+n=7	moseley
+n=7	mullin
+n=7	mullins
+n=7	murchison
+n=7	mylo
+n=7	nankin
+n=7	nathalie
+n=7	navarre
+n=7	oglethorpe
+n=7	ollie
+n=7	osceola
+n=7	peyton
+n=7	plessis
+n=7	pocahontas
+n=7	providence
+n=7	rainier	(utf16=1)
+n=7	rion
+n=7	rochdale
+n=7	ronda
+n=7	rosie
+n=7	sitka
+n=7	socorro
+n=7	staples
+n=7	tamworth
+n=7	tappan
+n=7	tippecanoe
+n=7	tolu
+n=7	truckee
+n=7	tully
+n=7	tyrone
+n=7	vader
+n=7	vallejo
+n=7	velma
+n=7	verner
+n=7	whitefield
+n=7	wilberforce
+n=7	willcox
+n=7	woodstock
+n=7	wynne
+n=7	zachow	(utf16=7)
+n=6	ailey
+n=6	aneth
+n=6	athol
+n=6	ault
+n=6	ayer
+n=6	backus
+n=6	badger	(utf16=1)
+n=6	basco	(utf16=6)
+n=6	biloxi
+n=6	blevins
+n=6	bloomsbury
+n=6	bonner
+n=6	boring
+n=6	brenton	(utf16=2)
+n=6	brinkley
+n=6	brownsville
+n=6	cadiz
+n=6	cassel
+n=6	charlton
+n=6	clermont
+n=6	connelly
+n=6	corinne
+n=6	creighton
+n=6	derry
+n=6	doole
+n=6	doon
+n=6	elma
+n=6	elroy
+n=6	forman	(utf16=6)
+n=6	frisco
+n=6	geronimo
+n=6	glynn
+n=6	grafton
+n=6	gretna
+n=6	halls
+n=6	harco
+n=6	heth	(utf16=3)
+n=6	hobson
+n=6	imogene
+n=6	iola
+n=6	jachin
+n=6	jamison
+n=6	juliette
+n=6	kenna
+n=6	laton
+n=6	lawton
+n=6	lemmon
+n=6	letha
+n=6	lewes
+n=6	lolita
+n=6	lorain
+n=6	lorena
+n=6	mahan
+n=6	mcfarlan
+n=6	moffit
+n=6	mosca	(utf16=3)
+n=6	nelse
+n=6	osco
+n=6	pitcher
+n=6	quinton
+n=6	refugio
+n=6	roselle
+n=6	roslyn
+n=6	roxie
+n=6	rufe	(utf16=5)
+n=6	salinas
+n=6	samaria
+n=6	sardis	(utf16=2)
+n=6	scribner
+n=6	sigurd
+n=6	sisters
+n=6	solomons	(utf16=4)
+n=6	spotsylvania
+n=6	starbuck
+n=6	tallula
+n=6	tallulah
+n=6	tanner
+n=6	terrell
+n=6	tillman
+n=6	udall
+n=6	valera
+n=6	wagram
+n=6	wesson
+n=6	wheeling
+n=6	whitfield
+n=6	wilmer
+n=6	witten
+n=6	wolverine
+n=6	zachariah
+n=5	alix
+n=5	anco
+n=5	argos
+n=5	bains
+n=5	bannock
+n=5	barberton
+n=5	blacksburg
+n=5	bonita
+n=5	bowdle
+n=5	bowers
+n=5	brentwood
+n=5	bridgman
+n=5	brule
+n=5	buckner
+n=5	canandaigua
+n=5	chauvin
+n=5	chickamauga
+n=5	cimarron
+n=5	clarks
+n=5	cochise
+n=5	combs
+n=5	concepcion
+n=5	cooks	(utf16=2)
+n=5	cooperstown
+n=5	coosa
+n=5	corning
+n=5	cotopaxi
+n=5	crewe
+n=5	crouse
+n=5	cuthbert
+n=5	dows	(utf16=2)
+n=5	dubuque
+n=5	emelle	(utf16=5)
+n=5	eminence
+n=5	etta
+n=5	ewan
+n=5	farrar
+n=5	forks	(utf16=1)
+n=5	gamaliel
+n=5	gilman
+n=5	golconda
+n=5	gosport
+n=5	guys
+n=5	handley
+n=5	havre
+n=5	hawks
+n=5	haworth
+n=5	hermitage
+n=5	hilliard
+n=5	hillsboro
+n=5	hopewell
+n=5	housatonic
+n=5	howland	(utf16=5)
+n=5	ilion
+n=5	inez
+n=5	inglewood
+n=5	inglis	(utf16=1)
+n=5	ironsides
+n=5	jarrell
+n=5	kanawha
+n=5	katy
+n=5	kearney
+n=5	kenilworth
+n=5	kenner
+n=5	keokuk
+n=5	killarney
+n=5	kingman	(utf16=5)
+n=5	largo
+n=5	laurens
+n=5	limon
+n=5	lucile
+n=5	macy
+n=5	manassa
+n=5	manter	(utf16=5)
+n=5	marcella
+n=5	maribel
+n=5	maricopa
+n=5	martindale
+n=5	maury
+n=5	meadows
+n=5	menan
+n=5	michie
+n=5	mindoro
+n=5	murdock
+n=5	muskego
+n=5	nanticoke
+n=5	narrows
+n=5	neosho
+n=5	niobrara
+n=5	olla	(utf16=3)
+n=5	palisades
+n=5	paloma
+n=5	parkman
+n=5	parma	(utf16=2)
+n=5	peoples
+n=5	poth
+n=5	potsdam
+n=5	quapaw
+n=5	quinlan
+n=5	radcliff
+n=5	ravena
+n=5	richland
+n=5	roark
+n=5	rockville
+n=5	rosine
+n=5	rozel
+n=5	sligo
+n=5	stanfield
+n=5	stroh
+n=5	sunderland
+n=5	talbert
+n=5	tallapoosa
+n=5	thurston
+n=5	truro
+n=5	villard
+n=5	walhalla
+n=5	wausa
+n=5	wausau
+n=5	waverley
+n=5	welty
+n=5	wheatley
+n=5	wilmette
+n=4	agana
+n=4	aguila
+n=4	aguilar
+n=4	albin
+n=4	alleghany
+n=4	alvarado
+n=4	amado
+n=4	americus
+n=4	argyle
+n=4	arion
+n=4	armagh
+n=4	artemus
+n=4	artois
+n=4	aurelia
+n=4	bartley
+n=4	bayamon
+n=4	beasley
+n=4	beaverton
+n=4	belleville
+n=4	bellwood
+n=4	birdseye
+n=4	blandford
+n=4	bovina
+n=4	braddock
+n=4	braintree
+n=4	braxton
+n=4	breese
+n=4	bridger
+n=4	brokaw
+n=4	bronson
+n=4	broughton
+n=4	burlingame
+n=4	cantil	(utf16=4)
+n=4	capitan
+n=4	cassatt
+n=4	cavour
+n=4	centralia
+n=4	charleroi
+n=4	cheltenham
+n=4	chichester
+n=4	chilton
+n=4	cisne
+n=4	colchester
+n=4	colfax
+n=4	concordia
+n=4	constantia
+n=4	corrigan
+n=4	crawley
+n=4	culloden
+n=4	cupertino
+n=4	cygnet	(utf16=3)
+n=4	damar	(utf16=1)
+n=4	danville
+n=4	darfur
+n=4	davin
+n=4	dermott
+n=4	desdemona
+n=4	dorsey
+n=4	dumfries
+n=4	dunfermline
+n=4	edgewood
+n=4	eggleston
+n=4	ellery
+n=4	elnora
+n=4	enders
+n=4	epping
+n=4	epps
+n=4	ericson
+n=4	escondido
+n=4	essie
+n=4	fairmont
+n=4	fairview
+n=4	felton
+n=4	flasher
+n=4	folkston
+n=4	fontana
+n=4	friesland
+n=4	frontenac
+n=4	gaither
+n=4	galvin
+n=4	gantt
+n=4	gower
+n=4	grantham
+n=4	hamer
+n=4	harrisonburg
+n=4	hartline
+n=4	haskell
+n=4	hazlet
+n=4	hebert
+n=4	hermon
+n=4	hertford
+n=4	hesperia
+n=4	hinckley
+n=4	hinkle
+n=4	hinsdale
+n=4	hinton
+n=4	hooper
+n=4	indore
+n=4	itasca
+n=4	janesville
+n=4	keewatin
+n=4	kendrick
+n=4	kenosha
+n=4	kidder
+n=4	kilmarnock
+n=4	kirkwood
+n=4	kraemer
+n=4	lacon
+n=4	lampe
+n=4	lanark
+n=4	langford
+n=4	laverne
+n=4	ledbetter
+n=4	lemont
+n=4	lenora
+n=4	leola
+n=4	leominster
+n=4	leonidas
+n=4	llano
+n=4	lobata
+n=4	londonderry
+n=4	loraine
+n=4	lothian
+n=4	lovejoy
+n=4	lucinda
+n=4	malvern
+n=4	manitou
+n=4	manitowoc
+n=4	manning
+n=4	manteo
+n=4	martell
+n=4	mattoon
+n=4	mcdougal
+n=4	melrose
+n=4	mendenhall
+n=4	mendocino
+n=4	merino
+n=4	midlothian
+n=4	moca	(utf16=1)
+n=4	monkton	(utf16=4)
+n=4	nahant
+n=4	natalia
+n=4	neely
+n=4	nettie
+n=4	norristown
+n=4	numidia
+n=4	oldham
+n=4	orrin
+n=4	otoe
+n=4	palouse
+n=4	paron
+n=4	pennington
+n=4	perrin
+n=4	peterboro
+n=4	peterborough
+n=4	quebeck
+n=4	redding
+n=4	redondo
+n=4	regan
+n=4	rentz
+n=4	ridgefield
+n=4	roann
+n=4	robinette
+n=4	ronan
+n=4	rosamond
+n=4	scandia
+n=4	selby
+n=4	sheboygan
+n=4	shrewsbury
+n=4	simms
+n=4	slade
+n=4	smithtown
+n=4	soper
+n=4	stanwood
+n=4	stockport
+n=4	stoddard
+n=4	talladega
+n=4	tampico
+n=4	taunton
+n=4	telford
+n=4	terril
+n=4	thayne
+n=4	theodosia
+n=4	thompsons	(utf16=4)
+n=4	toulon
+n=4	townley
+n=4	trumann
+n=4	uniondale
+n=4	valmy
+n=4	verdon
+n=4	vineland
+n=4	virgie
+n=4	wareham
+n=4	warrington
+n=4	waukesha
+n=4	waynesboro
+n=4	weymouth
+n=4	wheaton
+n=4	whittington
+n=4	wittenberg
+n=4	wolsey
+n=4	woonsocket
+n=4	wyco
+n=4	wycombe
+n=3	acosta
+n=3	addington
+n=3	aguirre
+n=3	albemarle
+n=3	alford
+n=3	allendale
+n=3	aniak
+n=3	antrim
+n=3	arlee
+n=3	basile
+n=3	belton
+n=3	belvedere
+n=3	beyer
+n=3	bloomingdale
+n=3	blount
+n=3	bonham
+n=3	boomer
+n=3	branchville
+n=3	brentford
+n=3	browder
+n=3	buford
+n=3	burna
+n=3	carman
+n=3	carpio
+n=3	catlett
+n=3	celina
+n=3	channing
+n=3	charlestown
+n=3	chelan	(utf16=1)
+n=3	chula	(utf16=1)
+n=3	cleghorn
+n=3	clements
+n=3	clemons
+n=3	coats
+n=3	cobden
+n=3	colerain
+n=3	coleraine
+n=3	coleta	(utf16=3)
+n=3	colmar
+n=3	cookstown
+n=3	corbin
+n=3	cordell
+n=3	cosby
+n=3	covena
+n=3	coxsackie
+n=3	creston
+n=3	crowder
+n=3	culebra
+n=3	darien
+n=3	dearing
+n=3	dekalb
+n=3	deleon
+n=3	delphia
+n=3	deming
+n=3	denbigh
+n=3	derwent
+n=3	dike
+n=3	dillard
+n=3	donegal
+n=3	doran
+n=3	dubois
+n=3	dungannon
+n=3	dunstable
+n=3	dunwoody
+n=3	edgewater
+n=3	eloy
+n=3	emlyn
+n=3	engadine
+n=3	enon	(utf16=1)
+n=3	etty
+n=3	everton
+n=3	ewell
+n=3	fairchild
+n=3	fenwick
+n=3	ferndale
+n=3	filley
+n=3	fishkill
+n=3	flintstone
+n=3	flom	(utf16=2)
+n=3	floris
+n=3	foreman
+n=3	frankford
+n=3	fulda	(utf16=2)
+n=3	gallatin
+n=3	geary
+n=3	giddings
+n=3	gilberts
+n=3	gilliam
+n=3	gothenburg
+n=3	gough
+n=3	granger
+n=3	greig
+n=3	guerra
+n=3	gwynedd
+n=3	hallie
+n=3	hambleton
+n=3	hampstead
+n=3	harrell
+n=3	harts
+n=3	harwich
+n=3	haskins
+n=3	hawkeye
+n=3	hayti
+n=3	hennessey
+n=3	hensley
+n=3	hersey
+n=3	hillsdale
+n=3	hilo	(utf16=1)
+n=3	horsham
+n=3	ignacio
+n=3	indio	(utf16=2)
+n=3	ivel
+n=3	jelm
+n=3	jemison
+n=3	joes
+n=3	joppa
+n=3	kaleva
+n=3	kamas
+n=3	kenai
+n=3	kershaw
+n=3	kewaskum
+n=3	kewaunee
+n=3	kief
+n=3	kildare
+n=3	kilkenny
+n=3	kingwood
+n=3	kinross
+n=3	koror
+n=3	laconia
+n=3	laie	(utf16=3)
+n=3	lampeter
+n=3	langhorne
+n=3	lavon
+n=3	lawley
+n=3	lawrenceville
+n=3	lenoir
+n=3	lewiston
+n=3	lightfoot	(utf16=3)
+n=3	lindley
+n=3	linwood
+n=3	lipan
+n=3	longford
+n=3	luxor
+n=3	lyndhurst
+n=3	lynnwood
+n=3	madera	(utf16=2)
+n=3	maida
+n=3	mamou
+n=3	mandan
+n=3	manton
+n=3	marquez
+n=3	mather
+n=3	matlock
+n=3	matoaka
+n=3	mayhew
+n=3	mcallen
+n=3	mckinnon
+n=3	mcveigh
+n=3	medfield
+n=3	medway
+n=3	mescalero
+n=3	miccosukee
+n=3	mingus
+n=3	moab
+n=3	modoc
+n=3	moko
+n=3	morehouse
+n=3	naco
+n=3	nicolaus
+n=3	nogal
+n=3	nogales
+n=3	nordman
+n=3	oakmont
+n=3	oconomowoc
+n=3	oden
+n=3	odum
+n=3	omro
+n=3	orem
+n=3	packwood
+n=3	panora	(utf16=1)
+n=3	patten
+n=3	pender
+n=3	pierpont
+n=3	plevna
+n=3	potosi
+n=3	pringle
+n=3	pryor
+n=3	puckett
+n=3	putney
+n=3	radford
+n=3	rawl
+n=3	rawson
+n=3	raymondville
+n=3	reedville
+n=3	renfrew
+n=3	rhinelander
+n=3	richey
+n=3	ringgold
+n=3	riverview
+n=3	roca
+n=3	roscommon
+n=3	rosedale
+n=3	rosemont
+n=3	rosslyn
+n=3	saco	(utf16=2)
+n=3	saukville
+n=3	saxton
+n=3	seabrook
+n=3	sebastopol
+n=3	sedgwick
+n=3	seeley
+n=3	shawano
+n=3	shoreham
+n=3	silverton
+n=3	simla
+n=3	sisseton
+n=3	slinger	(utf16=1)
+n=3	smallwood
+n=3	sorrento
+n=3	stillwell
+n=3	stockdale
+n=3	stockwell
+n=3	stoy	(utf16=1)
+n=3	strabane
+n=3	stroud
+n=3	summerdale
+n=3	suquamish
+n=3	suwanee
+n=3	svea
+n=3	swartz
+n=3	tabor
+n=3	tarheel
+n=3	texarkana
+n=3	thiensville
+n=3	thurmond
+n=3	tiburon
+n=3	tilly
+n=3	tipton
+n=3	trafford
+n=3	ulen
+n=3	umatilla
+n=3	vickery
+n=3	villanova
+n=3	waban
+n=3	wahpeton
+n=3	walworth
+n=3	wartburg
+n=3	waupaca
+n=3	waupun
+n=3	waveland
+n=3	weatherford
+n=3	wedderburn
+n=3	weidman
+n=3	weiner
+n=3	wellman
+n=3	wellsville
+n=3	wexford
+n=3	wheatland
+n=3	whitelaw
+n=3	whitwell
+n=3	wilburn
+n=3	windermere
+n=3	winona
+n=3	woden
+n=3	wolverton
+n=3	yolo
+n=2	abbeville
+n=2	abrams
+n=2	adah	(utf16=1)
+n=2	addy
+n=2	adell
+n=2	afton
+n=2	alberton
+n=2	almira
+n=2	altamont
+n=2	altoona
+n=2	alvo
+n=2	amana	(utf16=2)
+n=2	animas	(utf16=2)
+n=2	annandale
+n=2	arcanum
+n=2	arcata
+n=2	arkansaw
+n=2	arley
+n=2	arvin
+n=2	asbury
+n=2	attleboro
+n=2	avoca
+n=2	azusa
+n=2	bangs
+n=2	baring
+n=2	barneveld
+n=2	bartlesville
+n=2	baskerville
+n=2	bays
+n=2	beckley
+n=2	bellevue
+n=2	bellmore
+n=2	bells
+n=2	beltrami
+n=2	belzoni
+n=2	bemidji
+n=2	berkley
+n=2	bieber
+n=2	blackwood
+n=2	bluffs
+n=2	boardman
+n=2	bonair
+n=2	bonaire
+n=2	bosworth
+n=2	bountiful
+n=2	bozeman
+n=2	braden
+n=2	brattleboro
+n=2	breda
+n=2	broadus
+n=2	broderick
+n=2	brogan
+n=2	brookdale
+n=2	bruin
+n=2	bucks
+n=2	burney
+n=2	cambra
+n=2	canby
+n=2	carlotta
+n=2	carnarvon
+n=2	casar
+n=2	castella
+n=2	catharine
+n=2	catlin
+n=2	cerro
+n=2	charenton
+n=2	chaumont
+n=2	chincoteague
+n=2	clarksburg
+n=2	clatonia
+n=2	clover
+n=2	cohoes
+n=2	collinsville
+n=2	colona
+n=2	colville
+n=2	concan	(utf16=2)
+n=2	concho
+n=2	conda
+n=2	conroe
+n=2	corder
+n=2	corinna
+n=2	corry
+n=2	corton
+n=2	covina
+n=2	crapo
+n=2	crestone
+n=2	crocker	(utf16=1)
+n=2	crofton
+n=2	curtin
+n=2	dagmar
+n=2	davey
+n=2	dedham
+n=2	defiance
+n=2	denham
+n=2	dingle
+n=2	dinwiddie
+n=2	dracut
+n=2	draper
+n=2	drayton
+n=2	dulac
+n=2	dulce
+n=2	duncanville
+n=2	duplessis
+n=2	durand
+n=2	ebenezer
+n=2	edon	(utf16=1)
+n=2	elco
+n=2	elkin
+n=2	elkins
+n=2	emden
+n=2	emporia
+n=2	enola
+n=2	eola
+n=2	eolia
+n=2	etters	(utf16=2)
+n=2	eustace
+n=2	findlay
+n=2	fola
+n=2	freeland
+n=2	fromberg
+n=2	funston
+n=2	gasconade
+n=2	gilford
+n=2	glenford
+n=2	glenside
+n=2	goldsboro
+n=2	gouverneur
+n=2	granby
+n=2	greenbush
+n=2	greenleaf
+n=2	greenock
+n=2	gurley
+n=2	hagan
+n=2	hagerstown
+n=2	hardwick
+n=2	harned
+n=2	havelock
+n=2	hebo
+n=2	hebron
+n=2	henning
+n=2	herron
+n=2	hibbing
+n=2	hiko
+n=2	horner
+n=2	hortense
+n=2	innis
+n=2	interlaken
+n=2	islip
+n=2	iuka	(utf16=1)
+n=2	jamieson
+n=2	jesup
+n=2	jonesboro
+n=2	keene
+n=2	keiser
+n=2	kempton
+n=2	kennewick
+n=2	kerman
+n=2	kersey
+n=2	kincaid	(utf16=1)
+n=2	kissimmee
+n=2	kulm
+n=2	lander
+n=2	lansdowne
+n=2	lanse	(utf16=1)
+n=2	lasal
+n=2	lasalle
+n=2	laurier
+n=2	lavinia
+n=2	leamington
+n=2	lenni
+n=2	licking
+n=2	lilydale
+n=2	lohn
+n=2	lonsdale
+n=2	lorado
+n=2	lothair
+n=2	lovely
+n=2	lubec
+n=2	lublin
+n=2	lufkin
+n=2	lusk
+n=2	lysander
+n=2	makinen	(utf16=2)
+n=2	malakoff
+n=2	malmo
+n=2	mango
+n=2	mankato
+n=2	manlius
+n=2	mantua
+n=2	marfa
+n=2	marianna
+n=2	mariposa
+n=2	marshalltown
+n=2	massapequa
+n=2	maumee
+n=2	maxie
+n=2	mcalester
+n=2	mcneill
+n=2	mecklenburg
+n=2	middleboro
+n=2	middleburg
+n=2	mifflin
+n=2	milner
+n=2	modena
+n=2	morgantown
+n=2	nampa
+n=2	norco
+n=2	norwood
+n=2	oaks
+n=2	oakville
+n=2	oceana	(utf16=2)
+n=2	olathe
+n=2	olema	(utf16=2)
+n=2	ophir
+n=2	orick
+n=2	oswego
+n=2	ottumwa
+n=2	otway
+n=2	oviedo
+n=2	owensboro
+n=2	paducah
+n=2	paia
+n=2	parkersburg
+n=2	parkville
+n=2	paulina
+n=2	perks
+n=2	phenix
+n=2	pinon	(utf16=1)
+n=2	placentia
+n=2	pocatello
+n=2	queenstown
+n=2	quinter
+n=2	randle	(utf16=1)
+n=2	ratcliff
+n=2	ravenswood
+n=2	rayne
+n=2	redan	(utf16=1)
+n=2	redcliff
+n=2	reeds	(utf16=2)
+n=2	remer
+n=2	renner
+n=2	rialto
+n=2	riverton
+n=2	roff
+n=2	roseville
+n=2	ruffin
+n=2	ruston
+n=2	saum
+n=2	schleswig
+n=2	sedalia
+n=2	shiro
+n=2	sigel	(utf16=1)
+n=2	soledad
+n=2	solway
+n=2	souris	(utf16=1)
+n=2	springer	(utf16=1)
+n=2	springvale
+n=2	sublime
+n=2	sudbury
+n=2	sugarloaf
+n=2	sunbury
+n=2	taconic
+n=2	talco
+n=2	talcott
+n=2	talmo	(utf16=2)
+n=2	tennant
+n=2	termo
+n=2	thetford
+n=2	tiffin
+n=2	timonium
+n=2	tomah	(utf16=2)
+n=2	tomahawk	(utf16=2)
+n=2	tonawanda
+n=2	torreon
+n=2	tyty
+n=2	upsala
+n=2	valdosta
+n=2	vaucluse
+n=2	verdel	(utf16=2)
+n=2	vidalia
+n=2	vona	(utf16=2)
+n=2	waddington
+n=2	wagoner
+n=2	walkerville
+n=2	wenona
+n=2	whitby
+n=2	willet
+n=2	williamstown
+n=2	wilmot
+n=2	windham
+n=2	woodmere
+n=2	yancey
+n=2	zebulon
+n=1	abbotsford
+n=1	abercrombie
+n=1	abingdon
+n=1	adona
+n=1	agawam
+n=1	agness
+n=1	aguadilla
+n=1	aiea
+n=1	akeley
+n=1	alanson
+n=1	albertville
+n=1	aliquippa
+n=1	alpena
+n=1	altadena
+n=1	altenburg
+n=1	altha
+n=1	altus
+n=1	alvy
+n=1	amberg
+n=1	ambler
+n=1	amboy
+n=1	amory
+n=1	anahuac
+n=1	ancona
+n=1	andersonville
+n=1	ankeny
+n=1	annada
+n=1	annamaria
+n=1	anniston
+n=1	anoka
+n=1	ansley
+n=1	ansonia
+n=1	arbela
+n=1	arbon
+n=1	ardmore
+n=1	arecibo
+n=1	arnot
+n=1	arock
+n=1	artemas
+n=1	arvada
+n=1	ashburn
+n=1	ashburnham
+n=1	ashby
+n=1	ashdown
+n=1	asheboro
+n=1	ashtabula
+n=1	ashwood
+n=1	atascadero
+n=1	austinville
+n=1	avella
+n=1	avenel
+n=1	avondale
+n=1	azalia
+n=1	badin
+n=1	bakerton
+n=1	bakewell
+n=1	balch
+n=1	bamberg
+n=1	bandon
+n=1	barnstable
+n=1	baskin
+n=1	bastrop
+n=1	batchelor
+n=1	baytown
+n=1	bayview
+n=1	beachwood
+n=1	beattie
+n=1	belen
+n=1	bellbrook
+n=1	bellona
+n=1	bellville
+n=1	belva
+n=1	benedicta
+n=1	benicia
+n=1	bensenville
+n=1	bergenfield
+n=1	berthold
+n=1	berwyn
+n=1	bethpage
+n=1	bettendorf
+n=1	betterton
+n=1	bevier
+n=1	biddeford
+n=1	bienville
+n=1	billerica
+n=1	birney
+n=1	blackwater
+n=1	bladen	(utf16=1)
+n=1	blanco
+n=1	blueeye
+n=1	bluefield
+n=1	blytheville
+n=1	boaz
+n=1	bogalusa
+n=1	bogata
+n=1	boles
+n=1	borger
+n=1	bourbonnais
+n=1	boyden
+n=1	boynton
+n=1	bracey
+n=1	bradenton
+n=1	braggadocio
+n=1	braidwood
+n=1	branson
+n=1	brantley
+n=1	bremerton
+n=1	bridgeton
+n=1	bridgton
+n=1	bridport
+n=1	britton
+n=1	broadford
+n=1	broadlands
+n=1	broadwater
+n=1	brockton
+n=1	brookfield
+n=1	brookings
+n=1	brooklet
+n=1	brooklin
+n=1	brookton
+n=1	brookville
+n=1	broomall
+n=1	broomfield
+n=1	brownfield
+n=1	brownwood
+n=1	buckland
+n=1	bulger
+n=1	burket
+n=1	burnsville
+n=1	busby
+n=1	bushland
+n=1	butters
+n=1	bylas
+n=1	cabins
+n=1	cabool
+n=1	cadmus
+n=1	caguas
+n=1	camarillo
+n=1	camby
+n=1	campbelltown
+n=1	campobello
+n=1	candia
+n=1	candler
+n=1	cando
+n=1	caney
+n=1	cannonville
+n=1	canova
+n=1	cardwell
+n=1	carrollton
+n=1	carteret
+n=1	carterville
+n=1	casco
+n=1	cason
+n=1	casselberry
+n=1	castleford
+n=1	catarina
+n=1	catron
+n=1	cawood
+n=1	cedarvale
+n=1	cedarville
+n=1	celestine
+n=1	cerritos
+n=1	chalmette
+n=1	chambersburg
+n=1	chanute
+n=1	chariton
+n=1	charlevoix
+n=1	chatsworth
+n=1	cheapside
+n=1	chesterville
+n=1	chickasha
+n=1	chicopee
+n=1	chillicothe
+n=1	christiansted
+n=1	cinda
+n=1	clarinda
+n=1	clarita
+n=1	clarksdale
+n=1	clarkson
+n=1	clarksville
+n=1	clawson
+n=1	claxton
+n=1	clayville
+n=1	clearfield
+n=1	cleburne
+n=1	clune
+n=1	coalville
+n=1	cockeysville
+n=1	coffeyville
+n=1	cogswell
+n=1	colden
+n=1	coldwater
+n=1	colebrook
+n=1	collingswood
+n=1	colman
+n=1	coloma
+n=1	colton
+n=1	colver
+n=1	commack
+n=1	condon
+n=1	connersville
+n=1	conroy
+n=1	cookeville
+n=1	copan
+n=1	copiague
+n=1	corsicana
+n=1	cotter
+n=1	cottondale
+n=1	coupland
+n=1	courtenay
+n=1	covington
+n=1	crittenden
+n=1	crossroads
+n=1	cudahy
+n=1	culpeper
+n=1	curtice
+n=1	daggett
+n=1	dahlgren
+n=1	dansville
+n=1	danvers
+n=1	darragh
+n=1	davidsonville
+n=1	deland
+n=1	delray
+n=1	dendron
+n=1	depew
+n=1	dighton
+n=1	dolton
+n=1	donie
+n=1	dorena
+n=1	dothan
+n=1	duarte
+n=1	duchesne
+n=1	duffield
+n=1	dundas
+n=1	dunlo
+n=1	dunmor
+n=1	dunmore
+n=1	duvall
+n=1	dyersburg
+n=1	eads
+n=1	earlham
+n=1	eckman
+n=1	ecru
+n=1	ector
+n=1	edenville
+n=1	edina
+n=1	elberta
+n=1	elcho
+n=1	eldred
+n=1	elizabethtown
+n=1	elkhorn
+n=1	elliston
+n=1	elmwood
+n=1	elora
+n=1	elwin
+n=1	elyria
+n=1	emmaus
+n=1	endeavor
+n=1	ensign	(utf16=1)
+n=1	epworth
+n=1	esko
+n=1	espanola
+n=1	esperance
+n=1	essington
+n=1	estero
+n=1	etoile	(utf16=1)
+n=1	euless
+n=1	eustis
+n=1	evart
+n=1	evarts
+n=1	fairborn
+n=1	fairdale
+n=1	fairland
+n=1	fallon
+n=1	faribault
+n=1	farmers
+n=1	farmingdale
+n=1	fernwood
+n=1	fessenden
+n=1	firebrick
+n=1	fishers
+n=1	fitzhugh
+n=1	flensburg
+n=1	florissant
+n=1	foraker
+n=1	fords
+n=1	fordville
+n=1	forestville
+n=1	formoso
+n=1	forsyth
+n=1	fostoria
+n=1	framingham
+n=1	franconia
+n=1	frankston
+n=1	frannie
+n=1	frederica
+n=1	fredville
+n=1	friendship
+n=1	frogmore
+n=1	galesburg
+n=1	galliano
+n=1	gardena
+n=1	garrard
+n=1	garvin
+n=1	garwin
+n=1	garwood
+n=1	gasport
+n=1	gastonia
+n=1	gatesville
+n=1	geddes
+n=1	genesee
+n=1	gilroy
+n=1	gilson
+n=1	glenbrook
+n=1	glencoe
+n=1	glendon
+n=1	glendora
+n=1	glennie
+n=1	glenview
+n=1	glenwood
+n=1	gloversville
+n=1	goldfield
+n=1	goodhue
+n=1	gorman
+n=1	gorum
+n=1	goshen
+n=1	grantville
+n=1	graytown
+n=1	greenback
+n=1	greendale
+n=1	greensburg
+n=1	greenvale
+n=1	greenway
+n=1	grethel
+n=1	guaynabo
+n=1	gulfport
+n=1	gunnison
+n=1	gwinn
+n=1	hackensack
+n=1	hailey
+n=1	hallam
+n=1	hallandale
+n=1	halleck
+n=1	halliday
+n=1	hamberg
+n=1	hamden
+n=1	hampden
+n=1	harbert
+n=1	harlingen
+n=1	harrietta
+n=1	hartland
+n=1	hartwell
+n=1	haslet
+n=1	haslett
+n=1	hatley
+n=1	hatton
+n=1	hawi
+n=1	haymarket
+n=1	hazelwood
+n=1	hazen
+n=1	hazleton
+n=1	heaton
+n=1	hecker
+n=1	helmer
+n=1	hemet
+n=1	hennepin
+n=1	henryetta
+n=1	henryville
+n=1	hephzibah
+n=1	herndon
+n=1	hicksville
+n=1	highview
+n=1	hiller
+n=1	hillview
+n=1	hingham
+n=1	hiwasse
+n=1	hiwassee
+n=1	holladay
+n=1	holliday
+n=1	homewood
+n=1	honaker
+n=1	hopatcong
+n=1	hopkinsville
+n=1	hopland
+n=1	hornsby
+n=1	houma
+n=1	howes
+n=1	hoxie
+n=1	humphreys
+n=1	hungerford
+n=1	hyden
+n=1	idalia
+n=1	inkster
+n=1	iredell
+n=1	ireton
+n=1	irvington
+n=1	isabela
+n=1	iselin
+n=1	ivydale
+n=1	jellico
+n=1	jenison
+n=1	jessup
+n=1	joice
+n=1	joliette
+n=1	julesburg
+n=1	juniata
+n=1	kailua
+n=1	kaneohe
+n=1	kannapolis
+n=1	karlsruhe
+n=1	karlstad
+n=1	karnak
+n=1	kaycee
+n=1	kealakekua
+n=1	kearny
+n=1	keeler	(utf16=1)
+n=1	keizer
+n=1	kellerman
+n=1	kelso
+n=1	kendalia	(utf16=1)
+n=1	kenmare
+n=1	kennebec
+n=1	kennebunk
+n=1	kennebunkport
+n=1	kennesaw
+n=1	kennett
+n=1	kentwood
+n=1	kenvil
+n=1	kerrville
+n=1	kesley
+n=1	killeen
+n=1	kiln
+n=1	kingsburg
+n=1	kingsport
+n=1	kingsville
+n=1	kinsley
+n=1	kinston
+n=1	kirksville
+n=1	kismet
+n=1	kittery
+n=1	kittredge
+n=1	kokomo
+n=1	kosse
+n=1	kouts
+n=1	kress
+n=1	kurten
+n=1	lachine
+n=1	ladysmith
+n=1	lafontaine
+n=1	laings
+n=1	laingsburg
+n=1	laird
+n=1	lamartine
+n=1	lamero
+n=1	lanett
+n=1	lanham
+n=1	lansdale
+n=1	larue
+n=1	latour
+n=1	lavina
+n=1	lawler
+n=1	lawndale
+n=1	lawtey
+n=1	leachville
+n=1	leeton
+n=1	leith
+n=1	lenox
+n=1	leonore
+n=1	leoti
+n=1	lesage
+n=1	levittown
+n=1	lewisville
+n=1	libertyville
+n=1	lindenhurst
+n=1	lindon
+n=1	lismore
+n=1	lissie
+n=1	lockport
+n=1	logansport
+n=1	lohman
+n=1	loleta
+n=1	lomax
+n=1	lomita
+n=1	lompoc
+n=1	longbottom
+n=1	longdale
+n=1	longmeadow
+n=1	longmont
+n=1	longview
+n=1	loring
+n=1	louisburg
+n=1	lowndes
+n=1	lumberton
+n=1	lumpkin
+n=1	lutherville
+n=1	lynbrook
+n=1	lyndell
+n=1	lynnville
+n=1	lynwood
+n=1	mableton
+n=1	mackay
+n=1	macksville
+n=1	macomb
+n=1	madisonville
+n=1	manassas
+n=1	mandeville
+n=1	mansura
+n=1	manteca
+n=1	maplewood
+n=1	marblehead
+n=1	marchand
+n=1	mariba
+n=1	marland
+n=1	marmaduke
+n=1	marrero
+n=1	marshfield
+n=1	martelle
+n=1	martinsville
+n=1	maryd
+n=1	marysville
+n=1	maryville
+n=1	massena
+n=1	massillon
+n=1	matagorda
+n=1	mattaponi
+n=1	mayaguez
+n=1	maybell
+n=1	mayfield
+n=1	maynardville
+n=1	mayville
+n=1	maywood
+n=1	mcadoo
+n=1	mccomb
+n=1	mcintire
+n=1	mckeesport
+n=1	mcneal
+n=1	meadowbrook
+n=1	meadville
+n=1	meeker
+n=1	menard
+n=1	meriden
+n=1	merna
+n=1	merrifield
+n=1	mesilla
+n=1	metairie
+n=1	miamisburg
+n=1	mikado
+n=1	milbank
+n=1	millbrae
+n=1	millburn
+n=1	milligan
+n=1	millville
+n=1	milpitas
+n=1	mimbres
+n=1	mims
+n=1	mineola
+n=1	minnetonka
+n=1	minster
+n=1	minter
+n=1	minto
+n=1	mishawaka
+n=1	mitchells
+n=1	monclova
+n=1	monroeville
+n=1	moorestown
+n=1	moorhead
+n=1	moraga
+n=1	mosby
+n=1	moultrie
+n=1	mozelle
+n=1	muldoon
+n=1	mulga
+n=1	mundelein
+n=1	munford
+n=1	munger
+n=1	murfreesboro
+n=1	murrayville
+n=1	murrysville
+n=1	muscatine
+n=1	naoma
+n=1	naper
+n=1	naperville
+n=1	natick
+n=1	naugatuck
+n=1	navasota
+n=1	neche
+n=1	neches
+n=1	neenah
+n=1	neoga
+n=1	niles
+n=1	nokomis
+n=1	noonan
+n=1	norborne
+n=1	norden
+n=1	norene
+n=1	nottawa
+n=1	nottoway
+n=1	novato
+n=1	oakdale
+n=1	oark
+n=1	obrien
+n=1	ocala
+n=1	oconee
+n=1	odem	(utf16=1)
+n=1	okanogan
+n=1	okmulgee
+n=1	okolona
+n=1	onida
+n=1	onslow
+n=1	onsted
+n=1	opelika
+n=1	opelousas
+n=1	orangevale
+n=1	orgas
+n=1	orinda
+n=1	osmond
+n=1	ossian
+n=1	ossining
+n=1	otterbein
+n=1	ouray
+n=1	ovett
+n=1	owatonna
+n=1	owosso
+n=1	owyhee
+n=1	oxly	(utf16=1)
+n=1	pacifica
+n=1	painesville
+n=1	palmerton
+n=1	paragould
+n=1	pascagoula
+n=1	pasco
+n=1	paulding
+n=1	pawpaw
+n=1	paynesville
+n=1	payneville
+n=1	peekskill
+n=1	pelion
+n=1	pemberton
+n=1	pendleton
+n=1	pennsauken
+n=1	penrod
+n=1	pernell
+n=1	petaluma
+n=1	pfeifer
+n=1	pharr
+n=1	phelan
+n=1	phillipsburg
+n=1	pineland
+n=1	pinetown
+n=1	pineview
+n=1	pinewood
+n=1	piqua
+n=1	piru
+n=1	pitkin
+n=1	placerville
+n=1	plainview
+n=1	plainville
+n=1	plattsburg
+n=1	plattsburgh
+n=1	pleasanton
+n=1	pomeroy
+n=1	pomfret
+n=1	pottstown
+n=1	pottsville
+n=1	poway
+n=1	powderly
+n=1	prattville
+n=1	preble
+n=1	prentiss
+n=1	prichard
+n=1	pritchett
+n=1	protem
+n=1	punxsutawney
+n=1	puyallup
+n=1	radisson
+n=1	radom
+n=1	rago
+n=1	rahway
+n=1	rains
+n=1	ramah
+n=1	randallstown
+n=1	rangeley
+n=1	rantoul
+n=1	raton
+n=1	ravinia
+n=1	rawlings
+n=1	rawlins
+n=1	redlands
+n=1	reisterstown
+n=1	remsen
+n=1	renton
+n=1	renwick
+n=1	rexford
+n=1	reynoldsburg
+n=1	ribera
+n=1	richwood
+n=1	ridgecrest
+n=1	ridgeview
+n=1	ridgeville
+n=1	ridgeway
+n=1	ridgewood
+n=1	rienzi
+n=1	rimini
+n=1	riverdale
+n=1	rockham
+n=1	rombauer
+n=1	ronkonkoma
+n=1	roper
+n=1	rosalia
+n=1	roseburg
+n=1	rosemead
+n=1	rossburg
+n=1	rossmore
+n=1	roxana
+n=1	roxboro
+n=1	royalton
+n=1	rumsey
+n=1	rydal
+n=1	ryland
+n=1	salamanca
+n=1	saltillo
+n=1	saltville
+n=1	saluda
+n=1	sapulpa
+n=1	saranac
+n=1	sarepta
+n=1	sarita
+n=1	satsuma
+n=1	saugus
+n=1	sausalito
+n=1	sayreville
+n=1	sayville
+n=1	schaumburg
+n=1	schley
+n=1	schulenburg
+n=1	schurz
+n=1	scio
+n=1	scituate
+n=1	scottsville
+n=1	seaford
+n=1	seaforth
+n=1	secor
+n=1	seibert
+n=1	selah
+n=1	selden
+n=1	semmes
+n=1	sewell
+n=1	shaftsbury
+n=1	shandon
+n=1	sharps
+n=1	sharpsburg
+n=1	sheyenne
+n=1	shubert
+n=1	sigourney
+n=1	sikes
+n=1	sikeston
+n=1	silex
+n=1	silvana
+n=1	silverdale
+n=1	simsbury
+n=1	skelton
+n=1	skokie
+n=1	slidell
+n=1	smithton
+n=1	smithwick
+n=1	snoqualmie
+n=1	snowmass
+n=1	soso
+n=1	spartanburg
+n=1	speaks
+n=1	spearville
+n=1	spooner
+n=1	spotswood
+n=1	springtown
+n=1	starkville
+n=1	statesville
+n=1	steubenville
+n=1	stigler
+n=1	stockville
+n=1	stoneham
+n=1	stonington
+n=1	storrs
+n=1	stoughton
+n=1	strafford
+n=1	streamwood
+n=1	subiaco
+n=1	summerfield
+n=1	summertown
+n=1	summerville
+n=1	sunburst
+n=1	sunland
+n=1	sunnyside
+n=1	suring
+n=1	sutter
+n=1	suwannee
+n=1	sweetwater
+n=1	tacna
+n=1	tallmadge
+n=1	tallman
+n=1	talpa	(utf16=1)
+n=1	tams
+n=1	tappen
+n=1	taylors
+n=1	taylorsville
+n=1	teaneck
+n=1	tehachapi
+n=1	teresita
+n=1	terrebonne
+n=1	tewksbury
+n=1	thibodaux
+n=1	thomasville
+n=1	thornville
+n=1	thornwood
+n=1	tillamook
+n=1	timbo
+n=1	titusville
+n=1	tiverton
+n=1	toluca
+n=1	torrington
+n=1	townshend
+n=1	townsville
+n=1	tranquility
+n=1	trilby
+n=1	tulare
+n=1	tullahoma
+n=1	tuolumne
+n=1	turlock
+n=1	tustin
+n=1	tutwiler
+n=1	tynan
+n=1	udell
+n=1	ukiah
+n=1	umpqua
+n=1	vacaville
+n=1	valentines
+n=1	vanna
+n=1	vashon
+n=1	vernonia
+n=1	viborg
+n=1	vieques
+n=1	villanueva
+n=1	vinita
+n=1	visalia
+n=1	wadley
+n=1	waggoner
+n=1	wahiawa
+n=1	wahoo
+n=1	waianae
+n=1	waipahu
+n=1	walling
+n=1	wallingford
+n=1	wallowa
+n=1	wando
+n=1	waneta
+n=1	wantagh
+n=1	warda
+n=1	warrens
+n=1	warrensville
+n=1	warrenton
+n=1	washita
+n=1	waterville
+n=1	watsonville
+n=1	waukegan
+n=1	waverly
+n=1	waycross
+n=1	waynesburg
+n=1	waynesfield
+n=1	weems
+n=1	weirton
+n=1	wenatchee
+n=1	wenonah
+n=1	weslaco
+n=1	wethersfield
+n=1	wever
+n=1	wheatfield
+n=1	wheelock
+n=1	whitefish
+n=1	whitehouse
+n=1	whitestone
+n=1	whon
+n=1	wildwood
+n=1	willamina
+n=1	williamsport
+n=1	willingboro
+n=1	williston
+n=1	willmar
+n=1	willows
+n=1	wilmar
+n=1	windom
+n=1	winger
+n=1	wingo
+n=1	winterthur
+n=1	winton
+n=1	wittman
+n=1	wittmann
+n=1	woburn
+n=1	wolford
+n=1	woodburn
+n=1	woodford
+n=1	woodman
+n=1	worden
+n=1	wyckoff
+n=1	yampa
+n=1	yucaipa
+n=1	zanesville
+n=1	zenia
+n=1	zwolle
