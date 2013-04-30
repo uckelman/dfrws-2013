@@ -732,7 +732,7 @@ This procedure guarantees both that the hit will decode successfully and that we
 
 In cooperation with the Naval Postgraduate School, the lightgrep search engine has been open-sourced and integrated into bulk\_extractor. It provides an alternate search mechanism to the GNU Regex and TRE libraries used in bulk\_extractor's ``scan\_find'' plugin and generally offers much greater performance. The International Components for Unicode (ICU) library is used by lightgrep to provide the definitions of code point names and properties, as well as mappings for legacy codepages. ICU nicely solves the daunting enumerative task of supporting Unicode and staying up-to-date as the standard evolves.\footnote{We do not use ICU's own regular expression library, as it lacks support for multipattern searches.}
 
-While use of multiple encodings increases automata size substantially, search bandwidth with bulk\_extractor is adequate for most sets of patterns. As an example, Table~\ref{table:experiment} shows the results of running the list of 10,198 U.S.\ place names in Grady Ward's Moby word list against images from the M57 Patents scenario in the NPS Digital Corpora. UTF-8 and UTF-16LE encodings were enabled for all these terms, effectively doubling the set of patterns. In all runs, processing bandwidth remained around 100\,MB/s on a 12-core Xeon workstation, with the evidence stored on a three 7200\,RPM drives in a RAID5. Owing to some short names and homonyms in the place names list, many hits were not relevant to an investigation, but we believe this illustrates the capability.
+While use of multiple encodings increases automata size substantially, search bandwidth with bulk\_extractor is adequate for most sets of patterns. As an example, Table~\ref{table:experiment} shows the results of running the list of 10,198 U.S.\ place names in Grady Ward's Moby word list against images from the NPS 2009 M57 Patents-Redacted scenario in the NPS Digital Corpora. UTF-8 and UTF-16LE encodings were enabled for all these terms, effectively doubling the set of patterns. In all runs, processing bandwidth remained around 100\,MB/s on a 12-core Xeon workstation, with the evidence stored on a three 7200\,RPM drives in a RAID5. Owing to some short names and homonyms in the place names list, many hits were not relevant to an investigation, but we believe this illustrates the capability.
 
 \begin{table}
 \centering
@@ -740,9 +740,9 @@ While use of multiple encodings increases automata size substantially, search ba
 \begin{tabular}{lrrr}
   \multicolumn{1}{c}{Image} & \multicolumn{1}{c}{Size} & \multicolumn{1}{c}{Hits} & \multicolumn{1}{c}{Bandwidth} \\
   \hline
-  Charlie & 10GB &  852657 & 104.2 MB/s \\
-  Jo      & 14GB &  763083 & 114.9 MB/s \\
-  Pat     & 12GB & 1199007 & 97.2 MB/s  \\
+  Charlie-2009-11-12.E01 & 10GB &  543,719 & 131.7 MB/s \\
+  Jo-2009-11-12.E01 & 14GB &  536,906 & 123.8 MB/s \\
+  Pat-2009-11-12.E01 & 12GB & 522,220 & 124.7 MB/s  \\
   \hline
 \end{tabular}
 \caption{Summary of search performance using lightgrep via bulk\_extractor\label{table:experiment}}
