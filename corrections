@@ -1,0 +1,40 @@
+Line 180, 181: 0x4C and 0x00 are not multiplication, and should not be in math mode. These should be typeset in text mode as we had them, a literal "0x4C". The spaces and the \times are wrong. (For contrast, lines 207 and 208 are correct.)
+
+Line 195: U+10000 should be literally "U+10000", in text mode. This is is a Unicode code point specification, not a sum; the plus should not have math mode spacing). Also, there should be no thousands separator in the "10000".
+
+Line 217-218: The backslash which should preceed each 'p', 'd', and 's' in the regular expression is missing. The correct appearance of the regular expression is: 
+
+  (\p{Sc}\s*(\d*|(\d{1,3}([ ,.]\d{3})*))([,.]\d{2}?)?)|((\d*|(\d{1,3}([ ,.]\d{3})*))([,.]\d{2}?)?\s*\p{Sc})
+
+It's a differnent, incorrect regex without these backslashes.
+
+Line 263: "7RL1.1" should be "RL1.1".
+
+Line 402-403: "U.S." shoud not be split across two lines.
+
+Line 418-420, 433-434, 463, 484, 830:
+
+  As above, U+0A, U+0D, etc. are not sums---these are Unicode code point specifications. They should be in text mode to get proper spacing around the plus sign, not in math mode. E.g., "U+0A" should be typeset literally as "U+0A".
+ 
+Line 533-536: The sentence beginning "For example" has been mangled. It should read "For example, left-pointing double angle quotation mark («) and right-pointing double angle quotation mark (») might be considered Punctuation in a French locale, but not in an English one."
+
+Table 1: Please restore the horizontal lines we had on either side of the Level 1, Level 2, and Level 3 headers.
+
+Line 891: [41; 5A] should be [41, 5A]. (The semicolon should be a comma.)
+
+Lines 1076-1080: The backslash which should preceed each 'p' is now missing. Also, this should not be in italics. The correct appearance of the regular expression is:
+
+   \p{script=Hangul}{5,30}(\p{Common}{1,10}\p{script=Hangul}{1,30}){4,}
+
+Lines 1128-1129: "UTF #18" should be "UTS #18".
+
+Q1: In what way would you like me to update the Garfinkel, perlunicode man page, and Unicode Consortium references? I am guessing that what you want are the missing URLs for these three, as they have no links in the proof---but we did provide the URLs for them in our bib file, enc.bib.
+
+  Garfinkel: https://github.com/simsong/bulk_extractor
+  perlunicode man page: http://perldoc.perl.org/perlunicode.html
+  Unicode Consortium: http://www.unicode.org/versions/Unicode6.2.0/
+
+If you need something other than these URLs, please explain clearly what that would be and I will try to provide it.
+
+Q2: Jon's first name is Jon, surname is Stewart. My first name is Joel, surname is Uckelman.
+
